@@ -20,9 +20,9 @@ public:
 		x = X; y = Y;
 		texture.setSmooth(true);
 		sprite.setPosition(x, y);
-		bulletrot = (atan2(mousepos.y - sprite.getPosition().y, mousepos.x - sprite.getPosition().x) * 180 / 3.14159265);
-		sprite.setOrigin(origin);
-		sprite.setRotation(bulletrot+128);
+		bulletrot = (atan2(mousepos.y - sprite.getPosition().y, mousepos.x - sprite.getPosition().x) * 180 / 3.14159265)-4;
+		sprite.setOrigin(origin.x-80,origin.y-75);
+		sprite.setRotation(bulletrot);
 		
 		
 		

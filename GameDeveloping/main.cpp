@@ -128,7 +128,7 @@ int main() //Главная функция игры
 		if (Mouse::isButtonPressed(Mouse::Button::Left))
 		{
 			
-			Bullet bullet("bullet.png", p1.getSpritePos().x, p1.getSpritePos().y,p1.getSpriteOrigin(), pos);
+			Bullet bullet("bullet.gif", p1.getSpritePos().x, p1.getSpritePos().y,p1.getSpriteOrigin(), pos);
 			
 			bullets.push_back(bullet);
 			
