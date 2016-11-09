@@ -6,10 +6,8 @@ using namespace std; //Убираем использование std
 int main() //Главная функция игры
 {
 	RenderWindow window(VideoMode(1366,768), "HUYHUY",Style::None); //Инициализируем окно
-	
-	
+	window.setVerticalSyncEnabled(true);
 	View view2; //Создаем объект класса Камеры
-	
 	Player p1("soldier1.png", 500, 500); //Создаем объект класса игрок
 	Player p2("soldier1.png", 600, 600);
 	vector <Bullet> bullets;
@@ -31,6 +29,7 @@ int main() //Главная функция игры
 	view2.setSize(1366, 768); //Ставим размер вида для камеры
 	while (window.isOpen()) //Цикл, пока открыто окно, он действует
 	{
+		
 		time = clock.getElapsedTime().asMicroseconds(); //Измерение времени в микросекундах
 		clock.restart(); //Перезагружаем время
 		time = time / 150; //Задаем общую скорость игры
@@ -61,39 +60,40 @@ int main() //Главная функция игры
 			СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
 			if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 			p1.setSpriteRect(int(СurrentFrame));
-			p1.moveSprite(((-p1.getSpeed())*time)*0.75 , ((-p1.getSpeed())*time)*0.75 );
-			view2.move(((-p1.getSpeed())*time)*0.75, ((-p1.getSpeed())*time)*0.75 );
+			p1.moveSprite(((-p1.getSpeed())*time)*0.75 , ((-p1.getSpeed())*time)*0.75 ); view2.move(((-p1.getSpeed())*time)*0.75, ((-p1.getSpeed())*time)*0.75);
+			
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::W) && Keyboard::isKeyPressed(Keyboard::D))
 		{
 			СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
 			if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 			p1.setSpriteRect(int(СurrentFrame));
-			p1.moveSprite(((p1.getSpeed())*time) *0.75, ((-p1.getSpeed())*time)*0.75 );
-			view2.move(((p1.getSpeed())*time)*0.75, ((-p1.getSpeed())*time)*0.75);
+			p1.moveSprite(((p1.getSpeed())*time) *0.75, ((-p1.getSpeed())*time)*0.75 ); view2.move(((p1.getSpeed())*time)*0.75, ((-p1.getSpeed())*time)*0.75);
+			
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::D) && Keyboard::isKeyPressed(Keyboard::S))
 		{
 			СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
 			if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 			p1.setSpriteRect(int(СurrentFrame));
-			p1.moveSprite(((p1.getSpeed())*time)*0.75, ((p1.getSpeed())*time)*0.75);
-			view2.move(((p1.getSpeed())*time)*0.75, ((p1.getSpeed())*time)*0.75);
+			p1.moveSprite(((p1.getSpeed())*time)*0.75, ((p1.getSpeed())*time)*0.75); view2.move(((p1.getSpeed())*time)*0.75, ((p1.getSpeed())*time)*0.75);
+			
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::S) && Keyboard::isKeyPressed(Keyboard::A))
 		{
 			СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
 			if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 			p1.setSpriteRect(int(СurrentFrame));
-			p1.moveSprite(((-p1.getSpeed())*time)*0.75, ((p1.getSpeed())*time)*0.75);
+			p1.moveSprite(((-p1.getSpeed())*time)*0.75, ((p1.getSpeed())*time)*0.75); 
 			view2.move(((-p1.getSpeed())*time)*0.75, ((p1.getSpeed())*time)*0.75);
+			
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::A))
 		{
 			СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
 			if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 			p1.setSpriteRect(int(СurrentFrame));
-			p1.moveSprite(((-p1.getSpeed())*time) ,0);
+			p1.moveSprite(((-p1.getSpeed())*time), 0);
 			view2.move(((-p1.getSpeed())*time), 0);
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::W))
@@ -101,25 +101,26 @@ int main() //Главная функция игры
 			СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
 			if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 			p1.setSpriteRect(int(СurrentFrame));
-			p1.moveSprite(0, ((-p1.getSpeed())*time) );
+			p1.moveSprite(0, ((-p1.getSpeed())*time));
 			view2.move(0, ((-p1.getSpeed())*time));
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::S))
 		{
-			view2.move(0, ((p1.getSpeed())*time));
+			
 			СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
 			if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 			p1.setSpriteRect(int(СurrentFrame));
-			p1.moveSprite( 0, ((p1.getSpeed())*time) );
-			
+			p1.moveSprite(0, ((p1.getSpeed())*time));
+			view2.move(0, ((p1.getSpeed())*time));
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::D))
 		{
 			СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
 			if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 			p1.setSpriteRect(int(СurrentFrame));
-			p1.moveSprite(((p1.getSpeed())*time) , 0);
+			p1.moveSprite(((p1.getSpeed())*time), 0);
 			view2.move(((p1.getSpeed())*time), 0);
+			
 		}
 		else
 		{
@@ -130,6 +131,7 @@ int main() //Главная функция игры
 
 //----------Стрельба игроков---------------------------------------------
 //----------Стрельба первого игрока--------------------------------------
+		
 		if (Mouse::isButtonPressed(Mouse::Button::Left))
 		{
 			
