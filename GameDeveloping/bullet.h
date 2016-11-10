@@ -12,7 +12,7 @@ public:
 	Sprite sprite;
 	Bullet(String F, int X, int Y,Vector2f origin,Vector2f mousepos)
 	{
-		speed = 40;
+		speed = 10;
 		File = F;
 		texture.loadFromFile(File);
 		sprite.setTexture(texture);
