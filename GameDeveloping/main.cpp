@@ -147,11 +147,11 @@ int main() //Главная функция игры
 			bullets1pl[i].update();
 			if (bullets1pl[i].getBulletSprPos().x > 960 || bullets1pl[i].getBulletSprPos().y > 1280) 
 			{ 
-				bullets1pl.erase(bullets1pl.begin() + i);
+				bullets1pl.erase(bullets1pl.begin() + i); //удаление элемента вектора(пули)
 			}
 			else if (bullets1pl[i].getBulletSprPos().x < 0 || bullets1pl[i].getBulletSprPos().y < 0)
 			{
-				bullets1pl.erase(bullets1pl.begin() + i);
+				bullets1pl.erase(bullets1pl.begin() + i); //удаление элемента вектора(пули)
 			}
 		}
 //----------Стрельба второго игрока--------------------------------------
