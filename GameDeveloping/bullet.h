@@ -12,10 +12,9 @@ public:
 	Sprite sprite;
 	Bullet(String F, int X, int Y,Vector2f origin,Vector2f mousepos)
 	{
-		speed = 30;
+		speed = 40;
 		File = F;
-		image.loadFromFile(File);
-		texture.loadFromImage(image);
+		texture.loadFromFile(File);
 		sprite.setTexture(texture);
 		x = X; y = Y;
 		texture.setSmooth(true);
@@ -24,8 +23,6 @@ public:
 		sprite.setOrigin(origin.x-80,origin.y-75);
 		sprite.setRotation(bulletrot);
 		
-		
-		
 	}
 	void update()
 	{
@@ -33,6 +30,6 @@ public:
 		velocity_y = sin(bulletrot / 180 * 3.14159265)*speed;
 		sprite.move(velocity_x, velocity_y);
 	}
-	
+	Vector2f getBulletSprPos() { return sprite.getPosition(); }
 
 };

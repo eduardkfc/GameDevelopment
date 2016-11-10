@@ -10,7 +10,7 @@ int main() //Главная функция игры
 	View view2; //Создаем объект класса Камеры
 	Player p1("soldier1.png", 500, 500); //Создаем объект класса игрок
 	Player p2("soldier1.png", 600, 600);
-	vector <Bullet> bullets;
+	vector <Bullet> bullets1pl;
 	float time; //Создаем переменную для хранения скорости игры
 	Vector2i Pixelpos; //Переменная для получения местонахождения мыши
 	Vector2f pos; //Переменная для хранения координат указателя мыши
@@ -23,7 +23,7 @@ int main() //Главная функция игры
 
 	Level map; //Создаем объект класса карты
 	map.LoadFromFile("map.xml"); //Грузим нашу карту
-	
+	int pressedbut = 0;
 	Vector2f heropos = p1.getSpritePos(); //Храним местоположение персонажа
 	view2.setCenter(heropos.x, heropos.y); //Ставим положение камеры на позиции героя
 	view2.setSize(1366, 768); //Ставим размер вида для камеры
@@ -132,29 +132,40 @@ int main() //Главная функция игры
 //----------Стрельба игроков---------------------------------------------
 //----------Стрельба первого игрока--------------------------------------
 		
-		if (Mouse::isButtonPressed(Mouse::Button::Left))
+		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedbut == 0)
 		{
+			pressedbut = 1;
+			Bullet bullet("bullet.png", p1.getSpritePos().x, p1.getSpritePos().y,p1.getSpriteOrigin(), pos);
+			bullets1pl.push_back(bullet);
 			
-			Bullet bullet("bullet.gif", p1.getSpritePos().x, p1.getSpritePos().y,p1.getSpriteOrigin(), pos);
 			
-			bullets.push_back(bullet);
-			
-		
 		}
-		for (int i = 0; i<bullets.size(); i++)
-			bullets[i].update();
+		if (Mouse::isButtonPressed(Mouse::Button::Left) == false) { pressedbut = 0; }
+		else pressedbut = 1;
+		for (int i = 0; i<bullets1pl.size(); i++)
+		{ 
+			bullets1pl[i].update();
+			if (bullets1pl[i].getBulletSprPos().x > 960 || bullets1pl[i].getBulletSprPos().y > 1280) 
+			{ 
+				bullets1pl.pop_back(); 
+			}
+			else if (bullets1pl[i].getBulletSprPos().x < 0 || bullets1pl[i].getBulletSprPos().y < 0)
+			{
+				bullets1pl.pop_back();
+			}
+		}
 //----------Стрельба второго игрока--------------------------------------
 
 //---Вывод на экран------------------
 		
-		window.clear(Color(255,255,255));
+		window.clear();
 
 		map.Draw(window);
 		window.setView(view2);
 		window.draw(p1.sprite);
 		window.draw(p2.sprite);
-		for(int i=0;i<bullets.size();i++)
-			window.draw(bullets[i].sprite);
+		for(int i=0;i<bullets1pl.size();i++)
+			window.draw(bullets1pl[i].sprite);
 		window.display();
 
 	}
