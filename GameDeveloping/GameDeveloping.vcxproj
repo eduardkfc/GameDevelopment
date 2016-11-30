@@ -85,6 +85,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PreprocessorDefinitions>SFML_DYNAMIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\Эдуард\Documents\Visual Studio 2015\SFML-2.4.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -114,6 +115,7 @@
       <AdditionalIncludeDirectories>C:\Users\Эдуард\Documents\Visual Studio 2015\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PreprocessorDefinitions>SFML_DYNAMIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
