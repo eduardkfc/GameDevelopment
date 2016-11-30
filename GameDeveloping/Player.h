@@ -6,6 +6,7 @@ class Player
 private:
 	float x, y, dx, dy, speed, health;
 	float СurrentFrame = 0; // Хранение текущей анимации персонажа
+	float deX, deY,rotation;
 
 	String File;
 	Image image;
@@ -30,8 +31,13 @@ public:
 	}
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
 
-	void moving(float time)
+	void moving(float time,Vector2f pos)
 	{
+		deX = pos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
+		deY = pos.y - sprite.getPosition().y; //- p.y;он же, координата y
+		rotation = (atan2(deY, deX)) * 180 / 3.14159265; //получаем угол в радианах и переводим его в градусы
+
+		sprite.setRotation(rotation + 85);//поворачиваем спрайт на эти градусы
 		if (Keyboard::isKeyPressed(Keyboard::A) && Keyboard::isKeyPressed(Keyboard::W))
 		{
 			СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
@@ -96,10 +102,9 @@ public:
 			СurrentFrame = 0;
 			sprite.setTextureRect(IntRect(0, 112, 62, 91));
 
-
 		}
 	}
-	void moveSprite(float x, float y) { sprite.move(x, y); }
+	
 	Vector2f getSpritePos() { return sprite.getPosition(); }
 	void setSpriteRotation(float rot) { sprite.setRotation(rot); }
 	
