@@ -135,6 +135,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="tinyxml2.h" />
+    <ClInclude Include="View.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="bullet.png" />

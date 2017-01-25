@@ -6,5 +6,5 @@
 #include "Player.h"
 #include "Level.h"
 #include "bullet.h"
-
+#include "View.h"
 
