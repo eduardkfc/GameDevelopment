@@ -43,7 +43,6 @@ int main() //Главная функция игры
 		{
 			pressedbut = 1;
 			bullets1pl.push_back(bullet);
-
 		}
 
 		if (Mouse::isButtonPressed(Mouse::Button::Left) == false) { pressedbut = 0; } // Проверка единичного нажатия на клавишу
