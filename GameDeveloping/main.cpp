@@ -5,8 +5,10 @@ using namespace std; //Убираем использование std::
 
 int main() //Главная функция игры
 {
-	RenderWindow window(VideoMode(1366,768), "HUYHUY",Style::None); //Инициализируем окно
-	view.reset(FloatRect(0, 0, 1366, 768)); //Перезагрузка экрана
+	
+	RenderWindow window(VideoMode(1280,720), "Reflex Strike",Style::Close); //Инициализируем окно
+	view.reset(FloatRect(0, 0, 1280, 720)); //Перезагрузка экрана
+	
 	Player p1("soldier1.png", 500, 500, 1); //Создаем объект класса игрок
 	Player p2("soldier1.png", 600, 600, 2); //Создаем объект класса игрок
 	window.setVerticalSyncEnabled(true); //Включение вертикальной синхронизации
@@ -29,9 +31,6 @@ int main() //Главная функция игры
 
 		Pixelpos = Mouse::getPosition(window); //Получение значений местонахождения мыши
 		pos = window.mapPixelToCoords(Pixelpos); //Конвертирование в координаты положения мыши
-		
-		
-		
 		if (window.pollEvent(event)) //Проверка закрытия окна
 		{
 			if (event.type == Event::Closed)
