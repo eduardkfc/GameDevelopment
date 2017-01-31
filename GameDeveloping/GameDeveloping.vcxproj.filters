@@ -18,9 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="tinyxml2.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>

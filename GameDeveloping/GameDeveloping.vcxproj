@@ -130,7 +130,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>

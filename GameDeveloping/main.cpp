@@ -9,11 +9,12 @@ int main() //Главная функция игры
 	RenderWindow window(VideoMode(1280,720), "Reflex Strike",Style::Close); //Инициализируем окно
 	view.reset(FloatRect(0, 0, 1280, 720)); //Перезагрузка экрана
 	
-	Player p1("soldier1.png", 500, 500, 1); //Создаем объект класса игрок
-	Player p2("soldier1.png", 600, 600, 2); //Создаем объект класса игрок
+	
 	window.setVerticalSyncEnabled(true); //Включение вертикальной синхронизации
 	Level map; //Создаем объект класса карты
 	map.LoadFromFile("map.xml"); //Грузим нашу карту
+	Player p1("soldier1.png", 500, 500, map, 1); //Создаем объект класса игрок
+	Player p2("soldier1.png", 600, 600, map, 2); //Создаем объект класса игрок
 	vector <Bullet> bullets1pl; //Вектор пуль
 	float time; //Создаем переменную для хранения скорости игры
 	Vector2i Pixelpos; //Переменная для получения местонахождения мыши
