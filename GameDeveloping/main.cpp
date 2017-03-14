@@ -47,13 +47,13 @@ void menu(RenderWindow &window)
 	
 }
 
-int main() //Главная функция игры
+bool startGame() 
 {
-	
-	RenderWindow window(VideoMode(1280,720), "Reflex Strike",Style::None); //Инициализируем окно
+	RenderWindow window(VideoMode(1280, 720), "Reflex Strike", Style::None); //Инициализируем окно
 	view.reset(FloatRect(0, 0, 1280, 720)); //Перезагрузка экрана
 	window.setVerticalSyncEnabled(true); //Включение вертикальной синхронизации
 	menu(window);
+
 	Vector2i Pixelpos; //Переменная для получения местонахождения мыши
 	Vector2f pos; //Переменная для хранения координат указателя мыши
 
@@ -65,13 +65,13 @@ int main() //Главная функция игры
 	Player p1("soldier1.png", 500, 500, map, 1); //Создаем объект класса игрок
 	Player p2("soldier1.png", 600, 600, map, 2); //Создаем объект класса игрок
 
-	
+
 	float time; //Создаем переменную для хранения скорости игры
 	Clock clock; //Создаем объект класса времени, для задания скорости игры
-	
+
 	while (window.isOpen()) //Цикл, пока открыто окно, он действует
 	{
-		
+
 		Pixelpos = Mouse::getPosition(window); //Получение значений местонахождения мыши
 		pos = window.mapPixelToCoords(Pixelpos); //Конвертирование в координаты положения мыши
 		time = clock.getElapsedTime().asMicroseconds(); //Измерение времени в микросекундах
@@ -83,7 +83,6 @@ int main() //Главная функция игры
 		{
 			if (event.type == Event::Closed) window.close();
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) { window.close(); }
 
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedbut == 0) //Проверка единичного нажатия на клавишу мыши
 		{
@@ -95,11 +94,14 @@ int main() //Главная функция игры
 		if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedbut = 1; } // Проверка единичного нажатия на клавишу
 		else pressedbut = 0;
 
-		
+
 		p1.moving(time, pos, window);
 		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y);
-		window.clear(); //Обновление экрана
 
+		if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }
+
+		window.clear(); //Обновление экрана
 		window.setView(view);
 		map.Draw(window); //Вывод и обновление карты
 		window.draw(p1.sprite); //Вывод и обновление первого игрока
@@ -121,6 +123,16 @@ int main() //Главная функция игры
 		}
 		window.display(); //Инициализация дисплея
 	}
+}
+
+void gameRunning() 
+{
+	if (startGame()) { gameRunning(); }
+}
+
+int main() //Главная функция игры
+{
+	gameRunning();
 	return 0;
 }
 
