@@ -2,6 +2,8 @@
 #include"Header.h"
 using namespace sf;
 using namespace std;
+
+
 class Player
 {
 private:
@@ -15,7 +17,7 @@ private:
 	String File;
 	Image image;
 	Texture texture;
-	vector <Object> obj;
+	
 	
 	
 public:
@@ -32,11 +34,10 @@ public:
 		sprite.setTextureRect(IntRect(0, 112, 62, 91));
 		texture.setSmooth(true);
 		sprite.setPosition(x, y);
-		obj = map.GetAllObjects();
 	}
 	
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
-	void moving(float time, Vector2f &pos, RenderWindow &windows)
+	void moving(float time, Vector2f &pos, RenderWindow &windows, vector <Object> &obj)
 	{
 		//--------------------------------------------------------------------------------------------------------------
 		deX = pos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
@@ -55,24 +56,24 @@ public:
 				wbut = true;
 				activeButtons += 1;
 				y -= ((speed)*time)*0.75;
-				checkcollisions(0, -speed*0.75, time);
+				checkcollisions(0, -speed*0.75, time, obj);
 			}
 			else if (Keyboard::isKeyPressed(Keyboard::S))
 			{
 				sbut = true;
 				activeButtons += 1;
 				y += ((speed)*time)*0.75;
-				checkcollisions(0, speed*0.75, time);
+				checkcollisions(0, speed*0.75, time, obj);
 			}
 			if (activeButtons == 1) 
 			{
 				x -= (speed)*time; 
-				checkcollisions(-speed, 0, time);
+				checkcollisions(-speed, 0, time, obj);
 			}
 			else if (activeButtons == 2) 
 			{
 				x -= ((speed)*time)*0.75;
-				checkcollisions(-speed*0.75, 0, time);
+				checkcollisions(-speed*0.75, 0, time, obj);
 			}
 			
 			
@@ -87,24 +88,24 @@ public:
 				abut = true;
 				activeButtons += 1;
 				x -= ((speed)*time)*0.75;
-				checkcollisions(-speed*0.75, 0, time);
+				checkcollisions(-speed*0.75, 0, time, obj);
 			}
 			else if (Keyboard::isKeyPressed(Keyboard::D))
 			{
 				dbut = true;
 				activeButtons += 1;
 				x += ((speed)*time)*0.75;
-				checkcollisions(speed*0.75, 0, time);
+				checkcollisions(speed*0.75, 0, time, obj);
 			}
 			if (activeButtons == 1) 
 			{ 
 				y += (speed)*time; 
-				checkcollisions(0, speed, time);
+				checkcollisions(0, speed, time, obj);
 			}
 			else if (activeButtons == 2) 
 			{
 				y += ((speed)*time)*0.75; 
-				checkcollisions(0, speed*0.75, time);
+				checkcollisions(0, speed*0.75, time, obj);
 			}
 			
 		}
@@ -118,24 +119,24 @@ public:
 				wbut = true;
 				activeButtons += 1;
 				y -= ((speed)*time)*0.75;
-				checkcollisions(0, -speed*0.75, time);
+				checkcollisions(0, -speed*0.75, time, obj);
 			}
 			else if (Keyboard::isKeyPressed(Keyboard::S))
 			{
 				sbut = true;
 				activeButtons += 1;
 				y += ((speed)*time)*0.75;
-				checkcollisions(0, speed*0.75, time);
+				checkcollisions(0, speed*0.75, time, obj);
 			}
 			if (activeButtons == 1) 
 			{ 
 				x += (speed)*time; 
-				checkcollisions(speed, 0, time);
+				checkcollisions(speed, 0, time, obj);
 			}
 			else if (activeButtons == 2) 
 			{
 				x += ((speed)*time)*0.75;
-				checkcollisions(speed*0.75, 0, time);
+				checkcollisions(speed*0.75, 0, time, obj);
 			}
 			
 		}
@@ -149,24 +150,24 @@ public:
 				abut = true;
 				activeButtons += 1;
 				x -= ((speed)*time)*0.75;
-				checkcollisions(-speed*0.75, 0, time);
+				checkcollisions(-speed*0.75, 0, time, obj);
 			}
 			else if (Keyboard::isKeyPressed(Keyboard::D))
 			{
 				dbut = true;
 				activeButtons += 1;
 				x += ((speed)*time)*0.75;
-				checkcollisions(speed*0.75, 0, time);
+				checkcollisions(speed*0.75, 0, time, obj);
 			}
 			if (activeButtons == 1)
 			{ 
 				y -= ((speed)*time); 
-				checkcollisions(0, -speed, time);
+				checkcollisions(0, -speed, time, obj);
 			}
 			else if (activeButtons == 2)
 			{ 
 				y -= ((speed)*time)*0.75;
-				checkcollisions(0, -speed*0.75, time);
+				checkcollisions(0, -speed*0.75, time, obj);
 			}
 			
 		}
@@ -181,7 +182,7 @@ public:
 		if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 		setSpriteRect(int(СurrentFrame)); //Смена кадра анимации
 	}
-	void checkcollisions(float Dx, float Dy, float time)
+	void checkcollisions(float Dx, float Dy, float time,vector <Object> &obj)
 	{
 		for (int i = 0; i<obj.size(); i++)//проходимся по объектам
 			if (getRect().intersects(obj[i].rect))//проверяем пересечение игрока с объектом
@@ -240,6 +241,6 @@ public:
 	}
 	Vector2f getSpritePos() { return sprite.getPosition(); }
 	Vector2f getSpriteOrigin() { return sprite.getOrigin(); }
-	FloatRect getRect() { return FloatRect(x, y, 30, 25); }
+	FloatRect getRect() { return FloatRect(x-30, y-30, 50, 60); }
 
 };

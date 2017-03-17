@@ -53,7 +53,7 @@ bool startGame()
 	view.reset(FloatRect(0, 0, 1280, 720)); //Перезагрузка экрана
 	window.setVerticalSyncEnabled(true); //Включение вертикальной синхронизации
 	menu(window);
-
+	vector <Object> obj;
 	Vector2i Pixelpos; //Переменная для получения местонахождения мыши
 	Vector2f pos; //Переменная для хранения координат указателя мыши
 
@@ -94,13 +94,14 @@ bool startGame()
 		if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedbut = 1; } // Проверка единичного нажатия на клавишу
 		else pressedbut = 0;
 
+		obj = map.GetAllObjects();
 
-		p1.moving(time, pos, window);
+		p1.moving(time, pos, window,obj);
 		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y);
+		
 
 		if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }
-
 		window.clear(); //Обновление экрана
 		window.setView(view);
 		map.Draw(window); //Вывод и обновление карты
@@ -108,11 +109,13 @@ bool startGame()
 		window.draw(p2.sprite); //Вывод и обновление второго игрока
 		for (int i = 0; i<bullets1pl.size(); i++) // Вывод и обновление пуль
 			window.draw(bullets1pl[i].sprite);
-
+			
 		for (int i = 0; i<bullets1pl.size(); i++)
 		{
 			bullets1pl[i].update();
-			if (bullets1pl[i].getBulletSprPos().x > 960 || bullets1pl[i].getBulletSprPos().y > 1280)
+			if (p2.getRect().contains(bullets1pl[i].getBulletSprPos())) { cout << "POPADANIE"; }
+			
+			if (bullets1pl[i].getBulletSprPos().x > 960 || bullets1pl[i].getBulletSprPos().y > 1280 || p2.getRect().contains(bullets1pl[i].getBulletSprPos()))
 			{
 				bullets1pl.erase(bullets1pl.begin() + i); //удаление элемента вектора(пули)
 			}
@@ -120,6 +123,7 @@ bool startGame()
 			{
 				bullets1pl.erase(bullets1pl.begin() + i); //удаление элемента вектора(пули)
 			}
+
 		}
 		window.display(); //Инициализация дисплея
 	}
@@ -132,6 +136,7 @@ void gameRunning()
 
 int main() //Главная функция игры
 {
+
 	gameRunning();
 	return 0;
 }

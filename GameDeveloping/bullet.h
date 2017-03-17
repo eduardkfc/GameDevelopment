@@ -3,7 +3,7 @@
 class Bullet 
 {
 private:
-	float x,y,speed,bulletrot,velocity_x,velocity_y,intime,damage;
+	float x,y,w,h,speed,bulletrot,velocity_x,velocity_y,intime,damage;
 	Vector2f direction;
 	String File;
 	Image image;
@@ -14,6 +14,8 @@ public:
 	{
 		damage = 10;
 		speed = 0.5;
+		w = 15;
+		h = 5;
 		File = F;
 		texture.loadFromFile(File);
 		sprite.setTexture(texture);
@@ -33,5 +35,5 @@ public:
 		sprite.move(velocity_x, velocity_y);
 	}
 	Vector2f getBulletSprPos() { return sprite.getPosition(); }
-
+	FloatRect getBulletRect() { return FloatRect(x, y, w, h); }
 };
