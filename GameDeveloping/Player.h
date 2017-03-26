@@ -37,7 +37,7 @@ public:
 	}
 	
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
-	void moving(float time, Vector2f &pos, RenderWindow &windows, vector <Object> &obj)
+	void moving(float &time, Vector2f &pos, RenderWindow &windows, vector <Object> &obj)
 	{
 		//--------------------------------------------------------------------------------------------------------------
 		deX = pos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
@@ -182,7 +182,7 @@ public:
 		if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 		setSpriteRect(int(СurrentFrame)); //Смена кадра анимации
 	}
-	void checkcollisions(float Dx, float Dy, float time,vector <Object> &obj)
+	void checkcollisions(float Dx, float Dy, float &time,vector <Object> &obj)
 	{
 		for (int i = 0; i<obj.size(); i++)//проходимся по объектам
 			if (getRect().intersects(obj[i].rect))//проверяем пересечение игрока с объектом

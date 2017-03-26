@@ -3,14 +3,14 @@
 class Bullet 
 {
 private:
-	float x,y,w,h,speed,bulletrot,velocity_x,velocity_y,intime,damage;
+	float x,y,w,h,speed,bulletrot,damage;
 	Vector2f direction;
 	String File;
 	Image image;
 	Texture texture;
 public:
 	Sprite sprite;
-	Bullet(String F, int X, int Y,Vector2f origin,Vector2f mousepos,float time)
+	Bullet(String F)
 	{
 		damage = 10;
 		speed = 0.5;
@@ -19,20 +19,23 @@ public:
 		File = F;
 		texture.loadFromFile(File);
 		sprite.setTexture(texture);
-		intime = time;
-		x = X; y = Y;
 		texture.setSmooth(true);
-		sprite.setPosition(x, y);
-		bulletrot = (atan2(mousepos.y - sprite.getPosition().y, mousepos.x - sprite.getPosition().x) * 180 / 3.14159265)-4;
-		sprite.setOrigin(origin.x-80,origin.y-75);
-		sprite.setRotation(bulletrot);
 		
 	}
-	void update()
+	void update(float &time)
 	{
-		velocity_x = (cos(bulletrot / 180* 3.14159265)*speed)*intime;
-		velocity_y = (sin(bulletrot / 180 * 3.14159265)*speed)*intime;
-		sprite.move(velocity_x, velocity_y);
+		x += (cos(bulletrot / 180* 3.14159265)*speed)*time;
+		y += (sin(bulletrot / 180 * 3.14159265)*speed)*time;
+		sprite.setPosition(x, y);
+	}
+	void updateDatas(int X, int Y, Vector2f &origin, Vector2f &pos)
+	{
+		x = X;
+		y = Y;
+		bulletrot = (atan2(pos.y - sprite.getPosition().y, pos.x - sprite.getPosition().x) * 180 / 3.14159265) - 4;
+		sprite.setOrigin(origin.x - 80, origin.y - 75);
+		sprite.setRotation(bulletrot);
+		sprite.setPosition(x, y);
 	}
 	Vector2f getBulletSprPos() { return sprite.getPosition(); }
 	FloatRect getBulletRect() { return FloatRect(x, y, w, h); }
