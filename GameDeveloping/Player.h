@@ -37,7 +37,7 @@ public:
 	}
 	
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
-	void moving(float &time, Vector2f &pos, RenderWindow &windows, vector <Object> &obj)
+	void moving(float &time, Vector2f &pos, vector <Object> &obj)
 	{
 		//--------------------------------------------------------------------------------------------------------------
 		deX = pos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
@@ -242,5 +242,4 @@ public:
 	Vector2f getSpritePos() { return sprite.getPosition(); }
 	Vector2f getSpriteOrigin() { return sprite.getOrigin(); }
 	FloatRect getRect() { return FloatRect(x-30, y-30, 50, 60); }
-
 };
