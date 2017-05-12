@@ -242,4 +242,5 @@ public:
 	Vector2f getSpritePos() { return sprite.getPosition(); }
 	Vector2f getSpriteOrigin() { return sprite.getOrigin(); }
 	FloatRect getRect() { return FloatRect(x-30, y-30, 50, 60); }
+	void setPosition(float x, float y) { sprite.setPosition(x, y); }
 };
