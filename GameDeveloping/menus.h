@@ -81,7 +81,7 @@ public:
 		offTest.setPosition(1006, 660);
 
 	}
-	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket,TcpListener &listener, bool &pressedBut)
+	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket,TcpListener &listener, bool &pressedBut,int &identify)
 	{
 		menuNum = 0;
 		window.clear();
@@ -95,8 +95,8 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "HOST PICKED"; gamestate = 3; listener.listen(55001); listener.accept(socket); cout << "EDIKPIDOR"; }
-			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.connect("192.168.1.48", 55001); gamestate = 4;  }
+			if (menuNum == 1) { cout << "HOST PICKED"; gamestate = 3; listener.listen(55001); cout << "EDIKPIDOR"; identify = 1; }
+			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.connect("192.168.1.48", 55001); gamestate = 4; identify = 2; }
 			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
 			if (menuNum == 4) { cout << "OFFLINE TEST"; gamestate = 5; }
 		}
@@ -130,9 +130,11 @@ public:
 		butBack.setPosition(1000, 580);
 		waitCon.setPosition(540, 333);
 	}
-	void render(RenderWindow &window, int &gamestate, TcpListener &listener, bool &pressedBut)
+	void render(RenderWindow &window, int &gamestate, TcpListener &listener, bool &pressedBut, TcpSocket &socket)
 	{
 		window.clear();
+		//listener.accept(socket);
+		cout << "New client connected: :" << socket.getRemoteAddress() << endl;
 		butBack.setColor(Color::White);
 		menuNum = 0;
 		if (IntRect(1000, 580, 200, 66).contains(Mouse::getPosition(window))) { butBack.setColor(Color::Blue); menuNum = 1; }
@@ -141,7 +143,7 @@ public:
 			pressedBut = true;
 			if (menuNum == 1) { cout << "BACK TO MAINMENU"; gamestate = 2; listener.close(); }
 		}
-		if (Socket::Status::Done) { gamestate = 5; }
+		if (Socket::Status::Done==listener.accept(socket)) { gamestate = 5; }
 		window.draw(menubg);
 		window.draw(waitCon);
 		window.draw(butBack);
@@ -180,7 +182,8 @@ public:
 			pressedBut = true;
 			if (menuNum == 1) { cout << "BACK TO MAINMENU"; gamestate = 2; socket.disconnect(); }
 		}
-		if (Socket::Status::Done) { gamestate = 5; cout << "EDIKPIDOR"; }
+
+		if (Socket::Status::Done == socket.connect("192.168.1.48",55001)) { gamestate = 5; cout << "EDIKPIDOR"; }
 		window.draw(menubg);
 		window.draw(waitCon);
 		window.draw(butBack);

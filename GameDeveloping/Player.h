@@ -7,7 +7,8 @@ using namespace std;
 class Player
 {
 private:
-	float x, y, w, h, dx, dy, speed, health;
+	float x, y, w, h, dx, dy, speed;
+	int health = 100;
 	float СurrentFrame = 0; // Хранение текущей анимации персонажа
 	float rotation; //Переменная поворачивающая нашего шероя
 	float deX = 0; //Переменная служит для поворота героя вокруг своей оси
@@ -243,4 +244,6 @@ public:
 	Vector2f getSpriteOrigin() { return sprite.getOrigin(); }
 	FloatRect getRect() { return FloatRect(x-30, y-30, 50, 60); }
 	void setPosition(float x, float y) { sprite.setPosition(x, y); }
+	void setHealth(int damage) { health = health - damage; }
+	int getHealth() { return health; }
 };

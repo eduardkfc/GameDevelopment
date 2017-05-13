@@ -3,7 +3,7 @@
 class Bullet 
 {
 private:
-	float x,y,w,h,speed,bulletrot,damage;
+	float x,y,w,h,speed,bulletrot,bulletrot2p,damage;
 	Vector2f direction;
 	String File;
 	Image image;
@@ -28,13 +28,22 @@ public:
 		y += (sin(bulletrot / 180 * 3.14159265)*speed)*time;
 		sprite.setPosition(x, y);
 	}
-	void updateDatas(int X, int Y, Vector2f &origin, Vector2f &pos)
+	void updateDatas(int X, int Y, Vector2f &origin, Vector2f &mousePos1p)
 	{
 		x = X;
 		y = Y;
-		bulletrot = (atan2(pos.y - sprite.getPosition().y, pos.x - sprite.getPosition().x) * 180 / 3.14159265) - 4;
+		bulletrot = (atan2(mousePos1p.y - sprite.getPosition().y, mousePos1p.x - sprite.getPosition().x) * 180 / 3.14159265) - 4;
 		sprite.setOrigin(origin.x - 80, origin.y - 75);
 		sprite.setRotation(bulletrot);
+		sprite.setPosition(x, y);
+	}
+	void updateDatasP2(int X, int Y, Vector2f &origin, Vector2f &mousePos2p)
+	{
+		x = X;
+		y = Y;
+		bulletrot2p = (atan2(mousePos2p.y - sprite.getPosition().y, mousePos2p.x - sprite.getPosition().x) * 180 / 3.14159265) - 4;
+		sprite.setOrigin(origin.x - 80, origin.y - 75);
+		sprite.setRotation(bulletrot2p);
 		sprite.setPosition(x, y);
 	}
 	Vector2f getBulletSprPos() { return sprite.getPosition(); }
