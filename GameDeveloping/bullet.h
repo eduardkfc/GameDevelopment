@@ -3,7 +3,7 @@
 class Bullet 
 {
 private:
-	float x,y,w,h,speed,bulletrot,bulletrot2p,damage;
+	float x,y,w,h,speed,bulletrot,damage;
 	Vector2f direction;
 	String File;
 	Image image;
@@ -37,15 +37,9 @@ public:
 		sprite.setRotation(bulletrot);
 		sprite.setPosition(x, y);
 	}
-	void updateDatasP2(int X, int Y, Vector2f &origin, Vector2f &mousePos2p)
-	{
-		x = X;
-		y = Y;
-		bulletrot2p = (atan2(mousePos2p.y - sprite.getPosition().y, mousePos2p.x - sprite.getPosition().x) * 180 / 3.14159265) - 4;
-		sprite.setOrigin(origin.x - 80, origin.y - 75);
-		sprite.setRotation(bulletrot2p);
-		sprite.setPosition(x, y);
-	}
+
 	Vector2f getBulletSprPos() { return sprite.getPosition(); }
 	FloatRect getBulletRect() { return FloatRect(x, y, w, h); }
+	int getDamage() { return damage; }
+	void setDamage(int multiplier) { damage = multiplier; }
 };

@@ -139,6 +139,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="menus.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="skills.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="View.h" />
   </ItemGroup>

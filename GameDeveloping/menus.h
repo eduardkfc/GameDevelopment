@@ -81,7 +81,7 @@ public:
 		offTest.setPosition(1006, 660);
 
 	}
-	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket,TcpListener &listener, bool &pressedBut,int &identify)
+	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket,TcpListener &listener, bool &pressedBut)
 	{
 		menuNum = 0;
 		window.clear();
@@ -95,8 +95,8 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "HOST PICKED"; gamestate = 3; listener.listen(55001); cout << "EDIKPIDOR"; identify = 1; }
-			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.connect("192.168.1.48", 55001); gamestate = 4; identify = 2; }
+			if (menuNum == 1) { cout << "HOST PICKED"; gamestate = 3; listener.listen(55001); cout << "EDIKPIDOR"; }
+			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.connect("192.168.1.48", 55001); gamestate = 4; }
 			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
 			if (menuNum == 4) { cout << "OFFLINE TEST"; gamestate = 5; }
 		}

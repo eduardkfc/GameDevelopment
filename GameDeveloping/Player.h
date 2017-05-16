@@ -246,4 +246,6 @@ public:
 	void setPosition(float x, float y) { sprite.setPosition(x, y); }
 	void setHealth(int damage) { health = health - damage; }
 	int getHealth() { return health; }
+	float getSpeed() { return speed; }
+	void setSpeed(float xSpeed) { speed = xSpeed; }
 };

@@ -12,3 +12,4 @@
 #include "View.h"
 #include "menus.h"
 #include "p2moving.h"
+#include "skills.h"
