@@ -30,8 +30,8 @@ bool startGame()
 	int pressedbut = 0; //Переменная для проверки нажатия кнопки мыши(
 	Level map; //Создаем объект класса карты
 	map.LoadFromFile("map.xml"); //Грузим нашу карту
+
 	//-----------------------------------Для перезарядки способностей-----------------------
-	
 	
 	Bullet bullet("bullet.png");
 	vector <Bullet> bulletsvector; //Вектор пуль первого игрока
@@ -50,16 +50,15 @@ bool startGame()
 	ChooseHost chosinghost;
 	WaitingForPlayers waitplayers;
 	WaitingForServer waitserver;
-
+	Color color(255, 0, 0);
 	//thread thr(threadFunction);
 	//thr.detach();
 	Clock DDtimer;
-	Clock Armortimer;
 	Clock Speedtimer;
 	int ddtime, speedtime;
 	bool activeDD = false, ddcooldown = false;
 	bool activeSpeed = false, speedcooldown = false;
-
+	HUD hud; hud.init(500, 500, 100, 15);
 	Packet packetinput;
 	Packet packetoutput;
 	float p1posX, p1posY, p1Rotation;
@@ -112,7 +111,7 @@ bool startGame()
 			packetoutput << p1posX << p1posY << p1Rotation << mousePos1p.x << mousePos1p.y << myIdentify;
 			socket.send(packetoutput);
 			packetoutput.clear();
-
+			
 			
 
 			//----------------------Управление вторым игроком----------------------------------
@@ -130,11 +129,14 @@ bool startGame()
 			
 			if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }
 			if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }
-			
+			if (Keyboard::isKeyPressed(Keyboard::T)) { p1.setHealth(10); cout << p1.getHealth(); }
+			if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(-100); }
+			if (p1.getHealth() == 0) { return true; }
 			window.setView(view);
 			map.Draw(window); //Вывод и обновление карты
 			window.draw(p1.sprite); //Вывод и обновление первого игрока
 			window.draw(p2.sprite); //Вывод и обновление второго игрока
+			hud.draw(p1.getHealth(), window, p1,Speedtimer,DDtimer,activeDD,activeSpeed,ddtime,speedtime);
 			for (int i = 0; i < bulletsvector.size(); i++) // Вывод и обновление пуль
 				window.draw(bulletsvector[i].sprite);
 			for (int i = 0; i < bulletsvector.size(); i++)

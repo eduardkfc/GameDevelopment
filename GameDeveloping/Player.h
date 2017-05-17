@@ -20,7 +20,6 @@ private:
 	Texture texture;
 	
 	
-	
 public:
 	Sprite sprite;
 	Player(String F, int X, int Y,Level &map,int faction)
@@ -36,7 +35,6 @@ public:
 		texture.setSmooth(true);
 		sprite.setPosition(x, y);
 	}
-	
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
 	void moving(float &time, Vector2f &pos, vector <Object> &obj)
 	{
@@ -175,7 +173,6 @@ public:
 		else sprite.setTextureRect(IntRect(0, 112, 62, 91)); activeButtons = 0;
 		sprite.setPosition(x, y);
 		wbut = false, abut = false, sbut = false, dbut = false;
-		
 	}
 	void animation(float time)
 	{

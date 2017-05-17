@@ -10,7 +10,7 @@ void doubledamage(int &ddtime,bool &activeDD,Clock &DDtimer,bool &ddcooldown,Bul
 	if (activeDD == true)
 	{
 		ddtime = DDtimer.getElapsedTime().asSeconds();
-		cout << ddtime << endl;
+		//cout << ddtime << endl;
 		if (ddtime == 0) 
 		{ 
 			bullet.setDamage(10); 
@@ -52,21 +52,21 @@ void speed(int &speedtime, bool &activeSpeed, Clock &Speedtimer, bool &speedcool
 			p1.setSpeed(0.15);
 			cout << p1.getSpeed() << " Player speed " << endl;
 		}
-		if ( speedtime == 5)
+		if ( speedtime == 2)
 		{
 			Speedtimer.restart();
 			activeSpeed = false;
-			cout << "DOUBLE DAMAGE IS OFF" << endl;
+			cout << "SUPER SPEED IS OFF" << endl;
 			p1.setSpeed(0.1);
 			speedcooldown = true;
-			cout << "COOLDOWN - 7 sec" << endl;
+			cout << "COOLDOWN - 4 sec" << endl;
 		}
 	}
 	if (speedcooldown == true)
 	{
 		speedtime = Speedtimer.getElapsedTime().asSeconds();
 
-		if (speedtime == 7)
+		if (speedtime == 4)
 		{
 			speedcooldown = false;
 			cout << "COOLDOWN FINISHED" << endl;

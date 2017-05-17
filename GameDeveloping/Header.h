@@ -13,3 +13,4 @@
 #include "menus.h"
 #include "p2moving.h"
 #include "skills.h"
+#include "HUD.h"
