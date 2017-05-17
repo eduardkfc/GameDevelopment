@@ -1,9 +1,9 @@
 #pragma once
 #include "Header.h"
-class Bullet 
+class Bullet
 {
 private:
-	float x,y,w,h,speed,bulletrot,damage;
+	float x, y, w, h, speed, bulletrot, damage;
 	Vector2f direction;
 	String File;
 	Image image;
@@ -20,11 +20,11 @@ public:
 		texture.loadFromFile(File);
 		sprite.setTexture(texture);
 		texture.setSmooth(true);
-		
+
 	}
 	void update(float &time)
 	{
-		x += (cos(bulletrot / 180* 3.14159265)*speed)*time;
+		x += (cos(bulletrot / 180 * 3.14159265)*speed)*time;
 		y += (sin(bulletrot / 180 * 3.14159265)*speed)*time;
 		sprite.setPosition(x, y);
 	}

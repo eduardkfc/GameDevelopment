@@ -1,7 +1,6 @@
 #pragma once
 #include"Header.h"
-using namespace sf;
-using namespace std;
+
 
 
 class Player
@@ -18,6 +17,11 @@ private:
 	String File;
 	Image image;
 	Texture texture;
+	Clock DDtimer;
+	Clock Speedtimer;
+	int ddtime, speedtime;
+	bool activeDD = false, ddcooldown = false;
+	bool activeSpeed = false, speedcooldown = false;
 	
 	
 public:
@@ -237,6 +241,77 @@ public:
 				}
 			}
 	}
+	void skills(Bullet &bullet)
+	{
+		if (Keyboard::isKeyPressed(Keyboard::Q) && activeDD == false && ddcooldown == false)
+		{
+			activeDD = true;
+			DDtimer.restart();
+		}
+		if (activeDD == true)
+		{
+			ddtime = DDtimer.getElapsedTime().asMilliseconds();
+			//cout << ddtime << endl;
+			if (ddtime >= 0)
+			{
+				bullet.setDamage(10);
+				cout << bullet.getDamage() << " Bullet dmg" << endl;
+			}
+			if (ddtime >= 5000)
+			{
+				DDtimer.restart();
+				activeDD = false;
+				cout << "DOUBLE DAMAGE IS OFF" << endl;
+				ddcooldown = true;
+				cout << "COOLDOWN - 7 sec" << endl;
+			}
+		}
+		if (ddcooldown == true)
+		{
+			ddtime = DDtimer.getElapsedTime().asMilliseconds();
+
+			if (ddtime >= 7000)
+			{
+				ddcooldown = false;
+				cout << "COOLDOWN FINISHED" << endl;
+			}
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::E) && activeSpeed == false && speedcooldown == false)
+		{
+			activeSpeed = true;
+			Speedtimer.restart();
+		}
+		if (activeSpeed == true)
+		{
+			speedtime = Speedtimer.getElapsedTime().asMilliseconds();
+			cout << speedtime << endl;
+			if (speedtime >= 0)
+			{
+				speed = 0.15;
+				cout << speed << " Player speed " << endl;
+			}
+			if (speedtime >= 2000)
+			{
+				Speedtimer.restart();
+				activeSpeed = false;
+				cout << "SUPER SPEED IS OFF" << endl;
+				speed = 0.1;
+				speedcooldown = true;
+				cout << "COOLDOWN - 4 sec" << endl;
+			}
+		}
+		if (speedcooldown == true)
+		{
+			speedtime = Speedtimer.getElapsedTime().asMilliseconds();
+
+			if (speedtime >= 4000)
+			{
+				speedcooldown = false;
+				cout << "COOLDOWN FINISHED" << endl;
+			}
+		}
+	}
 	Vector2f getSpritePos() { return sprite.getPosition(); }
 	Vector2f getSpriteOrigin() { return sprite.getOrigin(); }
 	FloatRect getRect() { return FloatRect(x-30, y-30, 50, 60); }
@@ -245,4 +320,10 @@ public:
 	int getHealth() { return health; }
 	float getSpeed() { return speed; }
 	void setSpeed(float xSpeed) { speed = xSpeed; }
+	int getDDtime() { return ddtime; }
+	int getSpeedtime() { return speedtime; }
+	bool getActiveDD() { return activeDD; }
+	bool getDDcooldown() { return ddcooldown; }
+	bool getActiveSS() { return activeSpeed; }
+	bool getSScooldown() { return speedcooldown; }
 };

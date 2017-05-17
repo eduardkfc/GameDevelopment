@@ -16,7 +16,7 @@ bool startGame()
 {
 	int hostChoosed;
 	int gamestate = 1;
-	RenderWindow window(VideoMode(1280, 720), "Reflex Strike", Style::None); //Инициализируем окно
+	RenderWindow window(VideoMode(1280, 720), "Reflex Strike", Style::Fullscreen); //Инициализируем окно
 	view.reset(FloatRect(0, 0, 1280, 720)); //Перезагрузка экрана
 	window.setVerticalSyncEnabled(true); //Включение вертикальной синхронизации
 	window.setFramerateLimit(60); //Лимит кадров в секунду
@@ -53,11 +53,7 @@ bool startGame()
 	Color color(255, 0, 0);
 	//thread thr(threadFunction);
 	//thr.detach();
-	Clock DDtimer;
-	Clock Speedtimer;
-	int ddtime, speedtime;
-	bool activeDD = false, ddcooldown = false;
-	bool activeSpeed = false, speedcooldown = false;
+	
 	HUD hud; hud.init(500, 500, 100, 15);
 	Packet packetinput;
 	Packet packetoutput;
@@ -80,10 +76,10 @@ bool startGame()
 			time = clock.getElapsedTime().asMilliseconds(); //Измерение времени в микросекундах
 			clock.restart(); //Перезагружаем время
 			
-			time = time * 5.5; //Задаем общую скорость игры
+			time = time * 5.4; //Задаем общую скорость игры
 			//--Способности--
-			doubledamage(ddtime, activeDD, DDtimer, ddcooldown,bullet);
-			speed(speedtime, activeSpeed, Speedtimer, speedcooldown, p1);
+			p1.skills(bullet);
+			//speed();
 			//-------------------------Управление первым игроком-----------------------------
 			//cout << ddtime << endl;
 			Pixelpos = Mouse::getPosition(window); //Получение значений местонахождения мыши
@@ -129,14 +125,15 @@ bool startGame()
 			
 			if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }
 			if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }
-			if (Keyboard::isKeyPressed(Keyboard::T)) { p1.setHealth(10); cout << p1.getHealth(); }
+			if (Keyboard::isKeyPressed(Keyboard::T)) { p1.setHealth(bullet.getDamage()); cout << p1.getHealth(); }
 			if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(-100); }
 			if (p1.getHealth() == 0) { return true; }
 			window.setView(view);
 			map.Draw(window); //Вывод и обновление карты
 			window.draw(p1.sprite); //Вывод и обновление первого игрока
 			window.draw(p2.sprite); //Вывод и обновление второго игрока
-			hud.draw(p1.getHealth(), window, p1,Speedtimer,DDtimer,activeDD,activeSpeed,ddtime,speedtime);
+			
+			hud.draw(p1.getHealth(), window, p1);
 			for (int i = 0; i < bulletsvector.size(); i++) // Вывод и обновление пуль
 				window.draw(bulletsvector[i].sprite);
 			for (int i = 0; i < bulletsvector.size(); i++)
