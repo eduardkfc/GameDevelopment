@@ -288,7 +288,7 @@ public:
 			cout << speedtime << endl;
 			if (speedtime >= 0)
 			{
-				speed = 0.15;
+				speed = 0.135;
 				cout << speed << " Player speed " << endl;
 			}
 			if (speedtime >= 2000)

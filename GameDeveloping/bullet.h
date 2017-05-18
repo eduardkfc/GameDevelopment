@@ -12,7 +12,7 @@ public:
 	Sprite sprite;
 	Bullet(String F)
 	{
-		damage = 10;
+		damage = 5;
 		speed = 0.5;
 		w = 15;
 		h = 5;

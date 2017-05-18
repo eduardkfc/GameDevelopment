@@ -16,7 +16,7 @@ bool startGame()
 {
 	int hostChoosed;
 	int gamestate = 1;
-	RenderWindow window(VideoMode(1280, 720), "Reflex Strike", Style::Fullscreen); //Инициализируем окно
+	RenderWindow window(VideoMode(1280, 720), "Reflex Strike", Style::None); //Инициализируем окно
 	view.reset(FloatRect(0, 0, 1280, 720)); //Перезагрузка экрана
 	window.setVerticalSyncEnabled(true); //Включение вертикальной синхронизации
 	window.setFramerateLimit(60); //Лимит кадров в секунду
@@ -54,7 +54,7 @@ bool startGame()
 	//thread thr(threadFunction);
 	//thr.detach();
 	
-	HUD hud; hud.init(500, 500, 100, 15);
+	HUD hud; hud.init();
 	Packet packetinput;
 	Packet packetoutput;
 	float p1posX, p1posY, p1Rotation;
@@ -108,7 +108,6 @@ bool startGame()
 			socket.send(packetoutput);
 			packetoutput.clear();
 			
-			
 
 			//----------------------Управление вторым игроком----------------------------------
 			p2moving(p2, hisIdentify, bulletsvector2p, bullet);
@@ -120,28 +119,38 @@ bool startGame()
 			if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posX)) { p2.animation(time); }
 			p2.setPosition(p2posX, p2posY);
 			p2.sprite.setRotation(p2Rotation);
-			//cout << p2posX << " " << p2posY << "Second Player" << endl;
+			cout << p2posX << " " << p2posY << "Second Player" << endl;
 			
 			
 			if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }
 			if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }
 			if (Keyboard::isKeyPressed(Keyboard::T)) { p1.setHealth(bullet.getDamage()); cout << p1.getHealth(); }
 			if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(-100); }
-			if (p1.getHealth() == 0) { return true; }
+			if (p1.getHealth() == 0 || p2.getHealth() == 0) { return true; }
 			window.setView(view);
 			map.Draw(window); //Вывод и обновление карты
 			window.draw(p1.sprite); //Вывод и обновление первого игрока
 			window.draw(p2.sprite); //Вывод и обновление второго игрока
 			
-			hud.draw(p1.getHealth(), window, p1);
-			for (int i = 0; i < bulletsvector.size(); i++) // Вывод и обновление пуль
-				window.draw(bulletsvector[i].sprite);
+			hud.draw(window, p1, p2);
+			for (int j = 0; j < obj.size(); j++)//проходимся по объектам
+				for (int i = 0; i < bulletsvector.size(); i++)
+				{
+					cout << "error";
+
+					if (bulletsvector[i].getBulletRect().intersects(obj[j].rect))//проверяем пересечение игрока с объектом
+					{
+						if (obj[j].name == "solid")//если встретили препятствие
+						{
+
+							bulletsvector.erase(bulletsvector.begin() + i);
+						}
+					}
+				}
 			for (int i = 0; i < bulletsvector.size(); i++)
 			{
-				bulletsvector[i].update(time);
-				if (p2.getRect().contains(bulletsvector[i].getBulletSprPos())) { cout << "POPADANIE"; }
-
-				if (bulletsvector[i].getBulletSprPos().x > 960 || bulletsvector[i].getBulletSprPos().y > 1280 || p2.getRect().contains(bulletsvector[i].getBulletSprPos()))
+				bulletsvector[i].update(time);					
+				if (bulletsvector[i].getBulletSprPos().x > 960 || bulletsvector[i].getBulletSprPos().y > 1280)
 				{
 					bulletsvector.erase(bulletsvector.begin() + i); //удаление элемента вектора(пули)
 				}
@@ -149,26 +158,18 @@ bool startGame()
 				{
 					bulletsvector.erase(bulletsvector.begin() + i); //удаление элемента вектора(пули)
 				}
+				else if (bulletsvector[i].getBulletRect().intersects(p2.getRect())) 
+				{ 
+					cout << "POPADANIE"; bulletsvector.erase(bulletsvector.begin() + i); 
+					p2.setHealth(bullet.getDamage());
+				}
 
 			}
-			//for (int i = 0; i < bulletsvector2p.size(); i++) // Вывод и обновление пуль
-			//	window.draw(bulletsvector2p[i].sprite);
+			for (int i = 0; i < bulletsvector.size(); i++) // Вывод и обновление пуль
+				window.draw(bulletsvector[i].sprite);
+	
 
-			//for (int i = 0; i < bulletsvector.size(); i++)
-			//{
-			//	bulletsvector2p[i].update(time);
-			//	if (p1.getRect().contains(bulletsvector2p[i].getBulletSprPos())) { cout << "POPADANIE"; p1.setHealth(damage); cout << p1.getHealth(); }
-
-			//	if (bulletsvector2p[i].getBulletSprPos().x > 960 || bulletsvector2p[i].getBulletSprPos().y > 1280 || p2.getRect().contains(bulletsvector2p[i].getBulletSprPos()))
-			//	{
-			//		bulletsvector2p.erase(bulletsvector2p.begin() + i); //удаление элемента вектора(пули)
-			//	}
-			//	else if (bulletsvector2p[i].getBulletSprPos().x < 0 || bulletsvector2p[i].getBulletSprPos().y < 0)
-			//	{
-			//		bulletsvector2p.erase(bulletsvector2p.begin() + i); //удаление элемента вектора(пули)
-			//	}
-
-			//}
+			
 			
 
 			window.display(); //Инициализация дисплея
