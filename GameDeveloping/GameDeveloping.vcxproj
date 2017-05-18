@@ -136,7 +136,6 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="HUD.h" />
-    <ClInclude Include="p2moving.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="menus.h" />
     <ClInclude Include="Player.h" />

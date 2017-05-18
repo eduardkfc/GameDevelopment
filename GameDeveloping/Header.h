@@ -14,5 +14,4 @@ using namespace std;
 #include "Player.h"
 #include "View.h"
 #include "menus.h"
-#include "p2moving.h"
 #include "HUD.h"

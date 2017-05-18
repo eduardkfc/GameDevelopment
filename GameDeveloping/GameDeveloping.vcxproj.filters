@@ -44,9 +44,6 @@
     <ClInclude Include="menus.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="p2moving.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="HUD.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>

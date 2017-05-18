@@ -59,9 +59,7 @@ bool startGame()
 	Packet packetoutput;
 	float p1posX, p1posY, p1Rotation;
 	float p2posX, p2posY, p2Rotation, mousePos2pX,mousePos2pY;
-	
-	int myIdentify = 0;
-	int hisIdentify = 0;
+	int enemyHealth, myHealth;
 	while (window.isOpen()) //Цикл, пока открыто окно, он действует
 	{	
 		if (gamestate == 0) { return false; }
@@ -92,7 +90,6 @@ bool startGame()
 				cout << "fire";
 				pressedbut = 1;
 				bulletsvector.push_back(bullet);
-				myIdentify = 1;
 			}
 			if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedbut = 1; } // Проверка единичного нажатия на клавишу
 			else pressedbut = 0;
@@ -104,29 +101,32 @@ bool startGame()
 			p1posY = p1.getSpritePos().y;
 			//cout << p1posX << " " << p1posY << "First Player" << endl;
 			p1Rotation = p1.sprite.getRotation();
-			packetoutput << p1posX << p1posY << p1Rotation << mousePos1p.x << mousePos1p.y << myIdentify;
+			packetoutput << p1posX << p1posY << p1Rotation << mousePos1p.x << mousePos1p.y << p1.getHealth() << p2.getHealth();
 			socket.send(packetoutput);
 			packetoutput.clear();
 			
 
 			//----------------------Управление вторым игроком----------------------------------
-			p2moving(p2, hisIdentify, bulletsvector2p, bullet);
-			packetinput.clear();
-			socket.receive(packetinput);
-			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> hisIdentify;
-			mousePos2p.x = mousePos2pX;
-			mousePos2p.y = mousePos2pY;
-			if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posX)) { p2.animation(time); }
-			p2.setPosition(p2posX, p2posY);
-			p2.sprite.setRotation(p2Rotation);
-			cout << p2posX << " " << p2posY << "Second Player" << endl;
+			if (socket.receive(packetinput) == sf::Socket::Done)
+			{ 
+				packetinput.clear();
+				socket.receive(packetinput);
+				packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth >> myHealth;
+				p1.setHealth(myHealth);
+				mousePos2p.x = mousePos2pX;
+				mousePos2p.y = mousePos2pY;
 			
+				if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posX)) { p2.animation(time); }
+				p2.setPosition(p2posX, p2posY);
+				p2.sprite.setRotation(p2Rotation);
+				cout << p2posX << " " << p2posY << "Second Player" << endl;
+			}
 			
 			if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }
 			if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }
 			if (Keyboard::isKeyPressed(Keyboard::T)) { p1.setHealth(bullet.getDamage()); cout << p1.getHealth(); }
-			if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(-100); }
-			if (p1.getHealth() == 0 || p2.getHealth() == 0) { return true; }
+			if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(100); }
+			//if (p1.getHealth() == 0 || p2.getHealth() == 0) { return true; }
 			window.setView(view);
 			map.Draw(window); //Вывод и обновление карты
 			window.draw(p1.sprite); //Вывод и обновление первого игрока
@@ -161,7 +161,7 @@ bool startGame()
 				else if (bulletsvector[i].getBulletRect().intersects(p2.getRect())) 
 				{ 
 					cout << "POPADANIE"; bulletsvector.erase(bulletsvector.begin() + i); 
-					p2.setHealth(bullet.getDamage());
+					p2.setHealth(p2.getHealth()-bullet.getDamage());
 				}
 
 			}
