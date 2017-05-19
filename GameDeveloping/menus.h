@@ -96,7 +96,7 @@ public:
 		{
 			pressedBut = true;
 			if (menuNum == 1) { cout << "HOST PICKED"; gamestate = 3; listener.listen(55001); cout << "EDIKPIDOR"; }
-			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.connect("192.168.43.232", 55001); gamestate = 4; }
+			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.connect("192.168.43.179", 55001); gamestate = 4; }
 			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
 			if (menuNum == 4) { cout << "OFFLINE TEST"; gamestate = 5; }
 		}
