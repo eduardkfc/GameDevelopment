@@ -23,7 +23,6 @@ private:
 	bool activeDD = false, ddcooldown = false;
 	bool activeSpeed = false, speedcooldown = false;
 	
-	
 public:
 	Sprite sprite;
 	Player(String F, int X, int Y,Level &map,int faction)
@@ -40,7 +39,7 @@ public:
 		sprite.setPosition(x, y);
 	}
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
-	void moving(float &time, Vector2f &pos, vector <Object> &obj)
+	void moving(float &time, Vector2f &pos, vector <Object> &obj, int &pressedbut, vector <Bullet> &bulletsvector, Bullet &bullet)
 	{
 		//--------------------------------------------------------------------------------------------------------------
 		deX = pos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
@@ -48,7 +47,15 @@ public:
 		rotation = (atan2(deY, deX)) * 180 / 3.14159265; //получаем угол в радианах и переводим его в градусы
 		sprite.setRotation(rotation + 85);//поворачиваем спрайт на эти градусы
 		//--------------------------------------------------------------------------------------------------------------
-		
+		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedbut == 0) //Проверка единичного нажатия на клавишу мыши
+		{
+			cout << "fire";
+			pressedbut = 1;
+			bulletsvector.push_back(bullet);
+		}
+		if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedbut = 1; } // Проверка единичного нажатия на клавишу
+		else pressedbut = 0;
+
 		if (Keyboard::isKeyPressed(Keyboard::A))
 		{
 			animation(time);
@@ -215,26 +222,26 @@ public:
 						if (Dy > 0)
 						{
 							y -= ((speed)*time)*0.75;
-							if (dbut == true) { x += (speed*time) / 5; }
-							else if (abut == true) { x -= (speed*time) / 5; }
+							if (dbut == true) { x += (speed*time) / 3; }
+							else if (abut == true) { x -= (speed*time) / 3; }
 						}
 						else if (Dy < 0)
 						{
 							y += ((speed)*time)*0.75;
-							if (dbut == true) { x += (speed*time) / 5; }
-							else if (abut == true) { x -= (speed*time) / 5; }
+							if (dbut == true) { x += (speed*time) / 3; }
+							else if (abut == true) { x -= (speed*time) / 3; }
 						}
 						else if (Dx > 0)
 						{
 							x -= ((speed)*time)*0.75;
-							if (wbut == true) { y -= (speed*time) / 5; }
-							else if (sbut == true) { y += (speed*time) / 5; }
+							if (wbut == true) { y -= (speed*time) / 3; }
+							else if (sbut == true) { y += (speed*time) / 3; }
 						}
 						else if (Dx < 0)
 						{
 							x += ((speed)*time)*0.75;
-							if (wbut == true) { y -= (speed*time) / 5; }
-							else if (sbut == true) { y += (speed*time) / 5; }
+							if (wbut == true) { y -= (speed*time) / 3; }
+							else if (sbut == true) { y += (speed*time) / 3; }
 
 						}
 					}
@@ -264,6 +271,7 @@ public:
 				cout << "DOUBLE DAMAGE IS OFF" << endl;
 				ddcooldown = true;
 				cout << "COOLDOWN - 7 sec" << endl;
+				bullet.setDamage(5);
 			}
 		}
 		if (ddcooldown == true)
@@ -315,6 +323,7 @@ public:
 	Vector2f getSpritePos() { return sprite.getPosition(); }
 	Vector2f getSpriteOrigin() { return sprite.getOrigin(); }
 	FloatRect getRect() { return FloatRect(x-30, y-30, 50, 60); }
+	FloatRect getGlobalBounds() { return sprite.getGlobalBounds(); }
 	void setPosition(float x, float y) { sprite.setPosition(x, y); }
 	void setHealth(int healthint) { health = healthint; }
 	int getHealth() { return health; }
