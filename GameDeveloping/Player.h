@@ -28,7 +28,7 @@ public:
 	Player(String F, int X, int Y,Level &map,int faction)
 	{ 
 		speed = 0.1;
-		sprite.setOrigin(65 - 30, 93 - 30);
+		sprite.setOrigin(35, 63);
 		File = F;
 		image.loadFromFile(File);
 		texture.loadFromImage(image);
@@ -39,7 +39,7 @@ public:
 		sprite.setPosition(x, y);
 	}
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
-	void moving(float &time, Vector2f &pos, vector <Object> &obj, int &pressedbut, vector <Bullet> &bulletsvector, Bullet &bullet)
+	void moving(float &time, Vector2f &pos, vector <Object> &obj)
 	{
 		//--------------------------------------------------------------------------------------------------------------
 		deX = pos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
@@ -47,14 +47,7 @@ public:
 		rotation = (atan2(deY, deX)) * 180 / 3.14159265; //получаем угол в радианах и переводим его в градусы
 		sprite.setRotation(rotation + 85);//поворачиваем спрайт на эти градусы
 		//--------------------------------------------------------------------------------------------------------------
-		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedbut == 0) //Проверка единичного нажатия на клавишу мыши
-		{
-			cout << "fire";
-			pressedbut = 1;
-			bulletsvector.push_back(bullet);
-		}
-		if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedbut = 1; } // Проверка единичного нажатия на клавишу
-		else pressedbut = 0;
+		
 
 		if (Keyboard::isKeyPressed(Keyboard::A))
 		{
@@ -335,4 +328,5 @@ public:
 	bool getDDcooldown() { return ddcooldown; }
 	bool getActiveSS() { return activeSpeed; }
 	bool getSScooldown() { return speedcooldown; }
+	float getRotation() { return sprite.getRotation(); }
 };

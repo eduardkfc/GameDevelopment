@@ -4,7 +4,7 @@
 class MainMenu
 {
 private:
-	Texture mainscreen, buttonStart, buttonSettings, buttonExit;
+	Texture mainscreen, buttonStart, buttonHelp, buttonExit;
 	Sprite menubg, menu1, menu2, menu3;
 	int menuNum;
 	bool isMenu;
@@ -13,11 +13,11 @@ public:
 	{
 		mainscreen.loadFromFile("mainscreen.jpg");
 		buttonStart.loadFromFile("buttons/startgame.jpg");
-		buttonSettings.loadFromFile("buttons/settings.jpg");
+		buttonHelp.loadFromFile("buttons/help.jpg");
 		buttonExit.loadFromFile("buttons/exit.jpg");
 		menubg.setTexture(mainscreen);
 		menu1.setTexture(buttonStart);
-		menu2.setTexture(buttonSettings);
+		menu2.setTexture(buttonHelp);
 		menu3.setTexture(buttonExit);
 		
 		menuNum = 0;
@@ -40,14 +40,58 @@ public:
 		{
 			pressedBut = true;
 			if (menuNum == 1) gamestate = 2;
-			if (menuNum == 2) cout << "sasha pidor"; 
+			if (menuNum == 2) gamestate = 6; 
 			if (menuNum == 3) gamestate = 0;
-			else cout << "KRIVOY HUILA";
 		}
 		window.draw(menubg);
 		window.draw(menu1);
 		window.draw(menu2);
 		window.draw(menu3);
+		window.display();
+	}
+};
+
+class Help
+{
+private:
+	Texture mainscreen, SSicon, DDicon, buttonBack;
+	Sprite menubg, SSico, DDico, bBack;
+	bool menuNum;
+	bool isMenu;
+public:
+	Help()
+	{
+		mainscreen.loadFromFile("mainscreen.jpg");
+		SSicon.loadFromFile("images/superspeed.jpg");
+		DDicon.loadFromFile("images/doubledamage.jpg");
+		buttonBack.loadFromFile("buttons/back.jpg");
+		menubg.setTexture(mainscreen);
+		SSico.setTexture(SSicon);
+		DDico.setTexture(DDicon);
+		bBack.setTexture(buttonBack);
+
+		menuNum = false;
+		SSico.setPosition(540, 310);
+		DDico.setPosition(200, 310);
+		bBack.setPosition(880, 310);
+
+	}
+	void render(RenderWindow &window, int &gamestate, bool &pressedBut)
+	{
+		menuNum = 0;
+		window.clear();
+		bBack.setColor(Color::White);
+
+		if (IntRect(880,310,200,66).contains(Mouse::getPosition(window))) { bBack.setColor(Color::Blue); menuNum = true; }
+		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+		{
+			pressedBut = true;
+			if (menuNum == true) gamestate = 1;
+		}
+		window.draw(menubg);
+		window.draw(DDico);
+		window.draw(SSico);
+		window.draw(bBack);
 		window.display();
 	}
 };
@@ -96,7 +140,7 @@ public:
 		{
 			pressedBut = true;
 			if (menuNum == 1) { cout << "HOST PICKED"; gamestate = 3; listener.listen(55001); cout << "EDIKPIDOR"; }
-			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.connect("192.168.100.4", 55001); gamestate = 4; }
+			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.connect("192.168.43.179", 55001); gamestate = 4; }
 			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
 			if (menuNum == 4) { cout << "OFFLINE TEST"; gamestate = 5; }
 		}
@@ -133,7 +177,6 @@ public:
 	void render(RenderWindow &window, int &gamestate, TcpListener &listener, bool &pressedBut, TcpSocket &socket)
 	{
 		window.clear();
-		//listener.accept(socket);
 		cout << "New client connected: :" << socket.getRemoteAddress() << endl;
 		butBack.setColor(Color::White);
 		menuNum = 0;
