@@ -125,7 +125,7 @@ public:
 		offTest.setPosition(1006, 660);
 
 	}
-	void render(RenderWindow &window, int &gamestate, int &hostChoosed, UdpSocket &socket, bool &pressedBut)
+	void render(RenderWindow &window, int &gamestate, int &hostChoosed, UdpSocket &socket, bool &pressedBut,IpAddress &myip,IpAddress &enemyip)
 	{
 		menuNum = 0;
 		window.clear();
@@ -139,8 +139,8 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "HOST PICKED"; socket.bind(55001); gamestate = 3; }
-			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.bind(55002); gamestate = 4; }
+			if (menuNum == 1) { cout << "HOST PICKED"; socket.bind(55001, myip); gamestate = 3; hostChoosed = 1; }
+			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.bind(55002, myip); gamestate = 4; hostChoosed = 0; }
 			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
 			if (menuNum == 4) { cout << "OFFLINE TEST"; gamestate = 5; }
 		}
@@ -160,6 +160,11 @@ private:
 	Texture mainscreen, buttonBack, waitconnection;
 	Sprite menubg, butBack, waitCon;
 	int menuNum = 0;
+	Packet packetinput;
+	Packet packetoutput;
+	int inputcode;
+	int outputcode;
+	unsigned short port;
 public:
 	WaitingForPlayers()
 	{
@@ -170,14 +175,17 @@ public:
 		menubg.setTexture(mainscreen);
 		butBack.setTexture(buttonBack);
 		waitCon.setTexture(waitconnection);
-
+		port = 55002;
+		outputcode = 1;
+		packetoutput << outputcode;
 		butBack.setPosition(1000, 580);
 		waitCon.setPosition(540, 333);
 	}
-	void render(RenderWindow &window, int &gamestate, bool &pressedBut, UdpSocket &socket)
+	void render(RenderWindow &window, int &gamestate, bool &pressedBut, UdpSocket &socket,IpAddress &myip,IpAddress &enemyip)
 	{
+		socket.send(packetoutput,enemyip,port);
 		window.clear();
-		cout << "New client connected: :" << sf::IpAddress::getLocalAddress() << endl;
+		//cout << "New client connected: :" << sf::IpAddress::getLocalAddress() << endl;
 		butBack.setColor(Color::White);
 		menuNum = 0;
 		if (IntRect(1000, 580, 200, 66).contains(Mouse::getPosition(window))) { butBack.setColor(Color::Blue); menuNum = 1; }
@@ -186,7 +194,12 @@ public:
 			pressedBut = true;
 			if (menuNum == 1) { cout << "BACK TO MAINMENU"; gamestate = 2; socket.unbind(); }
 		}
-		if (Socket::Status::Disconnected==socket.bind(55001)) { gamestate = 5; }
+		if (Socket::Status::Disconnected==socket.receive(packetinput,enemyip,port)) 
+		{ 
+			packetinput >> inputcode;
+			if (inputcode == 2) { gamestate = 5; }
+			
+		}
 		window.draw(menubg);
 		window.draw(waitCon);
 		window.draw(butBack);
@@ -200,13 +213,18 @@ private:
 	Texture mainscreen, buttonBack, waitconnection;
 	Sprite menubg, butBack, waitCon;
 	int menuNum = 0;
+	Packet packetinput;
+	Packet packetoutput;
+	int inputcode;
+	int outputcode;
+	unsigned short port;
 public:
 	WaitingForServer()
 	{
 		mainscreen.loadFromFile("mainscreen.jpg");
 		buttonBack.loadFromFile("buttons/back.jpg");
 		waitconnection.loadFromFile("buttons/wait.jpg");
-
+		port = 55001;
 		menubg.setTexture(mainscreen);
 		butBack.setTexture(buttonBack);
 		waitCon.setTexture(waitconnection);
@@ -214,8 +232,9 @@ public:
 		butBack.setPosition(1000, 580);
 		waitCon.setPosition(540, 333);
 	}
-	void render(RenderWindow &window, int &gamestate,UdpSocket &socket, bool &pressedBut)
+	void render(RenderWindow &window, int &gamestate,UdpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip)
 	{
+		socket.send(packetoutput, enemyip, port);
 		window.clear();
 		butBack.setColor(Color::White);
 		menuNum = 0;
@@ -226,7 +245,16 @@ public:
 			if (menuNum == 1) { cout << "BACK TO MAINMENU"; gamestate = 2; socket.unbind(); }
 		}
 
-		if (Socket::Status::Disconnected == socket.bind(55002)) { gamestate = 5; cout << "EDIKPIDOR"; }
+		if (Socket::Status::Disconnected == socket.receive(packetinput, enemyip, port))
+		{
+			packetinput >> inputcode;
+			if (inputcode == 1)
+			{
+				gamestate = 5;
+				cout << "EDIKPIDOR";
+			}
+			
+		}
 		window.draw(menubg);
 		window.draw(waitCon);
 		window.draw(butBack);
