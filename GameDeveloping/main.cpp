@@ -30,10 +30,10 @@ bool startGame()
 	Bullet bullet("bullet.png");
 	vector <Bullet> bulletsvector; //Вектор пуль первого игрока
 	vector <Bullet> bulletsvector2p;
-	TcpSocket socket;
-	TcpListener listener;
+	UdpSocket socket;
 	socket.setBlocking(false);
-	listener.setBlocking(false);
+	
+
 	float time; //Создаем переменную для хранения скорости игры
 	Clock clock; //Создаем объект класса времени, для задания скорости игры
 	obj = map.GetAllObjects();
@@ -54,8 +54,8 @@ bool startGame()
 	{	
 		if (gamestate == 0) { return false; }
 		else if (gamestate == 1) { menu.render(window, gamestate,pressedBut); }
-		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed, socket, listener,pressedBut); }
-		else if (gamestate == 3) { waitplayers.render(window, gamestate, listener, pressedBut, socket); }
+		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed, socket,pressedBut); }
+		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket); }
 		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut); }
 		else if (gamestate == 6) { helpwindow.render(window, gamestate, pressedBut); }
 		else if (gamestate == 5)
@@ -93,7 +93,7 @@ bool startGame()
 
 			//cout << p1posX << " " << p1posY << "First Player" << endl;
 			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << mousePos1p.x << mousePos1p.y << p1.getHealth() << p2.getHealth();
-			socket.send(packetoutput);
+			//socket.send(packetoutput);
 			packetoutput.clear();
 			
 
@@ -101,7 +101,7 @@ bool startGame()
 
 			//----------------------Управление вторым игроком----------------------------------
 			
-			packetinput.clear();
+		/*	packetinput.clear();
 			if (!socket.receive(packetinput))
 			{ 
 				packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth >> myHealth;
@@ -116,7 +116,7 @@ bool startGame()
 				p2.sprite.setRotation(p2Rotation);
 				cout << p2posX << " " << p2posY << "Second Player" << endl;
 			
-			}
+			}*/
 			
 			
 			if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }
