@@ -63,8 +63,8 @@ bool startGame()
 		else if (gamestate == 6) { helpwindow.render(window, gamestate, pressedBut); }
 		else if (gamestate == 5)
 		{
-			if (hostChoosed == 1) { port = 55001; }
-			else port == 55002;
+			if (hostChoosed == 1) { port = 55002; }
+			else port == 55001;
 			window.clear(); //Обновление экрана
 			time = clock.getElapsedTime().asMilliseconds(); //Измерение времени в микросекундах
 			clock.restart(); //Перезагружаем время

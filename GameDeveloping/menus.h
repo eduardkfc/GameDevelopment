@@ -162,8 +162,8 @@ private:
 	int menuNum = 0;
 	Packet packetinput;
 	Packet packetoutput;
-	int inputcode;
-	int outputcode;
+	bool inputcode;
+	bool outputcode;
 	unsigned short port;
 public:
 	WaitingForPlayers()
@@ -176,30 +176,35 @@ public:
 		butBack.setTexture(buttonBack);
 		waitCon.setTexture(waitconnection);
 		port = 55002;
-		outputcode = 1;
-		packetoutput << outputcode;
+		inputcode = false;
+		outputcode = false;
 		butBack.setPosition(1000, 580);
 		waitCon.setPosition(540, 333);
 	}
 	void render(RenderWindow &window, int &gamestate, bool &pressedBut, UdpSocket &socket,IpAddress &myip,IpAddress &enemyip)
 	{
-		socket.send(packetoutput,enemyip,port);
 		window.clear();
-		//cout << "New client connected: :" << sf::IpAddress::getLocalAddress() << endl;
 		butBack.setColor(Color::White);
 		menuNum = 0;
 		if (IntRect(1000, 580, 200, 66).contains(Mouse::getPosition(window))) { butBack.setColor(Color::Blue); menuNum = 1; }
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "BACK TO MAINMENU"; gamestate = 2; socket.unbind(); }
+			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.unbind(); gamestate = 2;  }
 		}
-		if (Socket::Status::Disconnected==socket.receive(packetinput,enemyip,port)) 
+		packetinput.clear();
+		packetoutput.clear();
+		packetoutput << outputcode;
+		socket.send(packetoutput, enemyip, port);
+		if (socket.receive(packetinput, enemyip, port)) 
 		{ 
 			packetinput >> inputcode;
-			if (inputcode == 2) { gamestate = 5; }
+			if (inputcode == true) { gamestate = 5; }
 			
 		}
+		packetoutput >> outputcode;
+		cout << outputcode;
+		
 		window.draw(menubg);
 		window.draw(waitCon);
 		window.draw(butBack);
@@ -215,8 +220,8 @@ private:
 	int menuNum = 0;
 	Packet packetinput;
 	Packet packetoutput;
-	int inputcode;
-	int outputcode;
+	bool inputcode;
+	bool outputcode;
 	unsigned short port;
 public:
 	WaitingForServer()
@@ -228,13 +233,12 @@ public:
 		menubg.setTexture(mainscreen);
 		butBack.setTexture(buttonBack);
 		waitCon.setTexture(waitconnection);
-
+		inputcode = true;
 		butBack.setPosition(1000, 580);
 		waitCon.setPosition(540, 333);
 	}
 	void render(RenderWindow &window, int &gamestate,UdpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip)
 	{
-		socket.send(packetoutput, enemyip, port);
 		window.clear();
 		butBack.setColor(Color::White);
 		menuNum = 0;
@@ -242,19 +246,20 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "BACK TO MAINMENU"; gamestate = 2; socket.unbind(); }
+			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.unbind(); gamestate = 2; }
 		}
-
-		if (Socket::Status::Disconnected == socket.receive(packetinput, enemyip, port))
-		{
+		packetoutput.clear();
+		outputcode = true;
+		packetoutput << outputcode;
+		packetinput.clear();
+		socket.send(packetoutput, enemyip, port);
+		if (socket.receive(packetinput, enemyip, port)) 
+		{ 
 			packetinput >> inputcode;
-			if (inputcode == 1)
-			{
-				gamestate = 5;
-				cout << "EDIKPIDOR";
-			}
+			if (inputcode == false) { gamestate = 5; }
 			
 		}
+		
 		window.draw(menubg);
 		window.draw(waitCon);
 		window.draw(butBack);
