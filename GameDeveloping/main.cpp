@@ -38,7 +38,7 @@ bool startGame()
 	UdpSocket socket;
 	socket.setBlocking(false);
 	IpAddress myip = IpAddress::getLocalAddress();
-	IpAddress enemyip("192.168.100.5");
+	IpAddress enemyip("192.168.43.232");
 	unsigned short port;
 
 	MainMenu menu;
@@ -96,19 +96,16 @@ bool startGame()
 			if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedbut = 1; } // Проверка единичного нажатия на клавишу
 			else pressedbut = 0;
 
-			//cout << p1posX << " " << p1posY << "First Player" << endl;
+			
 			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << mousePos1p.x << mousePos1p.y << p1.getHealth() << p2.getHealth();
 			socket.send(packetoutput, enemyip, port);
 			packetoutput.clear();
-			
-
-			
 
 			//----------------------Управление вторым игроком----------------------------------
-			
+
 			packetinput.clear();
 			if (!socket.receive(packetinput, enemyip, port))
-			{ 
+			{
 				packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth >> myHealth;
 				if (p1.getHealth() != myHealth)
 				{
@@ -120,15 +117,14 @@ bool startGame()
 				p2.setPosition(p2posX, p2posY);
 				p2.sprite.setRotation(p2Rotation);
 				cout << p2posX << " " << p2posY << "Second Player" << endl;
-			
+
 			}
-			
+				//if (p1.getHealth() <= 0 || p2.getHealth() <= 0) { return true; }
 			
 			if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }
 			if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }
 			if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(100); }
 			if (Keyboard::isKeyPressed(Keyboard::H)) { p2.sprite.move(0, p1.getSpeed()*time); }
-			if (p1.getHealth() <= 0 || p2.getHealth() <= 0) { return true; }
 
 			window.setView(view);
 			map.Draw(window); //Вывод и обновление карты

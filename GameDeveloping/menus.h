@@ -159,11 +159,13 @@ class WaitingForPlayers
 private:
 	Texture mainscreen, buttonBack, waitconnection;
 	Sprite menubg, butBack, waitCon;
+	Text text;
+	Font font;
 	int menuNum = 0;
 	Packet packetinput;
 	Packet packetoutput;
-	bool inputcode;
-	bool outputcode;
+	int inputcode;
+	int outputcode;
 	unsigned short port;
 public:
 	WaitingForPlayers()
@@ -171,20 +173,24 @@ public:
 		mainscreen.loadFromFile("mainscreen.jpg");
 		buttonBack.loadFromFile("buttons/back.jpg");
 		waitconnection.loadFromFile("buttons/wait.jpg");
-		
+		font.loadFromFile("font.ttf");
+		text.setFont(font);
 		menubg.setTexture(mainscreen);
 		butBack.setTexture(buttonBack);
 		waitCon.setTexture(waitconnection);
 		port = 55002;
-		inputcode = false;
-		outputcode = false;
+		
 		butBack.setPosition(1000, 580);
 		waitCon.setPosition(540, 333);
+		text.setPosition(20, 680);
+		;
 	}
 	void render(RenderWindow &window, int &gamestate, bool &pressedBut, UdpSocket &socket,IpAddress &myip,IpAddress &enemyip)
 	{
 		window.clear();
+		text.setString("Your IP Address: " + myip.toString());
 		butBack.setColor(Color::White);
+
 		menuNum = 0;
 		if (IntRect(1000, 580, 200, 66).contains(Mouse::getPosition(window))) { butBack.setColor(Color::Blue); menuNum = 1; }
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
@@ -192,22 +198,22 @@ public:
 			pressedBut = true;
 			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.unbind(); gamestate = 2;  }
 		}
+		outputcode = 1;
 		packetinput.clear();
 		packetoutput.clear();
 		packetoutput << outputcode;
-		socket.send(packetoutput, enemyip, port);
-		if (socket.receive(packetinput, enemyip, port)) 
+		if (socket.receive(packetinput, enemyip, port)==Socket::Status::Done) 
 		{ 
 			packetinput >> inputcode;
-			if (inputcode == true) { gamestate = 5; }
-			
+			cout << "Received: " << inputcode << endl;
+			if (inputcode == 2) { gamestate = 5; }
 		}
-		packetoutput >> outputcode;
-		cout << outputcode;
-		
+		//cout << outputcode;
+		socket.send(packetoutput, enemyip, port);
 		window.draw(menubg);
 		window.draw(waitCon);
 		window.draw(butBack);
+		window.draw(text);
 		window.display();
 	}
 };
@@ -220,8 +226,8 @@ private:
 	int menuNum = 0;
 	Packet packetinput;
 	Packet packetoutput;
-	bool inputcode;
-	bool outputcode;
+	int inputcode;
+	int outputcode;
 	unsigned short port;
 public:
 	WaitingForServer()
@@ -233,7 +239,6 @@ public:
 		menubg.setTexture(mainscreen);
 		butBack.setTexture(buttonBack);
 		waitCon.setTexture(waitconnection);
-		inputcode = true;
 		butBack.setPosition(1000, 580);
 		waitCon.setPosition(540, 333);
 	}
@@ -249,14 +254,15 @@ public:
 			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.unbind(); gamestate = 2; }
 		}
 		packetoutput.clear();
-		outputcode = true;
+		outputcode = 2;
 		packetoutput << outputcode;
 		packetinput.clear();
 		socket.send(packetoutput, enemyip, port);
 		if (socket.receive(packetinput, enemyip, port)) 
 		{ 
 			packetinput >> inputcode;
-			if (inputcode == false) { gamestate = 5; }
+			cout << "Received: " << inputcode << endl;
+			if (inputcode == 1) { gamestate = 5; }
 			
 		}
 		
