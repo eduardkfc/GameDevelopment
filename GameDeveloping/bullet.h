@@ -10,16 +10,16 @@ private:
 	Texture texture;
 public:
 	Sprite sprite;
-	Bullet(String F)
+	Bullet()
 	{
 		damage = 5;
-		speed = 0.35;
+		speed = 100;
 		w = 15;
 		h = 5;
-		File = F;
-		texture.loadFromFile(File);
+		texture.loadFromFile("bullet.png");
 		sprite.setTexture(texture);
 		texture.setSmooth(true);
+		
 	}
 	void update(float &time)
 	{

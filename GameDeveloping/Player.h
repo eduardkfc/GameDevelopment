@@ -25,13 +25,11 @@ private:
 	
 public:
 	Sprite sprite;
-	Player(String F, int X, int Y,Level &map,int faction)
+	Player(int X, int Y)
 	{ 
-		speed = 0.1;
+		speed = 40;
 		sprite.setOrigin(35, 63);
-		File = F;
-		image.loadFromFile(File);
-		texture.loadFromImage(image);
+		texture.loadFromFile("soldier1.png");
 		sprite.setTexture(texture);
 		x = X; y = Y;
 		sprite.setTextureRect(IntRect(0, 112, 62, 91));
@@ -39,7 +37,7 @@ public:
 		sprite.setPosition(x, y);
 	}
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
-	void moving(float &time, Vector2f &pos, vector <Object> &obj)
+	void moving(float &time, Vector2f &pos, vector <Object> &obj, bool &pressedBut, vector <Bullet> &bulletsvector, Bullet &bullet, Level &map)
 	{
 		//--------------------------------------------------------------------------------------------------------------
 		deX = pos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
@@ -47,7 +45,16 @@ public:
 		rotation = (atan2(deY, deX)) * 180 / 3.14159265; //получаем угол в радианах и переводим его в градусы
 		sprite.setRotation(rotation + 85);//поворачиваем спрайт на эти градусы
 		//--------------------------------------------------------------------------------------------------------------
-		
+		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false) //Проверка единичного нажатия на клавишу мыши
+		{
+			cout << "fire";
+			pressedBut = true;
+
+			bulletsvector.push_back(bullet);
+
+		}
+		if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedBut = true; } // Проверка единичного нажатия на клавишу
+		else pressedBut = false;
 
 		if (Keyboard::isKeyPressed(Keyboard::A))
 		{
@@ -180,7 +187,7 @@ public:
 	}
 	void animation(float time)
 	{
-		СurrentFrame += 0.002*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
+		СurrentFrame += 0.8*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
 		if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 		setSpriteRect(int(СurrentFrame)); //Смена кадра анимации
 	}
@@ -194,21 +201,13 @@ public:
 					if (activeButtons == 1)
 					{
 						if (Dy > 0)
-						{
 							y -= (speed)*time;
-						}
 						if (Dy < 0)
-						{
 							y += (speed)*time;
-						}
 						if (Dx > 0)
-						{
 							x -= (speed)*time;
-						}
-						if (Dx < 0)
-						{
+						if (Dx < 0) 
 							x += (speed)*time;
-						}
 					}
 					if (activeButtons == 2)
 					{

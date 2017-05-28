@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="GameProcess.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Level.h" />

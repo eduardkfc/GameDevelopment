@@ -63,6 +63,9 @@ std::string Object::GetPropertyString(std::string name)//получить имя в виде стр
 
 bool Level::LoadFromFile(std::string filename)//двоеточия-обращение к методам класса вне класса 
 {
+	layers.clear();
+	objects.clear();
+
 	tinyxml2::XMLDocument levelFile(filename.c_str());//загружаем файл в TiXmlDocument
 	levelFile.LoadFile(filename.c_str());
 	// загружаем XML-карту

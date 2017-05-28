@@ -15,3 +15,4 @@ using namespace std;
 #include "View.h"
 #include "menus.h"
 #include "HUD.h"
+#include "GameProcess.h"

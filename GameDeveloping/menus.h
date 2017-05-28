@@ -4,38 +4,55 @@
 class MainMenu
 {
 private:
-	Texture mainscreen, buttonStart, buttonHelp, buttonExit;
-	Sprite menubg, menu1, menu2, menu3;
+	Texture mainscreen;
+	Sprite menubg;
 	int menuNum;
 	bool isMenu;
+	Text text, startText, helpText, exitText;
+	Font font;
 public:
 	MainMenu()
 	{
 		mainscreen.loadFromFile("mainscreen.jpg");
-		buttonStart.loadFromFile("buttons/startgame.jpg");
-		buttonHelp.loadFromFile("buttons/help.jpg");
-		buttonExit.loadFromFile("buttons/exit.jpg");
+		font.loadFromFile("font.ttf");
+		text.setFont(font);
+		text.setString("REFLEX STRIKE");
+		text.setCharacterSize(100);
+		text.setPosition(640, 150);
+		text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+
+		startText.setFont(font);
+		startText.setString("Start Game");
+		startText.setCharacterSize(40);
+		startText.setOrigin(startText.getLocalBounds().width / 2, startText.getLocalBounds().height / 2);
+		startText.setPosition(640, 360);
+
+		helpText.setFont(font);
+		helpText.setString("Help");
+		helpText.setCharacterSize(40);
+		helpText.setOrigin(helpText.getLocalBounds().width / 2, helpText.getLocalBounds().height / 2);
+		helpText.setPosition(200, 360);
+
+		exitText.setFont(font);
+		exitText.setString("Exit");
+		exitText.setCharacterSize(40);
+		exitText.setOrigin(exitText.getLocalBounds().width / 2, exitText.getLocalBounds().height / 2);
+		exitText.setPosition(1080, 360);
 		menubg.setTexture(mainscreen);
-		menu1.setTexture(buttonStart);
-		menu2.setTexture(buttonHelp);
-		menu3.setTexture(buttonExit);
 		
 		menuNum = 0;
-		menu1.setPosition(540, 310);
-		menu2.setPosition(200, 310);
-		menu3.setPosition(880, 310);
 		
 	}
 	void render(RenderWindow &window,int &gamestate,bool &pressedBut)
 	{
 		menuNum = 0;
 		window.clear();
-		menu1.setColor(Color::White);
-		menu2.setColor(Color::White);
-		menu3.setColor(Color::White);
-		if (IntRect(540, 310, 200, 66).contains(Mouse::getPosition(window))) { menu1.setColor(Color::Blue); menuNum = 1; }
-		if (IntRect(200, 310, 200, 66).contains(Mouse::getPosition(window))) { menu2.setColor(Color::Blue); menuNum = 2; }
-		if (IntRect(880, 310, 200, 66).contains(Mouse::getPosition(window))) { menu3.setColor(Color::Blue); menuNum = 3; }
+		startText.setFillColor(Color::White);
+		helpText.setFillColor(Color::White);
+		exitText.setFillColor(Color::White);
+		if (startText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { startText.setFillColor(Color::Blue); menuNum = 1; }
+		if (helpText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { helpText.setFillColor(Color::Blue); menuNum = 2; }
+		if (exitText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { exitText.setFillColor(Color::Blue); menuNum = 3; }
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
@@ -44,9 +61,10 @@ public:
 			if (menuNum == 3) gamestate = 0;
 		}
 		window.draw(menubg);
-		window.draw(menu1);
-		window.draw(menu2);
-		window.draw(menu3);
+		window.draw(startText);
+		window.draw(helpText);
+		window.draw(exitText);
+		window.draw(text);
 		window.display();
 	}
 };
@@ -54,35 +72,46 @@ public:
 class Help
 {
 private:
-	Texture mainscreen, SSicon, DDicon, buttonBack;
-	Sprite menubg, SSico, DDico, bBack;
+	Texture mainscreen, SSicon, DDicon;
+	Sprite menubg, SSico, DDico;
 	bool menuNum;
 	bool isMenu;
+	Text text, backText;
+	Font font;
 public:
 	Help()
 	{
 		mainscreen.loadFromFile("mainscreen.jpg");
 		SSicon.loadFromFile("images/superspeed.jpg");
 		DDicon.loadFromFile("images/doubledamage.jpg");
-		buttonBack.loadFromFile("buttons/back.jpg");
 		menubg.setTexture(mainscreen);
 		SSico.setTexture(SSicon);
 		DDico.setTexture(DDicon);
-		bBack.setTexture(buttonBack);
 
+		font.loadFromFile("font.ttf");
+		text.setFont(font);
+		text.setString("REFLEX STRIKE");
+		text.setCharacterSize(100);
+		text.setPosition(640, 150);
+		text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
 		menuNum = false;
 		SSico.setPosition(540, 310);
 		DDico.setPosition(200, 310);
-		bBack.setPosition(880, 310);
 
+
+		backText.setFont(font);
+		backText.setString("Back");
+		backText.setCharacterSize(40);
+		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
+		backText.setPosition(1150, 650);
 	}
 	void render(RenderWindow &window, int &gamestate, bool &pressedBut)
 	{
 		menuNum = 0;
 		window.clear();
-		bBack.setColor(Color::White);
+		backText.setFillColor(Color::White);
 
-		if (IntRect(880,310,200,66).contains(Mouse::getPosition(window))) { bBack.setColor(Color::Blue); menuNum = true; }
+		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = true; }
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
@@ -91,7 +120,8 @@ public:
 		window.draw(menubg);
 		window.draw(DDico);
 		window.draw(SSico);
-		window.draw(bBack);
+		window.draw(backText);
+		window.draw(text);
 		window.display();
 	}
 };
@@ -99,67 +129,151 @@ public:
 class ChooseHost
 {
 private:
-	Texture mainscreen, buttonHost, buttonClient, buttonBack, offlineTest;
-	Sprite menubg, host, client, back, offTest;
+	Texture mainscreen;
+	Sprite menubg;
 
 	int menuNum = 0;
 	bool isMenu;
-	
+	Text text, hostText, clientText, backText, offlineText;
+	Font font;
 public:
 	ChooseHost()
 	{
 		mainscreen.loadFromFile("mainscreen.jpg");
-		buttonHost.loadFromFile("buttons/host.jpg");
-		buttonClient.loadFromFile("buttons/client.jpg");
-		buttonBack.loadFromFile("buttons/back.jpg");
-		offlineTest.loadFromFile("buttons/offlineTest.jpg");
-		
 		menubg.setTexture(mainscreen);
-		host.setTexture(buttonHost);
-		client.setTexture(buttonClient);
-		back.setTexture(buttonBack);
-		offTest.setTexture(offlineTest);
-		host.setPosition(540, 250);
-		client.setPosition(540, 450);
-		back.setPosition(1000, 580);
-		offTest.setPosition(1006, 660);
-
+		hostText.setPosition(540, 250);
+		clientText.setPosition(540, 450);
+		backText.setPosition(1000, 580);
+		offlineText.setPosition(1006, 660);
+		font.loadFromFile("font.ttf");
+		text.setFont(font);
+		text.setString("REFLEX STRIKE");
+		text.setCharacterSize(100);
+		text.setPosition(640, 150);
+		text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+		hostText.setFont(font);
+		hostText.setString("Host");
+		hostText.setCharacterSize(40);
+		hostText.setPosition(640, 300);
+		hostText.setOrigin(hostText.getLocalBounds().width / 2, hostText.getLocalBounds().height / 2);
+		clientText.setFont(font);
+		clientText.setString("Client");
+		clientText.setCharacterSize(40);
+		clientText.setPosition(640, 420);
+		clientText.setOrigin(clientText.getLocalBounds().width / 2, clientText.getLocalBounds().height / 2);
+		backText.setFont(font);
+		backText.setString("Back");
+		backText.setCharacterSize(40);
+		backText.setPosition(1150, 650);
+		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
+		offlineText.setFont(font);
+		offlineText.setString("Offline Test");
+		offlineText.setCharacterSize(40);
+		offlineText.setPosition(640, 540);
+		offlineText.setOrigin(offlineText.getLocalBounds().width / 2, offlineText.getLocalBounds().height / 2);
 	}
 	void render(RenderWindow &window, int &gamestate, int &hostChoosed, UdpSocket &socket, bool &pressedBut,IpAddress &myip,IpAddress &enemyip)
 	{
 		menuNum = 0;
 		window.clear();
-		host.setColor(Color::White);
-		client.setColor(Color::White);
-		back.setColor(Color::White);
-		if (IntRect(540, 250, 200, 66).contains(Mouse::getPosition(window))) { host.setColor(Color::Blue); menuNum = 1; }
-		if (IntRect(540, 450, 200, 66).contains(Mouse::getPosition(window))) { client.setColor(Color::Blue); menuNum = 2; }
-		if (IntRect(1000, 580, 200, 66).contains(Mouse::getPosition(window))) { back.setColor(Color::Blue); menuNum = 3; }
-		if (IntRect(1006, 660, 200, 66).contains(Mouse::getPosition(window))) { offTest.setColor(Color::Blue); menuNum = 4; }
+		hostText.setFillColor(Color::White);
+		clientText.setFillColor(Color::White);
+		backText.setFillColor(Color::White);
+		offlineText.setFillColor(Color::White);
+		if (hostText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { hostText.setFillColor(Color::Blue); menuNum = 1; }
+		if (clientText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { clientText.setFillColor(Color::Blue); menuNum = 2; }
+		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 3; }
+		if (offlineText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { offlineText.setFillColor(Color::Blue); menuNum = 4; }
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "HOST PICKED"; socket.bind(55001, myip); gamestate = 3; hostChoosed = 1; }
+			if (menuNum == 1) { cout << "HOST PICKED"; socket.bind(55001, myip); gamestate = 7; hostChoosed = 1; }
 			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.bind(55002, myip); gamestate = 4; hostChoosed = 0; }
 			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
 			if (menuNum == 4) { cout << "OFFLINE TEST"; gamestate = 5; }
 		}
 
 		window.draw(menubg);
-		window.draw(host);
-		window.draw(client);
-		window.draw(offTest);
-		window.draw(back);
+		window.draw(hostText);
+		window.draw(clientText);
+		window.draw(offlineText);
+		window.draw(backText);
+		window.draw(text);
 		window.display();
 	}
 };
 
+class ChooseMap
+{
+private:
+	Texture mainscreen;
+	Sprite menubg;
+	Text mainText, backText, textMapRoads, textMapVillage;
+	int menuNum;
+	bool isMenu;
+	Font font;
+public:
+	ChooseMap()
+	{
+		mainscreen.loadFromFile("mainscreen.jpg");
+		menubg.setTexture(mainscreen);
+
+		font.loadFromFile("font.ttf");
+		mainText.setFont(font);
+		mainText.setString("MAP CHOOSING");
+		mainText.setCharacterSize(100);
+		mainText.setPosition(640, 150);
+		mainText.setOrigin(mainText.getLocalBounds().width / 2, mainText.getLocalBounds().height / 2);
+		textMapRoads.setFont(font);
+		textMapRoads.setString("Roads");
+		textMapRoads.setCharacterSize(40);
+		textMapRoads.setPosition(640, 300);
+		textMapRoads.setOrigin(textMapRoads.getLocalBounds().width / 2, textMapRoads.getLocalBounds().height / 2);
+		textMapVillage.setFont(font);
+		textMapVillage.setString("Village");
+		textMapVillage.setCharacterSize(40);
+		textMapVillage.setPosition(640, 420);
+		textMapVillage.setOrigin(textMapVillage.getLocalBounds().width / 2, textMapVillage.getLocalBounds().height / 2);
+		backText.setFont(font);
+		backText.setString("Back");
+		backText.setCharacterSize(40);
+		backText.setPosition(1150, 650);
+		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
+	
+	}
+	void render(RenderWindow &window, int &gamestate, bool &pressedBut,int &levelID)
+	{
+		menuNum = 0;
+		window.clear();
+		textMapRoads.setFillColor(Color::White);
+		textMapVillage.setFillColor(Color::White);
+		backText.setFillColor(Color::White);
+		if (textMapRoads.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { textMapRoads.setFillColor(Color::Blue); menuNum = 1; }
+		if (textMapVillage.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { textMapVillage.setFillColor(Color::Blue); menuNum = 2; }
+		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 3; }
+		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+		{
+			pressedBut = true;
+			if (menuNum == 1) { cout << "ROADS"; gamestate = 3; levelID = 1; }
+			if (menuNum == 2) { cout << "VILLAGE"; gamestate = 3; levelID = 2; }
+			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
+
+		}
+
+		window.draw(menubg);
+		window.draw(mainText);
+		window.draw(textMapRoads);
+		window.draw(textMapVillage);
+		window.draw(backText);
+		window.display();
+	}
+};
 class WaitingForPlayers
 {
 private:
-	Texture mainscreen, buttonBack, waitconnection;
-	Sprite menubg, butBack, waitCon;
-	Text text;
+	Texture mainscreen;
+	Sprite menubg;
+	Text text,mainText,backText,waitText;
 	Font font;
 	int menuNum = 0;
 	Packet packetinput;
@@ -171,28 +285,38 @@ public:
 	WaitingForPlayers()
 	{
 		mainscreen.loadFromFile("mainscreen.jpg");
-		buttonBack.loadFromFile("buttons/back.jpg");
-		waitconnection.loadFromFile("buttons/wait.jpg");
 		font.loadFromFile("font.ttf");
 		text.setFont(font);
 		menubg.setTexture(mainscreen);
-		butBack.setTexture(buttonBack);
-		waitCon.setTexture(waitconnection);
 		port = 55002;
+		mainText.setFont(font);
+		mainText.setString("REFLEX STRIKE");
+		mainText.setCharacterSize(100);
+		mainText.setPosition(640, 150);
+		mainText.setOrigin(mainText.getLocalBounds().width / 2, mainText.getLocalBounds().height / 2);
+
+		backText.setFont(font);
+		backText.setString("Back");
+		backText.setCharacterSize(40);
+		backText.setPosition(1150, 650);
+		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
 		
-		butBack.setPosition(1000, 580);
-		waitCon.setPosition(540, 333);
+		waitText.setFont(font);
+		waitText.setString("Wait connection");
+		waitText.setCharacterSize(60);
+		waitText.setPosition(640, 360);
+		waitText.setOrigin(waitText.getLocalBounds().width / 2, waitText.getLocalBounds().height / 2);
+
 		text.setPosition(20, 680);
-		;
 	}
 	void render(RenderWindow &window, int &gamestate, bool &pressedBut, UdpSocket &socket,IpAddress &myip,IpAddress &enemyip)
 	{
 		window.clear();
 		text.setString("Your IP Address: " + myip.toString());
-		butBack.setColor(Color::White);
+		backText.setFillColor(Color::White);
 
 		menuNum = 0;
-		if (IntRect(1000, 580, 200, 66).contains(Mouse::getPosition(window))) { butBack.setColor(Color::Blue); menuNum = 1; }
+		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 1; }
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
@@ -211,9 +335,10 @@ public:
 		//cout << outputcode;
 		socket.send(packetoutput, enemyip, port);
 		window.draw(menubg);
-		window.draw(waitCon);
-		window.draw(butBack);
+		window.draw(waitText);
+		window.draw(backText);
 		window.draw(text);
+		window.draw(mainText);
 		window.display();
 	}
 };
@@ -221,33 +346,48 @@ public:
 class WaitingForServer
 {
 private:
-	Texture mainscreen, buttonBack, waitconnection;
-	Sprite menubg, butBack, waitCon;
+	Texture mainscreen;
+	Sprite menubg;
 	int menuNum = 0;
 	Packet packetinput;
 	Packet packetoutput;
 	int inputcode;
 	int outputcode;
 	unsigned short port;
+	Text mainText, backText, waitText;
+	Font font;
 public:
 	WaitingForServer()
 	{
-		mainscreen.loadFromFile("mainscreen.jpg");
-		buttonBack.loadFromFile("buttons/back.jpg");
-		waitconnection.loadFromFile("buttons/wait.jpg");
 		port = 55001;
+		mainscreen.loadFromFile("mainscreen.jpg");
 		menubg.setTexture(mainscreen);
-		butBack.setTexture(buttonBack);
-		waitCon.setTexture(waitconnection);
-		butBack.setPosition(1000, 580);
-		waitCon.setPosition(540, 333);
+		font.loadFromFile("font.ttf");
+
+		mainText.setFont(font);
+		mainText.setString("REFLEX STRIKE");
+		mainText.setCharacterSize(100);
+		mainText.setPosition(640, 150);
+		mainText.setOrigin(mainText.getLocalBounds().width / 2, mainText.getLocalBounds().height / 2);
+
+		backText.setFont(font);
+		backText.setString("Back");
+		backText.setCharacterSize(40);
+		backText.setPosition(1150, 650);
+		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
+
+		waitText.setFont(font);
+		waitText.setString("Wait connection");
+		waitText.setCharacterSize(60);
+		waitText.setPosition(640, 360);
+		waitText.setOrigin(waitText.getLocalBounds().width / 2, waitText.getLocalBounds().height / 2);
 	}
 	void render(RenderWindow &window, int &gamestate,UdpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip)
 	{
 		window.clear();
-		butBack.setColor(Color::White);
+		backText.setFillColor(Color::White);
 		menuNum = 0;
-		if (IntRect(1000, 580, 200, 66).contains(Mouse::getPosition(window))) { butBack.setColor(Color::Blue); menuNum = 1; }
+		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 1; }
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
@@ -267,8 +407,9 @@ public:
 		}
 		
 		window.draw(menubg);
-		window.draw(waitCon);
-		window.draw(butBack);
+		window.draw(mainText);
+		window.draw(waitText);
+		window.draw(backText);
 		window.display();
 	}
 };
