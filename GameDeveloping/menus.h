@@ -134,7 +134,7 @@ private:
 
 	int menuNum = 0;
 	bool isMenu;
-	Text text, hostText, clientText, backText, offlineText;
+	Text text, hostText, clientText, backText, offlineText, offlineTextVillage;
 	Font font;
 public:
 	ChooseHost()
@@ -167,12 +167,17 @@ public:
 		backText.setPosition(1150, 650);
 		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
 		offlineText.setFont(font);
-		offlineText.setString("Offline Test");
+		offlineText.setString("Offline Roads");
 		offlineText.setCharacterSize(40);
 		offlineText.setPosition(640, 540);
 		offlineText.setOrigin(offlineText.getLocalBounds().width / 2, offlineText.getLocalBounds().height / 2);
+		offlineTextVillage.setFont(font);
+		offlineTextVillage.setString("Offline Village");
+		offlineTextVillage.setCharacterSize(40);
+		offlineTextVillage.setPosition(640, 660);
+		offlineTextVillage.setOrigin(offlineTextVillage.getLocalBounds().width / 2, offlineTextVillage.getLocalBounds().height / 2);
 	}
-	void render(RenderWindow &window, int &gamestate, int &hostChoosed, UdpSocket &socket, bool &pressedBut,IpAddress &myip,IpAddress &enemyip)
+	void render(RenderWindow &window, int &gamestate, int &hostChoosed, UdpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip, int &levelID)
 	{
 		menuNum = 0;
 		window.clear();
@@ -184,13 +189,15 @@ public:
 		if (clientText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { clientText.setFillColor(Color::Blue); menuNum = 2; }
 		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 3; }
 		if (offlineText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { offlineText.setFillColor(Color::Blue); menuNum = 4; }
+		if (offlineTextVillage.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { offlineTextVillage.setFillColor(Color::Blue); menuNum = 5; }
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
 			if (menuNum == 1) { cout << "HOST PICKED"; socket.bind(55001, myip); gamestate = 7; hostChoosed = 1; }
 			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.bind(55002, myip); gamestate = 4; hostChoosed = 0; }
 			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
-			if (menuNum == 4) { cout << "OFFLINE TEST"; gamestate = 5; }
+			if (menuNum == 4) { cout << "OFFLINE TEST ROADS"; levelID = 1; gamestate = 5; }
+			if (menuNum == 5) { cout << "OFFLINE TEST VILLAGE"; levelID = 2; gamestate = 5; }
 		}
 
 		window.draw(menubg);
@@ -199,6 +206,7 @@ public:
 		window.draw(offlineText);
 		window.draw(backText);
 		window.draw(text);
+		window.draw(offlineTextVillage);
 		window.display();
 	}
 };

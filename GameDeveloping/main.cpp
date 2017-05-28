@@ -12,7 +12,7 @@ bool startGame()
 	window.setFramerateLimit(60); //Лимит кадров в секунду
 
 	bool pressedBut = false; //Переменная для проверки нажатия кнопки мыши(
-	bool gameLife = true;
+
 	//-----------------------------------Для перезарядки способностей-----------------------
 	
 	Player p1(500, 500); //Создаем объект класса игрок
@@ -22,7 +22,6 @@ bool startGame()
 	IpAddress myip = IpAddress::getLocalAddress();
 	IpAddress enemyip("192.168.43.232");
 	
-
 	MainMenu menu;
 	ChooseHost choosinghost;
 	WaitingForPlayers waitplayers;
@@ -40,7 +39,7 @@ bool startGame()
 	{	
 		if (gamestate == 0) { return false; }
 		else if (gamestate == 1) { menu.render(window, gamestate,pressedBut); }
-		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed, socket, pressedBut, myip, enemyip); }
+		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed, socket, pressedBut, myip, enemyip,levelID); }
 		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket, myip, enemyip); }
 		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, myip, enemyip); }
 		else if (gamestate == 6) { helpwindow.render(window, gamestate, pressedBut); }
@@ -48,7 +47,6 @@ bool startGame()
 		else if (gamestate == 5) { maingame.render(window, p1, p2, pressedBut, hostChoosed, gamestate, socket, enemyip); }
 		if (!Mouse::isButtonPressed(Mouse::Button::Left)) // Проверка на единичное нажатие клавиши
 			pressedBut = false;
-		if (gameLife == false) { return false; }
 	}
 }
 
