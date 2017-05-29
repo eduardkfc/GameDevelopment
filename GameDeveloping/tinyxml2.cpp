@@ -944,7 +944,7 @@ const XMLElement* XMLNode::PreviousSiblingElement( const char* name ) const
 
 char* XMLNode::ParseDeep( char* p, StrPair* parentEnd )
 {
-    // This is a recursive method, but thinking about it "at the current level"
+    // This is a recursive method, but thinking about it "at the current Maps"
     // it is a pretty simple flat list:
     //		<foo/>
     //		<!-- comment -->
@@ -1002,7 +1002,7 @@ char* XMLNode::ParseDeep( char* p, StrPair* parentEnd )
                 return p;
             }
 
-            // Handle an end tag returned to this level.
+            // Handle an end tag returned to this Maps.
             // And handle a bunch of annoying errors.
             bool mismatch = false;
             if ( endTag.Empty() ) {

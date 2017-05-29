@@ -81,7 +81,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Full</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\gabid\Documents\Visual Studio 2015\Projects\GameDevelopment\SFML-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\gabid\Documents\Visual Studio 2015\Projects\GameDevelopment\SFML-2.4.1\include;C:\Users\Эдуард\Documents\Visual Studio 2015\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <PreprocessorDefinitions>SFML_DYNAMIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -137,7 +137,7 @@
     <ClInclude Include="GameProcess.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="HUD.h" />
-    <ClInclude Include="Level.h" />
+    <ClInclude Include="Maps.h" />
     <ClInclude Include="menus.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="tinyxml2.h" />

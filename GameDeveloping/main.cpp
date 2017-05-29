@@ -4,12 +4,12 @@ bool startGame()
 {
 	int hostChoosed;
 	int gamestate = 1;
-	int levelID;
+	int MapsID = 0;
 
-	RenderWindow window(VideoMode(1280, 720), "Reflex Strike", Style::None); //Инициализируем окно
+	RenderWindow window(VideoMode(1280, 720), "Reflex Strike", Style::Fullscreen); //Инициализируем окно
 	view.reset(FloatRect(0, 0, 1280, 720)); //Перезагрузка экрана
 	window.setVerticalSyncEnabled(true); //Включение вертикальной синхронизации
-	window.setFramerateLimit(60); //Лимит кадров в секунду
+	//window.setFramerateLimit(60); //Лимит кадров в секунду
 
 	bool pressedBut = false; //Переменная для проверки нажатия кнопки мыши(
 
@@ -19,32 +19,39 @@ bool startGame()
 	Player p2(600, 600); //Создаем объект класса игрок
 	UdpSocket socket;
 	socket.setBlocking(false);
+	string stringip;
 	IpAddress myip = IpAddress::getLocalAddress();
-	IpAddress enemyip("192.168.43.232");
-	
+	IpAddress enemyip(stringip);
+	Maps map;
+	vector <Object> obj;
 	MainMenu menu;
 	ChooseHost choosinghost;
 	WaitingForPlayers waitplayers;
 	WaitingForServer waitserver;
 	Help helpwindow;
 	ChooseMap choosemap;
-	MainGame maingame(levelID);
+	ConnectToIp connect;
+	float p1posX, p1posY;
+	float p2posX, p2posY, p2Rotation, mousePos2pX, mousePos2pY;
+	MainGame maingame(p1,p2,MapsID,hostChoosed);
 	//Color color(255, 0, 0);
+	obj = map.GetObjects("solid");
 	
-	
-	float p2posX, p2posY, p2Rotation, mousePos2pX,mousePos2pY;
 	int enemyHealth, myHealth;
-
+	Vector2f MousePos;
 	while (window.isOpen()) //Цикл, пока открыто окно, он действует
 	{	
-		if (gamestate == 0) { return false; }
-		else if (gamestate == 1) { menu.render(window, gamestate,pressedBut); }
-		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed, socket, pressedBut, myip, enemyip,levelID); }
-		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket, myip, enemyip); }
-		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, myip, enemyip); }
-		else if (gamestate == 6) { helpwindow.render(window, gamestate, pressedBut); }
-		else if (gamestate == 7) { choosemap.render(window, gamestate, pressedBut,levelID); }
-		else if (gamestate == 5) { maingame.render(window, p1, p2, pressedBut, hostChoosed, gamestate, socket, enemyip); }
+		MousePos = window.mapPixelToCoords(Mouse::getPosition(window));
+		if (gamestate == 0) { return false; } //Выход из игры
+		else if (gamestate == 1) { menu.render(window, gamestate,pressedBut); } //Главное меню
+		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed, socket, pressedBut, myip, enemyip, MapsID, map, obj); } //Выбор хоста
+		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket, myip, enemyip,MapsID); } // Ожидание клиента
+		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, myip, enemyip,MapsID,map); } // Ожидание хоста
+		else if (gamestate == 6) { helpwindow.render(window, gamestate, pressedBut); } // Окно помощи
+		else if (gamestate == 7) { choosemap.render(window, gamestate, pressedBut, MapsID, map, obj); } //Выбор карты для хоста
+		else if (gamestate == 8) { connect.render(window, gamestate, pressedBut, enemyip,stringip); }
+		else if (gamestate == 5) { maingame.render(window, p1, p2, pressedBut, hostChoosed, gamestate, socket, enemyip, map,obj,MousePos); }
+		else if (gamestate == 9) { return true; } // Рестарт игры
 		if (!Mouse::isButtonPressed(Mouse::Button::Left)) // Проверка на единичное нажатие клавиши
 			pressedBut = false;
 	}

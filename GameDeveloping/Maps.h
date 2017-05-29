@@ -1,5 +1,5 @@
-#ifndef LEVEL_H
-#define LEVEL_H
+#ifndef Maps_H
+#define Maps_H
 
 #include "Header.h"
 #include "tinyxml2.h"
@@ -24,7 +24,7 @@ struct Layer//слои
 	std::vector<sf::Sprite> tiles;//закидываем в вектор тайлы
 };
 
-class Level//главный класс - уровень
+class Maps//главный класс - уровень
 {
 public:
 	bool LoadFromFile(std::string filename);//возвращает false если не получилось загрузить
@@ -61,23 +61,23 @@ std::string Object::GetPropertyString(std::string name)//получить имя в виде стр
 	return properties[name];
 }
 
-bool Level::LoadFromFile(std::string filename)//двоеточия-обращение к методам класса вне класса 
+bool Maps::LoadFromFile(std::string filename)//двоеточия-обращение к методам класса вне класса 
 {
 	layers.clear();
 	objects.clear();
 
-	tinyxml2::XMLDocument levelFile(filename.c_str());//загружаем файл в TiXmlDocument
-	levelFile.LoadFile(filename.c_str());
+	tinyxml2::XMLDocument MapsFile(filename.c_str());//загружаем файл в TiXmlDocument
+	MapsFile.LoadFile(filename.c_str());
 	// загружаем XML-карту
-	//if (!levelFile.LoadFile(filename.c_str()))//если не удалось загрузить карту
+	//if (!MapsFile.LoadFile(filename.c_str()))//если не удалось загрузить карту
 	//{
-	//	std::cout << "Loading level \"" << filename << "\" failed." << std::endl;//выдаем ошибку
+	//	std::cout << "Loading Maps \"" << filename << "\" failed." << std::endl;//выдаем ошибку
 	//	return false;
 	//}
 
 	// работаем с контейнером map
 	tinyxml2::XMLElement *map;
-	map = levelFile.FirstChildElement("map");
+	map = MapsFile.FirstChildElement("map");
 
 	// пример карты: <map version="1.0" orientation="orthogonal"
 	// width="10" height="10" tilewidth="34" tileheight="34">
@@ -304,7 +304,7 @@ bool Level::LoadFromFile(std::string filename)//двоеточия-обращение к методам кл
 	return true;
 }
 
-Object Level::GetObject(std::string name)
+Object Maps::GetObject(std::string name)
 {
 	// только первый объект с заданным именем
 	for (int i = 0; i < objects.size(); i++)
@@ -312,7 +312,7 @@ Object Level::GetObject(std::string name)
 		return objects[i];
 }
 
-std::vector<Object> Level::GetObjects(std::string name)
+std::vector<Object> Maps::GetObjects(std::string name)
 {
 	// все объекты с заданным именем
 	std::vector<Object> vec;
@@ -324,18 +324,18 @@ std::vector<Object> Level::GetObjects(std::string name)
 }
 
 
-std::vector<Object> Level::GetAllObjects()
+std::vector<Object> Maps::GetAllObjects()
 {
 	return objects;
 };
 
 
-sf::Vector2i Level::GetTileSize()
+sf::Vector2i Maps::GetTileSize()
 {
 	return sf::Vector2i(tileWidth, tileHeight);
 }
 
-void Level::Draw(sf::RenderWindow &window)
+void Maps::Draw(sf::RenderWindow &window)
 {
 	// рисуем все тайлы (объекты не рисуем!)
 	for (int layer = 0; layer < layers.size(); layer++)

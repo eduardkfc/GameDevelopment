@@ -6,14 +6,15 @@
 class Player
 {
 private:
-	float x, y, w, h, dx, dy, speed;
+	float x, y, w, h, speed;
+	int  dx, dy;
 	int health = 100;
 	float СurrentFrame = 0; // Хранение текущей анимации персонажа
 	float rotation; //Переменная поворачивающая нашего шероя
 	float deX = 0; //Переменная служит для поворота героя вокруг своей оси
 	float deY = 0; //Переменная служит для поворота героя вокруг своей оси
 	float activeButtons = 0;
-	bool wbut=false, abut=false, sbut=false, dbut = false;
+	bool collision;
 	String File;
 	Image image;
 	Texture texture;
@@ -37,11 +38,11 @@ public:
 		sprite.setPosition(x, y);
 	}
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
-	void moving(float &time, Vector2f &pos, vector <Object> &obj, bool &pressedBut, vector <Bullet> &bulletsvector, Bullet &bullet, Level &map)
+	void moving(float &time, vector <Object> &obj, bool &pressedBut, vector <Bullet> &bulletsvector, Bullet &bullet, Maps &map,RenderWindow &window,Vector2f &MousePos,bool &myshot)
 	{
 		//--------------------------------------------------------------------------------------------------------------
-		deX = pos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
-		deY = pos.y - sprite.getPosition().y; //- p.y;он же, координата y
+		deX = MousePos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
+		deY = MousePos.y - sprite.getPosition().y; //- p.y;он же, координата y
 		rotation = (atan2(deY, deX)) * 180 / 3.14159265; //получаем угол в радианах и переводим его в градусы
 		sprite.setRotation(rotation + 85);//поворачиваем спрайт на эти градусы
 		//--------------------------------------------------------------------------------------------------------------
@@ -49,141 +50,36 @@ public:
 		{
 			cout << "fire";
 			pressedBut = true;
-
+			myshot = true;
 			bulletsvector.push_back(bullet);
-
+			bulletsvector[bulletsvector.size() - 1].create(x, y, MousePos);
 		}
 		if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedBut = true; } // Проверка единичного нажатия на клавишу
 		else pressedBut = false;
 
+		dx = 0; dy = 0;
 		if (Keyboard::isKeyPressed(Keyboard::A))
-		{
-			animation(time);
-			activeButtons += 1;
-			abut = true;
-			if (Keyboard::isKeyPressed(Keyboard::W))
-			{
-				wbut = true;
-				activeButtons += 1;
-				y -= ((speed)*time)*0.75;
-				checkcollisions(0, -speed*0.75, time, obj);
-			}
-			else if (Keyboard::isKeyPressed(Keyboard::S))
-			{
-				sbut = true;
-				activeButtons += 1;
-				y += ((speed)*time)*0.75;
-				checkcollisions(0, speed*0.75, time, obj);
-			}
-			if (activeButtons == 1) 
-			{
-				x -= (speed)*time; 
-				checkcollisions(-speed, 0, time, obj);
-			}
-			else if (activeButtons == 2) 
-			{
-				x -= ((speed)*time)*0.75;
-				checkcollisions(-speed*0.75, 0, time, obj);
-			}
-			
-			
-		}
-		else if (Keyboard::isKeyPressed(Keyboard::S))
-		{
-			animation(time);
-			activeButtons += 1;
-			sbut = true;
-			if (Keyboard::isKeyPressed(Keyboard::A))
-			{
-				abut = true;
-				activeButtons += 1;
-				x -= ((speed)*time)*0.75;
-				checkcollisions(-speed*0.75, 0, time, obj);
-			}
-			else if (Keyboard::isKeyPressed(Keyboard::D))
-			{
-				dbut = true;
-				activeButtons += 1;
-				x += ((speed)*time)*0.75;
-				checkcollisions(speed*0.75, 0, time, obj);
-			}
-			if (activeButtons == 1) 
-			{ 
-				y += (speed)*time; 
-				checkcollisions(0, speed, time, obj);
-			}
-			else if (activeButtons == 2) 
-			{
-				y += ((speed)*time)*0.75; 
-				checkcollisions(0, speed*0.75, time, obj);
-			}
-			
-		}
-		else if (Keyboard::isKeyPressed(Keyboard::D))
-		{
-			animation(time);
-			activeButtons += 1;
-			dbut = true;
-			if (Keyboard::isKeyPressed(Keyboard::W))
-			{
-				wbut = true;
-				activeButtons += 1;
-				y -= ((speed)*time)*0.75;
-				checkcollisions(0, -speed*0.75, time, obj);
-			}
-			else if (Keyboard::isKeyPressed(Keyboard::S))
-			{
-				sbut = true;
-				activeButtons += 1;
-				y += ((speed)*time)*0.75;
-				checkcollisions(0, speed*0.75, time, obj);
-			}
-			if (activeButtons == 1) 
-			{ 
-				x += (speed)*time; 
-				checkcollisions(speed, 0, time, obj);
-			}
-			else if (activeButtons == 2) 
-			{
-				x += ((speed)*time)*0.75;
-				checkcollisions(speed*0.75, 0, time, obj);
-			}
-			
-		}
-		else if (Keyboard::isKeyPressed(Keyboard::W))
-		{
-			animation(time);
-			activeButtons += 1;
-			wbut = true;
-			if (Keyboard::isKeyPressed(Keyboard::A))
-			{
-				abut = true;
-				activeButtons += 1;
-				x -= ((speed)*time)*0.75;
-				checkcollisions(-speed*0.75, 0, time, obj);
-			}
-			else if (Keyboard::isKeyPressed(Keyboard::D))
-			{
-				dbut = true;
-				activeButtons += 1;
-				x += ((speed)*time)*0.75;
-				checkcollisions(speed*0.75, 0, time, obj);
-			}
-			if (activeButtons == 1)
-			{ 
-				y -= ((speed)*time); 
-				checkcollisions(0, -speed, time, obj);
-			}
-			else if (activeButtons == 2)
-			{ 
-				y -= ((speed)*time)*0.75;
-				checkcollisions(0, -speed*0.75, time, obj);
-			}
-			
-		}
+			dx = -(speed)*time; 
+		if (Keyboard::isKeyPressed(Keyboard::D))
+			dx = (speed)*time; 
+		if (Keyboard::isKeyPressed(Keyboard::W))
+			dy = -(speed)*time;
+		if (Keyboard::isKeyPressed(Keyboard::S))
+			dy = (speed)*time;
+		if (dy != 0 || dx != 0) { animation(time); }
 		else sprite.setTextureRect(IntRect(0, 112, 62, 91)); activeButtons = 0;
+		if (dy != 0 && dx != 0)
+		{
+			if (dx > 0) { dx = ((speed+20)*time)/2;  }
+			else { dx = -((speed + 20)*time)/2;  }
+			if (dy > 0) { dy = ((speed + 20)*time)/2; }
+			else { dy = -((speed + 20)*time)/2; }
+		}
+		y += dy;
+		x += dx;
+		checkcollisions(dx, dy, time, obj);
 		sprite.setPosition(x, y);
-		wbut = false, abut = false, sbut = false, dbut = false;
+
 	}
 	void animation(float time)
 	{
@@ -191,54 +87,24 @@ public:
 		if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
 		setSpriteRect(int(СurrentFrame)); //Смена кадра анимации
 	}
-	void checkcollisions(float Dx, float Dy, float &time,vector <Object> &obj)
+	void checkcollisions(int Dx, int Dy, float &time,vector <Object> &obj)
 	{
-		for (int i = 0; i<obj.size(); i++)//проходимся по объектам
+		for (int i = 0; i < obj.size(); i++)//проходимся по объектам
+		{
 			if (getRect().intersects(obj[i].rect))//проверяем пересечение игрока с объектом
 			{
+				collision = false;
 				if (obj[i].name == "solid")//если встретили препятствие
+					collision = true;
+				if (collision == true)
 				{
-					if (activeButtons == 1)
-					{
-						if (Dy > 0)
-							y -= (speed)*time;
-						if (Dy < 0)
-							y += (speed)*time;
-						if (Dx > 0)
-							x -= (speed)*time;
-						if (Dx < 0) 
-							x += (speed)*time;
-					}
-					if (activeButtons == 2)
-					{
-						if (Dy > 0)
-						{
-							y -= ((speed)*time)*0.75;
-							if (dbut == true) { x += (speed*time) / 3; }
-							else if (abut == true) { x -= (speed*time) / 3; }
-						}
-						else if (Dy < 0)
-						{
-							y += ((speed)*time)*0.75;
-							if (dbut == true) { x += (speed*time) / 3; }
-							else if (abut == true) { x -= (speed*time) / 3; }
-						}
-						else if (Dx > 0)
-						{
-							x -= ((speed)*time)*0.75;
-							if (wbut == true) { y -= (speed*time) / 3; }
-							else if (sbut == true) { y += (speed*time) / 3; }
-						}
-						else if (Dx < 0)
-						{
-							x += ((speed)*time)*0.75;
-							if (wbut == true) { y -= (speed*time) / 3; }
-							else if (sbut == true) { y += (speed*time) / 3; }
-
-						}
-					}
+					if (Dy > 0) { y += (-Dy); }
+					if (Dy < 0) { y += (Dy*(-1)); }
+					if (Dx > 0) { x += (-Dx); }
+					if (Dx < 0) { x += (Dx*(-1)); }
 				}
 			}
+		}
 	}
 	void skills(Bullet &bullet)
 	{
@@ -288,7 +154,7 @@ public:
 			cout << speedtime << endl;
 			if (speedtime >= 0)
 			{
-				speed = 0.135;
+				speed = 60;
 				cout << speed << " Player speed " << endl;
 			}
 			if (speedtime >= 2000)
@@ -296,7 +162,7 @@ public:
 				Speedtimer.restart();
 				activeSpeed = false;
 				cout << "SUPER SPEED IS OFF" << endl;
-				speed = 0.1;
+				speed = 40;
 				speedcooldown = true;
 				cout << "COOLDOWN - 4 sec" << endl;
 			}

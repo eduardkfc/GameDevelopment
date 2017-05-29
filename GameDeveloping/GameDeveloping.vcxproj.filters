@@ -29,9 +29,6 @@
     <ClInclude Include="Header.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Level.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -48,6 +45,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="GameProcess.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Maps.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
