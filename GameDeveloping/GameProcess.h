@@ -65,11 +65,8 @@ public:
 		restartButton.setOrigin(restartButton.getLocalBounds().width / 2, restartButton.getLocalBounds().height / 2);
 		restartButton.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window,Player &p1,Player &p2,bool &pressedBut,int &hostChoosed,int &gamestate,UdpSocket &socket,IpAddress &enemyip,Maps &map,vector <Object> &obj, Vector2f &MousePos)
+	void render(RenderWindow &window,Player &p1,Player &p2,bool &pressedBut,int &hostChoosed,int &gamestate, TcpSocket &socket,IpAddress &enemyip,Maps &map,vector <Object> &obj, Vector2f &MousePos)
 	{
-		
-		if (hostChoosed == 1) { port = 55002; }
-		else port == 55001;
 		cout << p1.getSpritePos().x << p1.getSpritePos().y << endl;
 
 		window.clear(); //Обновление экрана
@@ -85,19 +82,19 @@ public:
 		if (window.pollEvent(events)) //Проверка закрытия окна
 			if (events.type == Event::Closed) window.close();
 
-		packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << MousePos.x << MousePos.y << p1.getHealth() << p2.getHealth() << bullet.getDamage() << myshot;
-		socket.send(packetoutput, enemyip, port);
+		packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << MousePos.x << MousePos.y << p1.getHealth()  << bullet.getDamage() << myshot;
+		socket.send(packetoutput);
 		packetoutput.clear();
 
 		packetinput.clear();
 
-		if (!socket.receive(packetinput, enemyip, port))
+		if (!socket.receive(packetinput))
 		{
-			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth >> myHealth >> bulletdmg >> enemyshot;
-			if (p1.getHealth() != myHealth)
+			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth  >> bulletdmg >> enemyshot;
+			/*if (p1.getHealth() != myHealth)
 			{
 				p1.setHealth(myHealth);
-			}
+			}*/
 			mousePos2p.x = mousePos2pX;
 			mousePos2p.y = mousePos2pY;
 			if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posY)) { p2.animation(time); }
@@ -190,7 +187,7 @@ public:
 				if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 				{
 					pressedBut = true;
-					if (menuNum == 1) { socket.unbind(); gamestate = 9; break; }
+					if (menuNum == 1) { gamestate = 9; break; }
 				}
 				window.draw(p2win);
 				window.draw(restartButton);
@@ -210,7 +207,7 @@ public:
 				if (Mouse::isButtonPressed(Mouse::Button::Left)) //&& pressedBut == false)
 				{
 					//pressedBut = true;
-					if (menuNum == 1) { cout << "kek"; socket.unbind(); gamestate = 9; break; }
+					if (menuNum == 1) { gamestate = 9; break; }
 				}
 				window.draw(p1win);
 				window.draw(restartButton);

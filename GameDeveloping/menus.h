@@ -218,7 +218,7 @@ public:
 		offlineTextVillage.setOrigin(offlineTextVillage.getLocalBounds().width / 2, offlineTextVillage.getLocalBounds().height / 2);
 		offlineTextVillage.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate, int &hostChoosed, UdpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip, int &MapsID, Maps &map, vector <Object> &obj)
+	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket,TcpListener &listener, bool &pressedBut, IpAddress &myip, IpAddress &enemyip, int &MapsID, Maps &map, vector <Object> &obj)
 	{
 		menuNum = 0;
 		window.clear();
@@ -235,8 +235,8 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "HOST PICKED"; socket.bind(55001, myip); gamestate = 7; hostChoosed = 1; }
-			if (menuNum == 2) { cout << "CLIENT PICKED"; socket.bind(55002, myip); gamestate = 8; hostChoosed = 0; }
+			if (menuNum == 1) { cout << "HOST PICKED"; listener.listen(55001); gamestate = 7; hostChoosed = 1; }
+			if (menuNum == 2) { cout << "CLIENT PICKED"; gamestate = 8; hostChoosed = 0; }
 			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
 			if (menuNum == 4) { cout << "OFFLINE TEST ROADS"; MapsID = 1; gamestate = 5; }
 			if (menuNum == 5) { cout << "OFFLINE TEST VILLAGE"; MapsID = 2; gamestate = 5; }
@@ -378,7 +378,7 @@ public:
 		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
 		backText.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate, bool &pressedBut,IpAddress &enemyip,string &stringip)
+	void render(RenderWindow &window, int &gamestate, bool &pressedBut,IpAddress &enemyip,string &stringip, TcpSocket &socket)
 	{
 		menuNum = 0;
 		window.clear();
@@ -390,7 +390,7 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "CONNECT"; enemyip = stringip; gamestate = 4; }
+			if (menuNum == 1) { cout << "CONNECT"; enemyip = stringip; socket.connect(enemyip, 55001); gamestate = 4; }
 			if (menuNum == 2) { cout << "GOING BACK"; gamestate = 2; }
 		}
 		
@@ -441,11 +441,9 @@ private:
 	Text text,mainText,backText,waitText;
 	Font font;
 	int menuNum = 0;
-	Packet packetinput;
 	Packet packetoutput;
 	int inputcode;
 	int outputcode;
-	unsigned short port;
 public:
 	WaitingForPlayers()
 	{
@@ -453,7 +451,6 @@ public:
 		font.loadFromFile("font.ttf");
 		text.setFont(font);
 		menubg.setTexture(mainscreen);
-		port = 55002; //Порт для отправки данных клиенту
 		mainText.setFont(font);
 		mainText.setString("REFLEX STRIKE");
 		mainText.setCharacterSize(100);
@@ -477,7 +474,7 @@ public:
 
 		text.setPosition(20, 680);
 	}
-	void render(RenderWindow &window, int &gamestate, bool &pressedBut, UdpSocket &socket,IpAddress &myip,IpAddress &enemyip,int &MapsID)
+	void render(RenderWindow &window, int &gamestate, bool &pressedBut, TcpSocket &socket,TcpListener &listener, IpAddress &myip,IpAddress &enemyip,int &MapsID)
 	{
 		window.clear();
 		text.setString("Your IP Address: " + myip.toString());
@@ -488,19 +485,14 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.unbind(); gamestate = 2;  }
+			if (menuNum == 1) { cout << "BACK TO MAINMENU"; listener.close(); gamestate = 2;  }
 		}
-		outputcode = 1;
-		packetinput.clear();
 		packetoutput.clear();
-		packetoutput << outputcode << MapsID;
-		if (socket.receive(packetinput, enemyip, port)==Socket::Status::Done) 
+		packetoutput << MapsID;
+		if (listener.accept(socket) == Socket::Status::Done)
 		{ 
-			packetinput >> inputcode;
-			cout << "Received: " << inputcode << endl;
-			if (inputcode == 2) { gamestate = 5; }
+			socket.send(packetoutput); gamestate = 5;
 		}
-		socket.send(packetoutput, enemyip, port);
 		window.draw(menubg);
 		window.draw(waitText);
 		window.draw(backText);
@@ -517,16 +509,14 @@ private:
 	Sprite menubg;
 	int menuNum = 0;
 	Packet packetinput;
-	Packet packetoutput;
 	int inputcode;
-	int outputcode;
-	unsigned short port;
+
 	Text mainText, backText, waitText;
 	Font font;
 public:
 	WaitingForServer()
 	{
-		port = 55001;
+
 		mainscreen.loadFromFile("mainscreen.jpg");
 		menubg.setTexture(mainscreen);
 		font.loadFromFile("font.ttf");
@@ -552,7 +542,7 @@ public:
 		waitText.setOrigin(waitText.getLocalBounds().width / 2, waitText.getLocalBounds().height / 2);
 		waitText.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate,UdpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip,int &MapsID,Maps &map)
+	void render(RenderWindow &window, int &gamestate,TcpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip,int &MapsID,Maps &map)
 	{
 		window.clear();
 		backText.setFillColor(Color::White);
@@ -561,15 +551,14 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.unbind(); gamestate = 2; }
+			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.disconnect(); gamestate = 2; }
 		}
-		packetoutput.clear();
-		outputcode = 2;
-		packetoutput << outputcode;
+
 		packetinput.clear();
-		socket.send(packetoutput, enemyip, port);
-		if (socket.receive(packetinput, enemyip, port))
+
+		if (Socket::Status::Done == socket.connect(enemyip,55001))
 		{
+			socket.receive(packetinput);
 			packetinput >> inputcode >> MapsID;
 			cout << "Received: " << inputcode << endl;
 			if (inputcode == 1) { gamestate = 5; }
