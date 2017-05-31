@@ -22,31 +22,13 @@ private:
 	vector <Bullet> bulletsvector2p;
 	int bulletdmg;
 	bool myshot, enemyshot;
+	int firstplayer = 10;
 public:
-	MainGame(Player &p1,Player &p2,int &MapsID,int &hostChoosed)
+	MainGame()
 	{
 		hud.init();
 		font.loadFromFile("font.ttf");
-		if (MapsID == 1 && hostChoosed == 1)
-		{
-			p1.setPosition(100, 100);
-			p2.setPosition(1113, 1495);
-		}
-		if (MapsID == 1 && hostChoosed == 0)
-		{
-			p2.setPosition(100, 100);
-			p1.setPosition(1113, 1495);
-		}
-		if (MapsID == 2 && hostChoosed == 1)
-		{
-			p1.setPosition(119,107);
-			p2.setPosition(813,1154);
-		}
-		if (MapsID == 2 && hostChoosed == 0)
-		{
-			p2.setPosition(119, 107);
-			p1.setPosition(813, 1154);
-		}
+		
 		p1win.setFont(font);
 		p1win.setString("Player 1 WIN!");
 		p1win.setCharacterSize(70);
@@ -82,7 +64,7 @@ public:
 		if (window.pollEvent(events)) //Проверка закрытия окна
 			if (events.type == Event::Closed) window.close();
 
-		packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << MousePos.x << MousePos.y << p1.getHealth()  << bullet.getDamage() << myshot;
+		packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << MousePos.x << MousePos.y << p1.getHealth()  << bullet.getDamage() << myshot << firstplayer;
 		socket.send(packetoutput);
 		packetoutput.clear();
 
@@ -90,7 +72,7 @@ public:
 
 		if (!socket.receive(packetinput))
 		{
-			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth  >> bulletdmg >> enemyshot;
+			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth  >> bulletdmg >> enemyshot >> firstplayer;
 			/*if (p1.getHealth() != myHealth)
 			{
 				p1.setHealth(myHealth);

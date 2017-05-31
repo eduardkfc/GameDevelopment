@@ -35,7 +35,7 @@ bool startGame()
 	ConnectToIp connect;
 	float p1posX, p1posY;
 	float p2posX, p2posY, p2Rotation, mousePos2pX, mousePos2pY;
-	MainGame maingame(p1,p2,MapsID,hostChoosed);
+	MainGame maingame;
 	//Color color(255, 0, 0);
 	obj = map.GetObjects("solid");
 	
@@ -47,8 +47,8 @@ bool startGame()
 		if (gamestate == 0) { return false; } //Выход из игры
 		else if (gamestate == 1) { menu.render(window, gamestate,pressedBut); } //Главное меню
 		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed, socket, listener,pressedBut, myip, enemyip, MapsID, map, obj); } //Выбор хоста
-		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket,listener, myip, enemyip,MapsID); } // Ожидание клиента
-		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, myip, enemyip,MapsID,map); } // Ожидание хоста
+		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket,listener, myip, enemyip,MapsID,map,obj,p1,hostChoosed); } // Ожидание клиента
+		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, myip, enemyip,MapsID,map,p1,obj,hostChoosed); } // Ожидание хоста
 		else if (gamestate == 6) { helpwindow.render(window, gamestate, pressedBut); } // Окно помощи
 		else if (gamestate == 7) { choosemap.render(window, gamestate, pressedBut, MapsID, map, obj); } //Выбор карты для хоста
 		else if (gamestate == 8) { connect.render(window, gamestate, pressedBut, enemyip,stringip,socket); }
