@@ -481,7 +481,7 @@ public:
 
 		text.setPosition(20, 680);
 	}
-	void render(RenderWindow &window, int &gamestate, bool &pressedBut, TcpSocket &socket,TcpListener &listener, IpAddress &myip,IpAddress &enemyip,int &MapsID,Maps &map,vector <Object> &obj,Player &p1,int &hostChoosed,Vector2f &p1Start,Vector2f &p2Start)
+	void render(RenderWindow &window, int &gamestate, bool &pressedBut, TcpSocket &socket,TcpListener &listener, IpAddress &myip,IpAddress &enemyip,int &MapsID,Maps &map,vector <Object> &obj,Player &p1,int &hostChoosed)
 	{
 		window.clear();
 		text.setString("Your IP Address: " + myip.toString());
@@ -508,10 +508,7 @@ public:
 				gamestate = 5;  
 				map.LoadFromFile("road.xml"); 
 				obj = map.GetObjects("solid"); 
-				if (hostChoosed == 1)
-					p1Start = Vector2f(100, 100);
-				else if (hostChoosed == 0)
-					p1Start = Vector2f(1113, 1495);
+				p1.startPosition(hostChoosed, MapsID);
 				gamestate = 5;
 			}
 			else if (MapsID == 2) 
@@ -519,10 +516,7 @@ public:
 				gamestate = 5;  
 				map.LoadFromFile("village.xml"); 
 				obj = map.GetObjects("solid"); 
-				if (hostChoosed == 1)
-					p1Start = Vector2f(119, 107);
-				else if (hostChoosed == 0)
-					p1Start = Vector2f(813, 1154);
+				p1.startPosition(hostChoosed, MapsID);
 				gamestate = 5;
 			}
 			
@@ -576,7 +570,7 @@ public:
 		waitText.setOrigin(waitText.getLocalBounds().width / 2, waitText.getLocalBounds().height / 2);
 		waitText.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate,TcpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip,int &MapsID,Maps &map,Player &p1,vector <Object> &obj,int &hostChoosed, Vector2f &p1Start, Vector2f &p2Start)
+	void render(RenderWindow &window, int &gamestate,TcpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip,int &MapsID,Maps &map,Player &p1,vector <Object> &obj,int &hostChoosed)
 	{
 		window.clear();
 		backText.setFillColor(Color::White);
@@ -596,24 +590,18 @@ public:
 			packetinput >> MapsID;
 			if (MapsID == 1)
 			{
-				
+				gamestate = 5;
 				map.LoadFromFile("road.xml");
 				obj = map.GetObjects("solid");
-				if (hostChoosed == 1)
-					p1Start = Vector2f(100, 100);
-				else if (hostChoosed == 0)
-					p1Start = Vector2f(1113, 1495);
+				p1.startPosition(hostChoosed, MapsID);
 				gamestate = 5;
 			}
 			else if (MapsID == 2)
 			{
-				
+				gamestate = 5;
 				map.LoadFromFile("village.xml");
 				obj = map.GetObjects("solid");
-				if (hostChoosed == 1)
-					p1Start = Vector2f(119, 107);
-				else if (hostChoosed == 0)
-					p1Start = Vector2f(813, 1154);
+				p1.startPosition(hostChoosed, MapsID);
 				gamestate = 5;
 			}
 		}

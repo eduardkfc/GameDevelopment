@@ -193,4 +193,21 @@ public:
 	bool getActiveSS() { return activeSpeed; }
 	bool getSScooldown() { return speedcooldown; }
 	float getRotation() { return sprite.getRotation(); }
+	void startPosition(int host, int map)
+	{
+		if (map == 1)
+		{
+			if (host == 1)
+				sprite.setPosition(100, 100);
+			else if (host == 0)
+				sprite.setPosition(1113, 1495);
+		}
+		else if (map == 2)
+		{
+			if (host == 1)
+				sprite.setPosition(119, 107);
+			else if (host == 0)
+				sprite.setPosition(813, 1154);
+		}
+	}
 };
