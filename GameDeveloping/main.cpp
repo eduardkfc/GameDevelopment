@@ -12,11 +12,11 @@ bool startGame()
 	//window.setFramerateLimit(60); //Лимит кадров в секунду
 
 	bool pressedBut = false; //Переменная для проверки нажатия кнопки мыши(
-
+	Vector2f p1Start, p2Start;
 	//-----------------------------------Для перезарядки способностей-----------------------
 	
-	Player p1; //Создаем объект класса игрок
-	Player p2; //Создаем объект класса игрок
+	Player p1(p1Start); //Создаем объект класса игрок
+	Player p2(p2Start); //Создаем объект класса игрок
 	TcpSocket socket;
 	TcpListener listener;
 	socket.setBlocking(false);
@@ -47,8 +47,8 @@ bool startGame()
 		if (gamestate == 0) { return false; } //Выход из игры
 		else if (gamestate == 1) { menu.render(window, gamestate,pressedBut); } //Главное меню
 		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed, socket, listener,pressedBut, myip, enemyip, MapsID, map, obj); } //Выбор хоста
-		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket,listener, myip, enemyip,MapsID,map,obj,p1,hostChoosed); } // Ожидание клиента
-		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, myip, enemyip,MapsID,map,p1,obj,hostChoosed); } // Ожидание хоста
+		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket,listener, myip, enemyip,MapsID,map,obj,p1,hostChoosed,p1Start,p2Start); } // Ожидание клиента
+		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, myip, enemyip,MapsID,map,p1,obj,hostChoosed, p1Start, p2Start); } // Ожидание хоста
 		else if (gamestate == 6) { helpwindow.render(window, gamestate, pressedBut); } // Окно помощи
 		else if (gamestate == 7) { choosemap.render(window, gamestate, pressedBut, MapsID, map, obj); } //Выбор карты для хоста
 		else if (gamestate == 8) { connect.render(window, gamestate, pressedBut, enemyip,stringip,socket,hostChoosed); }

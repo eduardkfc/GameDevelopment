@@ -26,7 +26,7 @@ private:
 	
 public:
 	Sprite sprite;
-	Player()
+	Player(Vector2f positions)
 	{ 
 		speed = 40;
 		sprite.setOrigin(35, 63);
@@ -34,7 +34,7 @@ public:
 		sprite.setTexture(texture);
 		sprite.setTextureRect(IntRect(0, 112, 62, 91));
 		texture.setSmooth(true);
-		//sprite.setPosition(x, y);
+		sprite.setPosition(positions);
 	}
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
 	void moving(float &time, vector <Object> &obj, bool &pressedBut, vector <Bullet> &bulletsvector, Bullet &bullet, Maps &map,RenderWindow &window,Vector2f &MousePos,bool &myshot)
