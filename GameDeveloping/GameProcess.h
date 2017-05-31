@@ -22,7 +22,7 @@ private:
 	vector <Bullet> bulletsvector2p;
 	int bulletdmg;
 	bool myshot, enemyshot;
-	int firstplayer = 10;
+	int firstplayer;
 public:
 	MainGame()
 	{
@@ -49,6 +49,11 @@ public:
 	}
 	void render(RenderWindow &window,Player &p1,Player &p2,bool &pressedBut,int &hostChoosed,int &gamestate, TcpSocket &socket,IpAddress &enemyip,Maps &map,vector <Object> &obj, Vector2f &MousePos)
 	{
+		if (hostChoosed == 1)
+		{
+			firstplayer = 10;
+		}
+		else firstplayer = 5;
 		cout << p1.getSpritePos().x << p1.getSpritePos().y << endl;
 
 		window.clear(); //Обновление экрана

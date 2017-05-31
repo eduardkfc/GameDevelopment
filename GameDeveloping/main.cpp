@@ -15,8 +15,8 @@ bool startGame()
 
 	//-----------------------------------Для перезарядки способностей-----------------------
 	
-	Player p1(500, 500); //Создаем объект класса игрок
-	Player p2(600, 600); //Создаем объект класса игрок
+	Player p1; //Создаем объект класса игрок
+	Player p2; //Создаем объект класса игрок
 	TcpSocket socket;
 	TcpListener listener;
 	socket.setBlocking(false);
@@ -51,7 +51,7 @@ bool startGame()
 		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, myip, enemyip,MapsID,map,p1,obj,hostChoosed); } // Ожидание хоста
 		else if (gamestate == 6) { helpwindow.render(window, gamestate, pressedBut); } // Окно помощи
 		else if (gamestate == 7) { choosemap.render(window, gamestate, pressedBut, MapsID, map, obj); } //Выбор карты для хоста
-		else if (gamestate == 8) { connect.render(window, gamestate, pressedBut, enemyip,stringip,socket); }
+		else if (gamestate == 8) { connect.render(window, gamestate, pressedBut, enemyip,stringip,socket,hostChoosed); }
 		else if (gamestate == 5) { maingame.render(window, p1, p2, pressedBut, hostChoosed, gamestate, socket, enemyip, map,obj,MousePos); }
 		else if (gamestate == 9) { return true; } // Рестарт игры
 		if (!Mouse::isButtonPressed(Mouse::Button::Left)) // Проверка на единичное нажатие клавиши

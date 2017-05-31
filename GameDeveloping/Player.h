@@ -26,16 +26,15 @@ private:
 	
 public:
 	Sprite sprite;
-	Player(int X, int Y)
+	Player()
 	{ 
 		speed = 40;
 		sprite.setOrigin(35, 63);
 		texture.loadFromFile("soldier1.png");
 		sprite.setTexture(texture);
-		x = X; y = Y;
 		sprite.setTextureRect(IntRect(0, 112, 62, 91));
 		texture.setSmooth(true);
-		sprite.setPosition(x, y);
+		//sprite.setPosition(x, y);
 	}
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
 	void moving(float &time, vector <Object> &obj, bool &pressedBut, vector <Bullet> &bulletsvector, Bullet &bullet, Maps &map,RenderWindow &window,Vector2f &MousePos,bool &myshot)

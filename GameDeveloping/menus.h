@@ -377,7 +377,7 @@ public:
 		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
 		backText.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate, bool &pressedBut,IpAddress &enemyip,string &stringip, TcpSocket &socket)
+	void render(RenderWindow &window, int &gamestate, bool &pressedBut,IpAddress &enemyip,string &stringip, TcpSocket &socket,int &hostChoosed)
 	{
 		menuNum = 0;
 		window.clear();
@@ -389,7 +389,13 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "CONNECT"; enemyip = stringip; socket.connect(enemyip, 55001); gamestate = 4; }
+			if (menuNum == 1) 
+			{ 
+				cout << "CONNECT"; 
+				enemyip = stringip; 
+				socket.connect(enemyip, 55001);
+				gamestate = 4;
+			}
 			if (menuNum == 2) { cout << "GOING BACK"; gamestate = 2; }
 		}
 		
@@ -458,7 +464,7 @@ public:
 		mainText.setPosition(640, 150);
 		mainText.setOrigin(mainText.getLocalBounds().width / 2, mainText.getLocalBounds().height / 2);
 		mainText.setOutlineThickness(2);
-
+		outputcode = 2;
 		backText.setFont(font);
 		backText.setString("Back");
 		backText.setCharacterSize(40);
@@ -486,37 +492,40 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "BACK TO MAINMENU"; listener.close(); gamestate = 2;  }
+			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.disconnect(); gamestate = 2;  }
 		}
 		packetoutput.clear();
 		
-		packetoutput << id << MapsID;
+		packetoutput << MapsID;
 		
-		if (Socket::Status::Done == socket.connect(enemyip, 55001))
+		if (Socket::Status::Done == listener.accept(socket))
 		{
 			socket.send(packetoutput);
-			socket.receive(packetinput);
-			packetinput >> inputcode >> MapsID;
-			cout << "Received: " << inputcode << endl;
-			if (inputcode == 2) { gamestate = 5; }
-		}
-		if (MapsID == 1) { map.LoadFromFile("road.xml"); obj = map.GetObjects("solid"); }
-		else if (MapsID == 2) { map.LoadFromFile("village.xml"); obj = map.GetObjects("solid"); }
-		if (MapsID == 1 && hostChoosed == 1)
-		{
-			p1.setPosition(100, 100);
-		}
-		else if (MapsID == 1 && hostChoosed == 0)
-		{
-			p1.setPosition(1113, 1495);
-		}
-		else if (MapsID == 2 && hostChoosed == 1)
-		{
-			p1.setPosition(119, 107);
-		}
-		else if (MapsID == 2 && hostChoosed == 0)
-		{
-			p1.setPosition(813, 1154);
+			//socket.receive(packetinput);
+			//packetinput >> inputcode;
+			if (MapsID == 1) 
+			{ 
+				gamestate = 5;  
+				map.LoadFromFile("road.xml"); 
+				obj = map.GetObjects("solid"); 
+				if (hostChoosed == 1)
+					p1.setPosition(100, 100);
+				else if (hostChoosed == 0)
+					p1.setPosition(1113, 1495);
+				gamestate = 5;
+			}
+			else if (MapsID == 2) 
+			{ 
+				gamestate = 5;  
+				map.LoadFromFile("village.xml"); 
+				obj = map.GetObjects("solid"); 
+				if (hostChoosed == 1)
+					p1.setPosition(119, 107);
+				else if (hostChoosed == 0)
+					p1.setPosition(813, 1154);
+				gamestate = 5;
+			}
+			
 		}
 		window.draw(menubg);
 		window.draw(waitText);
@@ -533,8 +542,8 @@ private:
 	Texture mainscreen;
 	Sprite menubg;
 	int menuNum = 0;
-	Packet packetinput;
-	int inputcode;
+	Packet packetinput,packetoutput;
+	int inputcode, outputcode;
 
 	Text mainText, backText, waitText;
 	Font font;
@@ -552,7 +561,7 @@ public:
 		mainText.setPosition(640, 150);
 		mainText.setOrigin(mainText.getLocalBounds().width / 2, mainText.getLocalBounds().height / 2);
 		mainText.setOutlineThickness(2);
-
+		outputcode = 1;
 		backText.setFont(font);
 		backText.setString("Back");
 		backText.setCharacterSize(40);
@@ -581,31 +590,35 @@ public:
 
 		packetinput.clear();
 
-		if (Socket::Status::Done == socket.connect(enemyip,55001))
+		if (Socket::Status::Done == socket.connect(enemyip, 55001))
 		{
 			socket.receive(packetinput);
-			packetinput >> inputcode >> MapsID;
-			cout << "Received: " << inputcode << endl;
-			if (inputcode == 2) { gamestate = 5; }
+			packetinput >> MapsID;
+			if (MapsID == 1)
+			{
+				
+				map.LoadFromFile("road.xml");
+				obj = map.GetObjects("solid");
+				if (hostChoosed == 1)
+					p1.setPosition(100, 100);
+				else if (hostChoosed == 0)
+					p1.setPosition(1113, 1495);
+				gamestate = 5;
+			}
+			else if (MapsID == 2)
+			{
+				
+				map.LoadFromFile("village.xml");
+				obj = map.GetObjects("solid");
+				if (hostChoosed == 1)
+					p1.setPosition(119, 107);
+				else if (hostChoosed == 0)
+					p1.setPosition(813, 1154);
+				gamestate = 5;
+			}
 		}
-		if (MapsID == 1) { map.LoadFromFile("road.xml"); obj = map.GetObjects("solid"); }
-		else if (MapsID == 2) { map.LoadFromFile("village.xml"); obj = map.GetObjects("solid");	}
-		if (MapsID == 1 && hostChoosed == 1)
-		{
-			p1.setPosition(100, 100);
-		}
-		if (MapsID == 1 && hostChoosed == 0)
-		{
-			p1.setPosition(1113, 1495);
-		}
-		if (MapsID == 2 && hostChoosed == 1)
-		{
-			p1.setPosition(119, 107);
-		}
-		if (MapsID == 2 && hostChoosed == 0)
-		{
-			p1.setPosition(813, 1154);
-		}
+		
+		
 		window.draw(menubg);
 		window.draw(mainText);
 		window.draw(waitText);
