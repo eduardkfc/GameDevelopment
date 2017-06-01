@@ -9,6 +9,7 @@ bool startGame()
 	RenderWindow window(VideoMode(1280, 720), "Reflex Strike", Style::None); //Инициализируем окно
 	view.reset(FloatRect(0, 0, 1280, 720)); //Перезагрузка экрана
 	window.setVerticalSyncEnabled(true); //Включение вертикальной синхронизации
+	window.setActive(true);
 	//window.setFramerateLimit(60); //Лимит кадров в секунду
 
 	bool pressedBut = false; //Переменная для проверки нажатия кнопки мыши(
@@ -36,9 +37,6 @@ bool startGame()
 	float p1posX, p1posY;
 	float p2posX, p2posY, p2Rotation, mousePos2pX, mousePos2pY;
 	MainGame maingame;
-	//Color color(255, 0, 0);
-	obj = map.GetObjects("solid");
-	
 	int enemyHealth, myHealth;
 	Vector2f MousePos;
 	while (window.isOpen()) //Цикл, пока открыто окно, он действует

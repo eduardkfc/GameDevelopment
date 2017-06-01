@@ -4,13 +4,12 @@
 class MainGame
 {
 private:
-	int gamePaused, enemyHealth, myHealth;
+	int enemyHealth, myHealth;
 	float time;
 	float p2posX, p2posY, p2Rotation, mousePos2pX, mousePos2pY;
 	Clock clock;
 	Event events; 
 	HUD hud;
-	unsigned short port;
 	Vector2f mousePos2p; //Переменная для хранения координат указателя мыши второго игрока
 	Packet packetinput;
 	Packet packetoutput;
@@ -22,7 +21,6 @@ private:
 	vector <Bullet> bulletsvector2p;
 	int bulletdmg;
 	bool myshot, enemyshot;
-	int firstplayer;
 public:
 	MainGame()
 	{
@@ -49,11 +47,6 @@ public:
 	}
 	void render(RenderWindow &window,Player &p1,Player &p2,bool &pressedBut,int &hostChoosed,int &gamestate, TcpSocket &socket,IpAddress &enemyip,Maps &map,vector <Object> &obj, Vector2f &MousePos)
 	{
-		if (hostChoosed == 1)
-		{
-			firstplayer = 10;
-		}
-		else firstplayer = 5;
 		cout << p1.getSpritePos().x << p1.getSpritePos().y << endl;
 
 		window.clear(); //Обновление экрана
@@ -66,10 +59,14 @@ public:
 		p1.moving(time, obj, pressedBut, bulletsvector, bullet, map, window, MousePos, myshot);
 		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y);
 		
-		if (window.pollEvent(events)) //Проверка закрытия окна
+		if (window.pollEvent(events))
+		{//Проверка закрытия окна
 			if (events.type == Event::Closed) window.close();
+			if (events.type == Event::MouseButtonPressed) window.requestFocus();
+		}
+		
 
-		packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << MousePos.x << MousePos.y << p1.getHealth()  << bullet.getDamage() << myshot << firstplayer;
+		packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << MousePos.x << MousePos.y << p1.getHealth()  << bullet.getDamage() << myshot;
 		socket.send(packetoutput);
 		packetoutput.clear();
 
@@ -77,7 +74,7 @@ public:
 
 		if (!socket.receive(packetinput))
 		{
-			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth  >> bulletdmg >> enemyshot >> firstplayer;
+			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth  >> bulletdmg >> enemyshot;
 			/*if (p1.getHealth() != myHealth)
 			{
 				p1.setHealth(myHealth);
@@ -154,7 +151,7 @@ public:
 			if (bulletsvector2p[i].getBulletRect().intersects(p1.getGlobalBounds()))
 			{
 				cout << "POPADANIE"; bulletsvector2p.erase(bulletsvector2p.begin() + i);
-				p1.setHealth(p1.getHealth() - bullet.getDamage());
+				p1.setHealth(p1.getHealth() - bulletdmg);
 			}
 
 		}
