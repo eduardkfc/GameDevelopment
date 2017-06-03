@@ -7,7 +7,6 @@ using namespace sf;
 using namespace std;
 #include <iostream>
 #include <vector>
-#include <thread>
 #include <cmath>
 #include "Maps.h"
 #include "bullet.h"

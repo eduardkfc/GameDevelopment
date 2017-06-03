@@ -78,7 +78,6 @@ public:
 		x += dx;
 		checkcollisions(dx, dy, time, obj);
 		sprite.setPosition(x, y);
-
 	}
 	void animation(float time)
 	{
@@ -197,17 +196,16 @@ public:
 	{
 		if (map == 1)
 		{
-			if (host == 1)
-				sprite.setPosition(100, 100);
-			else if (host == 0)
-				sprite.setPosition(1113, 1495);
+			cout << "Map -> Roads" << endl;
+			if (host == 1) { x = 100; y = 100; cout << " Host Choosed"; }
+			else if (host == 0) { x = 1113; y = 1495; cout << " Client Choosed";}
 		}
 		else if (map == 2)
 		{
-			if (host == 1)
-				sprite.setPosition(119, 107);
-			else if (host == 0)
-				sprite.setPosition(813, 1154);
+			cout << "Map -> Village" << endl;
+			if (host == 1) { x = 119; y = 107; cout << " Host Choosed"; }
+			else if (host == 0) { x = 813; y = 1154; cout << " Client Choosed"; }
+		
 		}
 	}
 };

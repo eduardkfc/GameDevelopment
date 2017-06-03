@@ -101,6 +101,7 @@ public:
 		if (p1HP < 30) { Healthtext.setFillColor(Color::Red); }
 		if (p2HP < 70) { EnemyHealthtext.setFillColor(Color::Black); }
 		if (p2HP < 30) { EnemyHealthtext.setFillColor(Color::Red); }
+
 		window.draw(myrectBack);
 		window.draw(myrect);
 		window.draw(Healthtext);

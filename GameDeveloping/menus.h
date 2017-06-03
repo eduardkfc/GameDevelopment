@@ -101,12 +101,12 @@ public:
 		text.setPosition(640, 150);
 		
 		menuNum = false;
-		SSico.setPosition(200, 510);
-		DDico.setPosition(200, 410);
+		SSico.setPosition(170, 510);
+		DDico.setPosition(170, 410);
 
 		mainHelpText.setFont(font);
-		mainHelpText.setString("   \t\t\t\tUse the WASD for moving your soldier.\n  \t\t\t\t\t\t\tUse mouse arrow to aim.\n\t\t\t\t\t\tUse left mouse button to Shoot.\nUse Q-button to Double Damage. Use E-button to Super Speed");
-		mainHelpText.setCharacterSize(40);
+		mainHelpText.setString("   \t\t\t\tUse the WASD for moving your soldier.\n\n  \t\t\t\t\t\t\tUse mouse arrow to aim.\n\n\t\t\t\t\t\tUse left mouse button to Shoot.\n\nUse Q-button to Double Damage. Use E-button to Super Speed");
+		mainHelpText.setCharacterSize(27);
 		mainHelpText.setOrigin(mainHelpText.getLocalBounds().width / 2, mainHelpText.getLocalBounds().height / 2);
 		mainHelpText.setPosition(640, 300);
 		mainHelpText.setOutlineThickness(2);
@@ -115,14 +115,14 @@ public:
 		ddText.setString(" - Makes bullet damage twice. Duration - 5 sec. Cooldown - 7 sec.");
 		ddText.setCharacterSize(30);
 		ddText.setOrigin(ddText.getLocalBounds().width / 2, ddText.getLocalBounds().height / 2);
-		ddText.setPosition(760, 445);
+		ddText.setPosition(730, 445);
 		ddText.setOutlineThickness(2);
 
 		ssText.setFont(font);
 		ssText.setString(" - Increase soldier speed +40%. Duration - 2 sec. Cooldown - 4 sec.");
 		ssText.setCharacterSize(30);
 		ssText.setOrigin(ssText.getLocalBounds().width / 2, ssText.getLocalBounds().height / 2);
-		ssText.setPosition(770, 545);
+		ssText.setPosition(740, 545);
 		ssText.setOutlineThickness(2);
 
 		backText.setFont(font);
@@ -218,7 +218,7 @@ public:
 		offlineTextVillage.setOrigin(offlineTextVillage.getLocalBounds().width / 2, offlineTextVillage.getLocalBounds().height / 2);
 		offlineTextVillage.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket,TcpListener &listener, bool &pressedBut, IpAddress &myip, IpAddress &enemyip, int &MapsID, Maps &map, vector <Object> &obj)
+	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket,TcpListener &listener, bool &pressedBut, IpAddress &myip, IpAddress &enemyip, int &MapsID, Maps &map, vector <Object> &obj,Player &p1)
 	{
 		menuNum = 0;
 		window.clear();
@@ -238,8 +238,22 @@ public:
 			if (menuNum == 1) { cout << "HOST PICKED"; listener.listen(55001); gamestate = 7; hostChoosed = 1; }
 			if (menuNum == 2) { cout << "CLIENT PICKED"; gamestate = 8; hostChoosed = 0; }
 			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
-			if (menuNum == 4) { cout << "OFFLINE TEST ROADS"; MapsID = 1; gamestate = 5; }
-			if (menuNum == 5) { cout << "OFFLINE TEST VILLAGE"; MapsID = 2; gamestate = 5; }
+			if (menuNum == 4) 
+			{ 
+				cout << "OFFLINE TEST ROADS"; 
+				MapsID = 1; 
+				gamestate = 5; 
+				hostChoosed = 1; 
+				p1.startPosition(hostChoosed, MapsID);
+			}
+			if (menuNum == 5) 
+			{ 
+				cout << "OFFLINE TEST VILLAGE"; 
+				MapsID = 2; 
+				gamestate = 5; 
+				hostChoosed = 1; 
+				p1.startPosition(hostChoosed, MapsID); 
+			}
 			if (MapsID == 1) { map.LoadFromFile("road.xml"); obj = map.GetObjects("solid"); }
 			if (MapsID == 2) { map.LoadFromFile("village.xml"); obj = map.GetObjects("solid"); }
 		}
@@ -447,10 +461,6 @@ private:
 	Font font;
 	int menuNum = 0;
 	Packet packetoutput;
-	Packet packetinput;
-	int inputcode;
-	int outputcode;
-	int id = 10;
 public:
 	WaitingForPlayers()
 	{
@@ -464,7 +474,7 @@ public:
 		mainText.setPosition(640, 150);
 		mainText.setOrigin(mainText.getLocalBounds().width / 2, mainText.getLocalBounds().height / 2);
 		mainText.setOutlineThickness(2);
-		outputcode = 2;
+
 		backText.setFont(font);
 		backText.setString("Back");
 		backText.setCharacterSize(40);
@@ -505,7 +515,6 @@ public:
 			//packetinput >> inputcode;
 			if (MapsID == 1) 
 			{ 
-				gamestate = 5;  
 				map.LoadFromFile("road.xml"); 
 				obj = map.GetObjects("solid"); 
 				p1.startPosition(hostChoosed, MapsID);
@@ -513,7 +522,6 @@ public:
 			}
 			else if (MapsID == 2) 
 			{ 
-				gamestate = 5;  
 				map.LoadFromFile("village.xml"); 
 				obj = map.GetObjects("solid"); 
 				p1.startPosition(hostChoosed, MapsID);
@@ -537,8 +545,6 @@ private:
 	Sprite menubg;
 	int menuNum = 0;
 	Packet packetinput,packetoutput;
-	int inputcode, outputcode;
-
 	Text mainText, backText, waitText;
 	Font font;
 public:
@@ -555,7 +561,7 @@ public:
 		mainText.setPosition(640, 150);
 		mainText.setOrigin(mainText.getLocalBounds().width / 2, mainText.getLocalBounds().height / 2);
 		mainText.setOutlineThickness(2);
-		outputcode = 1;
+
 		backText.setFont(font);
 		backText.setString("Back");
 		backText.setCharacterSize(40);
@@ -579,34 +585,32 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.disconnect(); gamestate = 2; }
+			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.disconnect(); gamestate = 2; MapsID = 0; }
 		}
 
 		packetinput.clear();
 
 		if (Socket::Status::Done == socket.connect(enemyip, 55001))
 		{
-			socket.receive(packetinput);
-			packetinput >> MapsID;
-			if (MapsID == 1)
+			if (!socket.receive(packetinput))
 			{
-				gamestate = 5;
-				map.LoadFromFile("road.xml");
-				obj = map.GetObjects("solid");
-				p1.startPosition(hostChoosed, MapsID);
-				gamestate = 5;
-			}
-			else if (MapsID == 2)
-			{
-				gamestate = 5;
-				map.LoadFromFile("village.xml");
-				obj = map.GetObjects("solid");
-				p1.startPosition(hostChoosed, MapsID);
-				gamestate = 5;
+				packetinput >> MapsID;
+				if (MapsID == 1)
+				{
+					gamestate = 5;
+					map.LoadFromFile("road.xml");
+					obj = map.GetObjects("solid");
+					p1.startPosition(hostChoosed, MapsID);
+				}
+				else if (MapsID == 2)
+				{
+					gamestate = 5;
+					map.LoadFromFile("village.xml");
+					obj = map.GetObjects("solid");
+					p1.startPosition(hostChoosed, MapsID);
+				}
 			}
 		}
-		
-		
 		window.draw(menubg);
 		window.draw(mainText);
 		window.draw(waitText);

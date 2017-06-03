@@ -13,7 +13,7 @@ public:
 	Bullet()
 	{
 		damage = 5;
-		speed = 100;
+		speed = 120;
 		w = 15;
 		h = 5;
 		texture.loadFromFile("bullet.png");

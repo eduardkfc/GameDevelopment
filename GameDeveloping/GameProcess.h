@@ -1,28 +1,36 @@
 #pragma once
 #include "Header.h"
 
-class MainGame
+class GameLoop
 {
 private:
-	int enemyHealth, myHealth;
+	int myHealth;
 	float time;
-	float p2posX, p2posY, p2Rotation, mousePos2pX, mousePos2pY;
-	Clock clock;
-	Event events; 
-	HUD hud;
+	//-Переменные второго игрока
+	float p2posX, p2posY, p2Rotation, mousePos2pX, mousePos2pY; //Переменные второго игрока
 	Vector2f mousePos2p; //Переменная для хранения координат указателя мыши второго игрока
-	Packet packetinput;
-	Packet packetoutput;
-	Text p1win, p2win, restartButton;
-	Font font;
-	Bullet bullet;
-	int menuNum;
-	vector <Bullet> bulletsvector; //Вектор пуль первого игрока
-	vector <Bullet> bulletsvector2p;
+	int enemyHealth;
 	int bulletdmg;
 	bool myshot, enemyshot;
+
+	Clock clock; //Класс зафиксированного времени игры
+	HUD hud; //Класс интерфейса 
+
+	Packet packetinput;
+	Packet packetoutput;
+	bool queue = true;
+	bool settedqueue = false;
+
+	Text p1win, p2win, restartButton;
+	Font font;
+
+	Bullet bullet;
+	vector <Bullet> bulletsvector; //Вектор пуль первого игрока
+	vector <Bullet> bulletsvector2p;
+
+	int menuNum;
 public:
-	MainGame()
+	GameLoop()
 	{
 		hud.init();
 		font.loadFromFile("font.ttf");
@@ -45,58 +53,53 @@ public:
 		restartButton.setOrigin(restartButton.getLocalBounds().width / 2, restartButton.getLocalBounds().height / 2);
 		restartButton.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window,Player &p1,Player &p2,bool &pressedBut,int &hostChoosed,int &gamestate, TcpSocket &socket,IpAddress &enemyip,Maps &map,vector <Object> &obj, Vector2f &MousePos)
+	void render(RenderWindow &window, Player &p1, Player &p2, bool &pressedBut, int &hostChoosed, int &gamestate, TcpSocket &socket, Maps &map, vector <Object> &obj, Vector2f &MousePos)
 	{
+		if (hostChoosed == 1 && settedqueue == false) { queue = false; settedqueue = true; }
+		else if (hostChoosed == 0 && settedqueue == false) { queue = true; settedqueue = true; }
+			
 		cout << p1.getSpritePos().x << p1.getSpritePos().y << endl;
-
 		window.clear(); //Обновление экрана
 		time = clock.getElapsedTime().asMilliseconds(); //Измерение времени в микросекундах
 		clock.restart(); //Перезагружаем время
 		time = time / 80; //Задаем общую скорость игры
 		
-		//--Способности--
+		//--Способности и управление
 		p1.skills(bullet);
 		p1.moving(time, obj, pressedBut, bulletsvector, bullet, map, window, MousePos, myshot);
-		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y);
+		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y); //Камера вида
 		
-		if (window.pollEvent(events))
-		{//Проверка закрытия окна
-			if (events.type == Event::Closed) window.close();
-			if (events.type == Event::MouseButtonPressed) window.requestFocus();
-		}
-		
-
-		packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << MousePos.x << MousePos.y << p1.getHealth()  << bullet.getDamage() << myshot;
-		socket.send(packetoutput);
-		packetoutput.clear();
-
-		packetinput.clear();
-
-		if (!socket.receive(packetinput))
+		//Отправляем пакеты противнику
+		if (queue == false || myshot == true)
 		{
-			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth  >> bulletdmg >> enemyshot;
-			/*if (p1.getHealth() != myHealth)
-			{
-				p1.setHealth(myHealth);
-			}*/
+			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << MousePos.x << MousePos.y << p1.getHealth() << p2.getHealth()<< bullet.getDamage() << myshot;
+			socket.send(packetoutput);
+			packetoutput.clear();
+			packetinput.clear();
+			queue = true;
+		}
+		if (!socket.receive(packetinput)) //Прием пакетов от противника если они приходят
+		{
+			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth >> myHealth >> bulletdmg >> enemyshot;
 			mousePos2p.x = mousePos2pX;
 			mousePos2p.y = mousePos2pY;
 			if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posY)) { p2.animation(time); }
+			if (p1.getHealth() != myHealth) { p1.setHealth(myHealth); }
 			p2.setPosition(p2posX, p2posY);
 			p2.sprite.setRotation(p2Rotation);
 			cout << p2posX << " " << p2posY << "Second Player" << endl;
+			queue = false;
 		}
-		
-		if (Keyboard::isKeyPressed(Keyboard::J)) { enemyshot = true; }
+	
 
 		if (enemyshot == true) 
 		{ 
 			bulletsvector2p.push_back(bullet);
 			bulletsvector2p[bulletsvector2p.size()-1].create(p2.getSpritePos().x,p2.getSpritePos().y,mousePos2p);
 		}
-		if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(p1.getHealth()-1); }
-		if (Keyboard::isKeyPressed(Keyboard::I)) { p2.setHealth(p2.getHealth() - 1); }
-		if (Keyboard::isKeyPressed(Keyboard::H)) { p2.sprite.move(0, p1.getSpeed()*time); }
+		if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(p1.getHealth()-1 * time); }
+		//if (Keyboard::isKeyPressed(Keyboard::I)) { p2.setHealth(p2.getHealth() - 1); }
+		//if (Keyboard::isKeyPressed(Keyboard::H)) { p2.sprite.move(0, p1.getSpeed()*time); }
 
 		enemyshot = false;
 		myshot = false;
@@ -107,11 +110,9 @@ public:
 		window.draw(p2.sprite); //Вывод и обновление второго игрока
 		hud.draw(window, p1, p2);
 		
-		for (int j = 0; j < obj.size(); j++)//проходимся по объектам
-			for (int i = 0; i < bulletsvector.size(); i++)
+		for (int j = 0; j < obj.size(); j++)//проходимся по объектам карты
+			for (int i = 0; i < bulletsvector.size(); i++) //проходимся по вектору пуль
 			{
-				//cout << "error";
-
 				if (bulletsvector[i].getBulletRect().intersects(obj[j].rect))//проверяем пересечение игрока с объектом
 				{
 					if (obj[j].name == "solid")//если встретили препятствие
@@ -140,7 +141,6 @@ public:
 				{
 					if (obj[j].name == "solid")//если встретили препятствие
 					{
-
 						bulletsvector2p.erase(bulletsvector2p.begin() + i);
 					}
 				}
