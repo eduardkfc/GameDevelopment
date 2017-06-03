@@ -27,15 +27,14 @@ public:
 		y += (sin(bulletrot / 180 * 3.14159265)*speed)*time;
 		sprite.setPosition(x, y);
 	}
-	void create(int X, int Y,Vector2f mousePos)
+	void create(int X, int Y, float rotation)
 	{
 		x = X, y = Y;
-		bulletrot = (atan2(mousePos.y - y, mousePos.x - x) * 180 / 3.14159265) - 4;
+		bulletrot = rotation - 88;
 		sprite.setOrigin(35 - 80, 63 - 75);
 		sprite.setRotation(bulletrot);
 		sprite.setPosition(x, y);
 	}
-
 	Vector2f getBulletSprPos() { return sprite.getPosition(); }
 	FloatRect getBulletRect() { return sprite.getGlobalBounds(); }
 	int getDamage() { return damage; }

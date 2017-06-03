@@ -27,7 +27,7 @@ private:
 	Bullet bullet;
 	vector <Bullet> bulletsvector; //Вектор пуль первого игрока
 	vector <Bullet> bulletsvector2p;
-
+	float p1rotation;
 	int menuNum;
 public:
 	GameLoop()
@@ -65,38 +65,38 @@ public:
 		time = time / 80; //Задаем общую скорость игры
 		
 		//--Способности и управление
+		p1rotation = p1.getRotation();
 		p1.skills(bullet);
-		p1.moving(time, obj, pressedBut, bulletsvector, bullet, map, window, MousePos, myshot);
+		p1.moving(time, obj, pressedBut, bulletsvector, bullet, map, window, MousePos, myshot, p1rotation);
 		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y); //Камера вида
+		packetoutput.clear();
+		packetinput.clear();
 		
 		//Отправляем пакеты противнику
 		if (queue == false || myshot == true)
 		{
-			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.getRotation() << MousePos.x << MousePos.y << p1.getHealth() << p2.getHealth()<< bullet.getDamage() << myshot;
+			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1rotation << p1.getHealth() << p2.getHealth()<< bullet.getDamage() << myshot;
 			socket.send(packetoutput);
-			packetoutput.clear();
-			packetinput.clear();
+			
 			queue = true;
 		}
 		if (!socket.receive(packetinput)) //Прием пакетов от противника если они приходят
 		{
-			packetinput >> p2posX >> p2posY >> p2Rotation >> mousePos2pX >> mousePos2pY >> enemyHealth >> myHealth >> bulletdmg >> enemyshot;
-			mousePos2p.x = mousePos2pX;
-			mousePos2p.y = mousePos2pY;
+			packetinput >> p2posX >> p2posY >> p2Rotation >> enemyHealth >> myHealth >> bulletdmg >> enemyshot;
 			if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posY)) { p2.animation(time); }
 			if (p1.getHealth() != myHealth) { p1.setHealth(myHealth); }
 			p2.setPosition(p2posX, p2posY);
 			p2.sprite.setRotation(p2Rotation);
-			cout << p2posX << " " << p2posY << "Second Player" << endl;
+			if (enemyshot == true)
+			{
+				bulletsvector2p.push_back(bullet);
+				bulletsvector2p[bulletsvector2p.size() - 1].create(p2.getSpritePos().x, p2.getSpritePos().y, p2Rotation);
+			}
 			queue = false;
 		}
 	
 
-		if (enemyshot == true) 
-		{ 
-			bulletsvector2p.push_back(bullet);
-			bulletsvector2p[bulletsvector2p.size()-1].create(p2.getSpritePos().x,p2.getSpritePos().y,mousePos2p);
-		}
+		
 		if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(p1.getHealth()-1 * time); }
 		//if (Keyboard::isKeyPressed(Keyboard::I)) { p2.setHealth(p2.getHealth() - 1); }
 		//if (Keyboard::isKeyPressed(Keyboard::H)) { p2.sprite.move(0, p1.getSpeed()*time); }

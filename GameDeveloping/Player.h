@@ -37,7 +37,7 @@ public:
 		sprite.setPosition(positions);
 	}
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
-	void moving(float &time, vector <Object> &obj, bool &pressedBut, vector <Bullet> &bulletsvector, Bullet &bullet, Maps &map,RenderWindow &window,Vector2f &MousePos,bool &myshot)
+	void moving(float &time, vector <Object> &obj, bool &pressedBut, vector <Bullet> &bulletsvector, Bullet &bullet, Maps &map,RenderWindow &window,Vector2f &MousePos,bool &myshot,float &p1rotation)
 	{
 		//--------------------------------------------------------------------------------------------------------------
 		deX = MousePos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
@@ -51,7 +51,7 @@ public:
 			pressedBut = true;
 			myshot = true;
 			bulletsvector.push_back(bullet);
-			bulletsvector[bulletsvector.size() - 1].create(x, y, MousePos);
+			bulletsvector[bulletsvector.size() - 1].create(x, y, p1rotation);
 		}
 		if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedBut = true; } // Проверка единичного нажатия на клавишу
 		else pressedBut = false;
