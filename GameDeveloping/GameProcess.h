@@ -57,8 +57,7 @@ public:
 	{
 		if (hostChoosed == 1 && settedqueue == false) { queue = false; settedqueue = true; }
 		else if (hostChoosed == 0 && settedqueue == false) { queue = true; settedqueue = true; }
-			
-		cout << p1.getSpritePos().x << p1.getSpritePos().y << endl;
+
 		window.clear(); //Обновление экрана
 		time = clock.getElapsedTime().asMilliseconds(); //Измерение времени в микросекундах
 		clock.restart(); //Перезагружаем время
@@ -69,95 +68,98 @@ public:
 		p1.skills(bullet);
 		p1.moving(time, obj, pressedBut, bulletsvector, bullet, map, window, MousePos, myshot, p1rotation);
 		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y); //Камера вида
+
 		packetoutput.clear();
 		packetinput.clear();
 		
 		//Отправляем пакеты противнику
 		if (queue == false || myshot == true)
 		{
-			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1rotation << p1.getHealth() << p2.getHealth()<< bullet.getDamage() << myshot;
-			socket.send(packetoutput);
-			
-			queue = true;
+			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1rotation << p1.getHealth() << p2.getHealth() << bullet.getDamage() << myshot; //Запаковка пакета
+			socket.send(packetoutput); //Отправка пакета
+			queue = true; // Дает очередь второму игроку
 		}
 		if (!socket.receive(packetinput)) //Прием пакетов от противника если они приходят
 		{
-			packetinput >> p2posX >> p2posY >> p2Rotation >> enemyHealth >> myHealth >> bulletdmg >> enemyshot;
-			if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posY)) { p2.animation(time); }
-			if (p1.getHealth() != myHealth) { p1.setHealth(myHealth); }
-			p2.setPosition(p2posX, p2posY);
-			p2.sprite.setRotation(p2Rotation);
-			if (enemyshot == true)
+			packetinput >> p2posX >> p2posY >> p2Rotation >> enemyHealth >> myHealth >> bulletdmg >> enemyshot; // Распаковка
+			if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posY)) { p2.animation(time); } // Анимация второго игрока
+			if (p1.getHealth() != myHealth) { p1.setHealth(myHealth); } //Синхронизация здоровья
+			p2.setPosition(p2posX, p2posY); //Обновление позиции
+			p2.sprite.setRotation(p2Rotation); // Обновление 
+			if (enemyshot == true) //Проверка на выстрел противника
 			{
-				bulletsvector2p.push_back(bullet);
-				bulletsvector2p[bulletsvector2p.size() - 1].create(p2.getSpritePos().x, p2.getSpritePos().y, p2Rotation);
+				bulletsvector2p.push_back(bullet); // Добавление пули в вектор
+				bulletsvector2p[bulletsvector2p.size() - 1].create(p2.getSpritePos().x, p2.getSpritePos().y, p2Rotation); //Выстрел
 			}
-			queue = false;
+			queue = false; //Дает очередь первому игроку
 		}
 	
-
-		
-		if (Keyboard::isKeyPressed(Keyboard::U)) { p1.setHealth(p1.getHealth()-1 * time); }
-		//if (Keyboard::isKeyPressed(Keyboard::I)) { p2.setHealth(p2.getHealth() - 1); }
-		//if (Keyboard::isKeyPressed(Keyboard::H)) { p2.sprite.move(0, p1.getSpeed()*time); }
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) { gamestate = 9; } //Рестарт игры по кнопке
 
 		enemyshot = false;
 		myshot = false;
 
-		window.setView(view);
+		window.setView(view); //Обновление камеры вида
 		map.Draw(window); //Вывод и обновление карты
 		window.draw(p1.sprite); //Вывод и обновление первого игрока
 		window.draw(p2.sprite); //Вывод и обновление второго игрока
 		hud.draw(window, p1, p2);
 		
+	//-----------------------Взаимодействие с объектами и отображение пуль первого игрока-----------------------
 		for (int j = 0; j < obj.size(); j++)//проходимся по объектам карты
 			for (int i = 0; i < bulletsvector.size(); i++) //проходимся по вектору пуль
 			{
-				if (bulletsvector[i].getBulletRect().intersects(obj[j].rect))//проверяем пересечение игрока с объектом
+				if (bulletsvector[i].getBulletRect().intersects(obj[j].rect)) //Проверяем касание с объектами карты
 				{
 					if (obj[j].name == "solid")//если встретили препятствие
 					{
-						bulletsvector.erase(bulletsvector.begin() + i);
+						bulletsvector.erase(bulletsvector.begin() + i); //Удаление пули
 					}
 				}
 			}
-		for (int i = 0; i < bulletsvector.size(); i++)
+		// Проверка попадания пули в игрока
+		for (int i = 0; i < bulletsvector.size(); i++) 
 		{
-			bulletsvector[i].update(time);
-			if (bulletsvector[i].getBulletRect().intersects(p2.getGlobalBounds()))
+			bulletsvector[i].update(time); // Обновление пули
+			if (bulletsvector[i].getBulletRect().intersects(p2.getGlobalBounds())) //Проверяем касание с игроком
 			{
-				cout << "POPADANIE"; bulletsvector.erase(bulletsvector.begin() + i);
-				p2.setHealth(p2.getHealth() - bullet.getDamage());
+				bulletsvector.erase(bulletsvector.begin() + i); //Удаление пули
+				p2.setHealth(p2.getHealth() - bullet.getDamage()); // Нанесение урока
 			}
 
 		}
-		for (int i = 0; i < bulletsvector.size(); i++) // Вывод и обновление пуль
+		// Вывод и обновление пуль
+		for (int i = 0; i < bulletsvector.size(); i++) 
 			window.draw(bulletsvector[i].sprite);
-		//----------------------------------------------------------------------------------
-		for (int j = 0; j < obj.size(); j++)//проходимся по объектам
-			for (int i = 0; i < bulletsvector2p.size(); i++)
+	//----------------------Взаимодействие с объектами и отображение пуль второго игрока------------------------
+	//проходимся по объектам
+		for (int j = 0; j < obj.size(); j++)//проходимся по объектам карты
+			for (int i = 0; i < bulletsvector2p.size(); i++)//проходимся по вектору пуль
 			{
 				if (bulletsvector2p[i].getBulletRect().intersects(obj[j].rect))//проверяем пересечение игрока с объектом
 				{
 					if (obj[j].name == "solid")//если встретили препятствие
 					{
-						bulletsvector2p.erase(bulletsvector2p.begin() + i);
+						bulletsvector2p.erase(bulletsvector2p.begin() + i); //Удаление пули
 					}
 				}
 			}
+
 		for (int i = 0; i < bulletsvector2p.size(); i++)
 		{
-			bulletsvector2p[i].update(time);
-			if (bulletsvector2p[i].getBulletRect().intersects(p1.getGlobalBounds()))
+			bulletsvector2p[i].update(time); // Обновление пули
+			if (bulletsvector2p[i].getBulletRect().intersects(p1.getGlobalBounds())) //Проверяем касание с игроком
 			{
-				cout << "POPADANIE"; bulletsvector2p.erase(bulletsvector2p.begin() + i);
-				p1.setHealth(p1.getHealth() - bulletdmg);
+				bulletsvector2p.erase(bulletsvector2p.begin() + i); //Удаление пули
+				p1.setHealth(p1.getHealth() - bulletdmg); // Нанесение урока
 			}
 
 		}
+		// Вывод и обновление пуль
 		for (int i = 0; i < bulletsvector2p.size(); i++) // Вывод и обновление пуль
 			window.draw(bulletsvector2p[i].sprite);
-		
+
+		//Проверка для окончания игры		
 		if (p1.getHealth() <= 0)
 		{
 			while (true)
@@ -198,6 +200,7 @@ public:
 				window.display();
 			}
 		}
+
 		window.display(); //Инициализация дисплея
 	}
 };

@@ -47,7 +47,7 @@ public:
 		//--------------------------------------------------------------------------------------------------------------
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false) //ѕроверка единичного нажати€ на клавишу мыши
 		{
-			cout << "fire";
+
 			pressedBut = true;
 			myshot = true;
 			bulletsvector.push_back(bullet);
@@ -114,19 +114,16 @@ public:
 		if (activeDD == true)
 		{
 			ddtime = DDtimer.getElapsedTime().asMilliseconds();
-			//cout << ddtime << endl;
+	
 			if (ddtime >= 0)
 			{
 				bullet.setDamage(10);
-				cout << bullet.getDamage() << " Bullet dmg" << endl;
 			}
 			if (ddtime >= 5000)
 			{
 				DDtimer.restart();
 				activeDD = false;
-				cout << "DOUBLE DAMAGE IS OFF" << endl;
 				ddcooldown = true;
-				cout << "COOLDOWN - 7 sec" << endl;
 				bullet.setDamage(5);
 			}
 		}
@@ -137,7 +134,6 @@ public:
 			if (ddtime >= 7000)
 			{
 				ddcooldown = false;
-				cout << "COOLDOWN FINISHED" << endl;
 			}
 		}
 
@@ -149,20 +145,16 @@ public:
 		if (activeSpeed == true)
 		{
 			speedtime = Speedtimer.getElapsedTime().asMilliseconds();
-			cout << speedtime << endl;
 			if (speedtime >= 0)
 			{
 				speed = 60;
-				cout << speed << " Player speed " << endl;
 			}
 			if (speedtime >= 2000)
 			{
 				Speedtimer.restart();
 				activeSpeed = false;
-				cout << "SUPER SPEED IS OFF" << endl;
 				speed = 40;
 				speedcooldown = true;
-				cout << "COOLDOWN - 4 sec" << endl;
 			}
 		}
 		if (speedcooldown == true)
@@ -172,7 +164,6 @@ public:
 			if (speedtime >= 4000)
 			{
 				speedcooldown = false;
-				cout << "COOLDOWN FINISHED" << endl;
 			}
 		}
 	}
@@ -196,15 +187,13 @@ public:
 	{
 		if (map == 1)
 		{
-			cout << "Map -> Roads" << endl;
-			if (host == 1) { x = 100; y = 100; cout << " Host Choosed"; }
-			else if (host == 0) { x = 1113; y = 1495; cout << " Client Choosed";}
+			if (host == 1) { x = 100; y = 100; }
+			else if (host == 0) { x = 1113; y = 1495; }
 		}
 		else if (map == 2)
 		{
-			cout << "Map -> Village" << endl;
-			if (host == 1) { x = 119; y = 107; cout << " Host Choosed"; }
-			else if (host == 0) { x = 813; y = 1154; cout << " Client Choosed"; }
+			if (host == 1) { x = 119; y = 107; }
+			else if (host == 0) { x = 813; y = 1154; }
 		
 		}
 	}

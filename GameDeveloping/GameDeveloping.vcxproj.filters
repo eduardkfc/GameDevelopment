@@ -19,7 +19,7 @@
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="tinyxml2.cpp">
-      <Filter>Файлы исходного кода</Filter>
+      <Filter>Заголовочные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -63,7 +63,10 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="map.xml">
+    <Xml Include="road.xml">
+      <Filter>Файлы ресурсов</Filter>
+    </Xml>
+    <Xml Include="village.xml">
       <Filter>Файлы ресурсов</Filter>
     </Xml>
   </ItemGroup>

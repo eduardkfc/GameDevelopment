@@ -3,7 +3,7 @@
  <tileset firstgid="1" name="tilesheet_complete" tilewidth="32" tileheight="32" tilecount="2160" columns="54">
   <image source="tilesheet_complete.png" width="1728" height="1280"/>
  </tileset>
- <layer name="ground" width="30" height="40">
+ <layer name="tiles" width="30" height="40">
   <data>
    <tile gid="1"/>
    <tile gid="2"/>

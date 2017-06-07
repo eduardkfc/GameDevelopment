@@ -7,7 +7,6 @@ private:
 	Texture mainscreen;
 	Sprite menubg;
 	int menuNum;
-	bool isMenu;
 	Text text, startText, helpText, exitText;
 	Font font;
 public:
@@ -43,9 +42,6 @@ public:
 		exitText.setPosition(1080, 360);
 		exitText.setOutlineThickness(2);
 		menubg.setTexture(mainscreen);
-		
-		menuNum = 0;
-		
 	}
 	void render(RenderWindow &window,int &gamestate,bool &pressedBut)
 	{
@@ -79,7 +75,6 @@ private:
 	Texture mainscreen, SSicon, DDicon;
 	Sprite menubg, SSico, DDico;
 	bool menuNum;
-	bool isMenu;
 	Text text, backText, ddText, ssText, mainHelpText;
 	Font font;
 public:
@@ -100,7 +95,6 @@ public:
 		text.setOutlineThickness(2);
 		text.setPosition(640, 150);
 		
-		menuNum = false;
 		SSico.setPosition(170, 510);
 		DDico.setPosition(170, 410);
 
@@ -134,7 +128,7 @@ public:
 	}
 	void render(RenderWindow &window, int &gamestate, bool &pressedBut)
 	{
-		menuNum = 0;
+		menuNum = false;
 		window.clear();
 		backText.setFillColor(Color::White);
 
@@ -161,10 +155,8 @@ class ChooseHost
 private:
 	Texture mainscreen;
 	Sprite menubg;
-
 	int menuNum = 0;
-	bool isMenu;
-	Text text, hostText, clientText, backText, offlineText, offlineTextVillage;
+	Text text, hostText, clientText, backText;
 	Font font;
 public:
 	ChooseHost()
@@ -174,8 +166,8 @@ public:
 		hostText.setPosition(540, 250);
 		clientText.setPosition(540, 450);
 		backText.setPosition(1000, 580);
-		offlineText.setPosition(1006, 660);
 		font.loadFromFile("font.ttf");
+
 		text.setFont(font);
 		text.setString("REFLEX STRIKE");
 		text.setCharacterSize(100);
@@ -204,67 +196,32 @@ public:
 		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
 		backText.setOutlineThickness(2);
 
-		offlineText.setFont(font);
-		offlineText.setString("Offline Roads");
-		offlineText.setCharacterSize(40);
-		offlineText.setPosition(640, 540);
-		offlineText.setOrigin(offlineText.getLocalBounds().width / 2, offlineText.getLocalBounds().height / 2);
-		offlineText.setOutlineThickness(2);
-
-		offlineTextVillage.setFont(font);
-		offlineTextVillage.setString("Offline Village");
-		offlineTextVillage.setCharacterSize(40);
-		offlineTextVillage.setPosition(640, 660);
-		offlineTextVillage.setOrigin(offlineTextVillage.getLocalBounds().width / 2, offlineTextVillage.getLocalBounds().height / 2);
-		offlineTextVillage.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket,TcpListener &listener, bool &pressedBut, IpAddress &myip, IpAddress &enemyip, int &MapsID, Maps &map, vector <Object> &obj,Player &p1)
+	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip, int &MapsID, Maps &map, vector <Object> &obj,Player &p1)
 	{
 		menuNum = 0;
 		window.clear();
 		hostText.setFillColor(Color::White);
 		clientText.setFillColor(Color::White);
 		backText.setFillColor(Color::White);
-		offlineText.setFillColor(Color::White);
-		offlineTextVillage.setFillColor(Color::White);
+
 		if (hostText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { hostText.setFillColor(Color::Blue); menuNum = 1; }
 		if (clientText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { clientText.setFillColor(Color::Blue); menuNum = 2; }
 		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 3; }
-		if (offlineText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { offlineText.setFillColor(Color::Blue); menuNum = 4; }
-		if (offlineTextVillage.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { offlineTextVillage.setFillColor(Color::Blue); menuNum = 5; }
+
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "HOST PICKED"; listener.listen(55001); gamestate = 7; hostChoosed = 1; }
-			if (menuNum == 2) { cout << "CLIENT PICKED"; gamestate = 8; hostChoosed = 0; }
-			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
-			if (menuNum == 4) 
-			{ 
-				cout << "OFFLINE TEST ROADS"; 
-				MapsID = 1; 
-				gamestate = 5; 
-				hostChoosed = 1; 
-				p1.startPosition(hostChoosed, MapsID);
-			}
-			if (menuNum == 5) 
-			{ 
-				cout << "OFFLINE TEST VILLAGE"; 
-				MapsID = 2; 
-				gamestate = 5; 
-				hostChoosed = 1; 
-				p1.startPosition(hostChoosed, MapsID); 
-			}
-			if (MapsID == 1) { map.LoadFromFile("road.xml"); obj = map.GetObjects("solid"); }
-			if (MapsID == 2) { map.LoadFromFile("village.xml"); obj = map.GetObjects("solid"); }
+			if (menuNum == 1) { gamestate = 7; hostChoosed = 1; }
+			if (menuNum == 2) { gamestate = 8; hostChoosed = 0; }
+			if (menuNum == 3) { gamestate = 1; }
 		}
 		
 		window.draw(menubg);
 		window.draw(hostText);
 		window.draw(clientText);
-		window.draw(offlineText);
 		window.draw(backText);
-		window.draw(text);
-		window.draw(offlineTextVillage);
+		window.draw(text);	
 		window.display();
 	}
 };
@@ -276,7 +233,6 @@ private:
 	Sprite menubg;
 	Text mainText, backText, textMapRoads, textMapVillage;
 	int menuNum;
-	bool isMenu;
 	Font font;
 public:
 	ChooseMap()
@@ -313,7 +269,7 @@ public:
 		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
 		backText.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate, bool &pressedBut, int &MapsID, Maps &map, vector <Object> &obj)
+	void render(RenderWindow &window, int &gamestate, TcpListener &listener, bool &pressedBut, int &MapsID, Maps &map, vector <Object> &obj)
 	{
 		menuNum = 0;
 		window.clear();
@@ -326,9 +282,9 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "ROADS"; gamestate = 3; MapsID = 1; }
-			if (menuNum == 2) { cout << "VILLAGE"; gamestate = 3; MapsID = 2; }
-			if (menuNum == 3) { cout << "GOING BACK"; gamestate = 1; }
+			if (menuNum == 1) { listener.listen(55001); gamestate = 3; MapsID = 1; }
+			if (menuNum == 2) { listener.listen(55001); gamestate = 3; MapsID = 2; }
+			if (menuNum == 3) { gamestate = 1; }
 			
 		}
 
@@ -347,7 +303,6 @@ private:
 	Sprite menubg;
 	Text mainText, backText,textIP, textConnect,wordIP;
 	int menuNum;
-	bool isMenu;
 	Font font;
 	bool pressedbut;
 public:
@@ -405,12 +360,11 @@ public:
 			pressedBut = true;
 			if (menuNum == 1) 
 			{ 
-				cout << "CONNECT"; 
 				enemyip = stringip; 
 				socket.connect(enemyip, 55001);
 				gamestate = 4;
 			}
-			if (menuNum == 2) { cout << "GOING BACK"; gamestate = 2; }
+			if (menuNum == 2) { gamestate = 2; }
 		}
 		
 		if (pressedbut == false)
@@ -441,7 +395,6 @@ public:
 		{
 			pressedbut = false;
 		}
-		cout << enemyip << endl;
 		window.draw(menubg);
 		window.draw(mainText);
 		window.draw(textConnect);
@@ -502,7 +455,7 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.disconnect(); gamestate = 2;  }
+			if (menuNum == 1) { listener.close(); gamestate = 2;  }
 		}
 		packetoutput.clear();
 		
@@ -585,7 +538,7 @@ public:
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
-			if (menuNum == 1) { cout << "BACK TO MAINMENU"; socket.disconnect(); gamestate = 2; MapsID = 0; }
+			if (menuNum == 1) { socket.disconnect(); gamestate = 2; MapsID = 0; }
 		}
 
 		packetinput.clear();

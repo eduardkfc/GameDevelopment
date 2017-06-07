@@ -3,7 +3,7 @@
 class Bullet
 {
 private:
-	float x, y, kekx, keky, w, h, speed, bulletrot, damage;
+	float x, y, w, h, speed, bulletrot, damage;
 	Vector2f direction;
 	String File;
 	Image image;
