@@ -26,7 +26,6 @@ private:
 	Bullet bullet;
 	vector <Bullet> bulletsvector; //Вектор пуль первого игрока
 	vector <Bullet> bulletsvector2p;
-	float p1rotation;
 	int menuNum;
 public:
 	GameLoop()
@@ -72,7 +71,7 @@ public:
 		//Отправляем пакеты противнику
 		if (queue == false || myshot == true)
 		{
-			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1rotation << p1.getHealth() << p2.getHealth() << bullet.getDamage() << myshot; //Запаковка пакета
+			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.sprite.getRotation() << p1.getHealth() << p2.getHealth() << bullet.getDamage() << myshot; //Запаковка пакета
 			socket.send(packetoutput); //Отправка пакета
 			queue = true; // Дает очередь второму игроку
 		}
