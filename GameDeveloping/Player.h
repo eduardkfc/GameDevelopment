@@ -154,6 +154,7 @@ public:
 	FloatRect getGlobalBounds() { return sprite.getGlobalBounds(); }
 	void setPosition(float x, float y) { sprite.setPosition(x, y); }
 	void setHealth(int healthint) { health = healthint; }
+	void setDamage(int damage) { health = health - damage; }
 	int getHealth() { return health; }
 	float getSpeed() { return speed; }
 	int getDDtime() { return ddtime; }

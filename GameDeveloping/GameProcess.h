@@ -120,7 +120,7 @@ public:
 			if (bulletsvector[i].getBulletRect().intersects(p2.getGlobalBounds())) //Проверяем касание с игроком
 			{
 				bulletsvector.erase(bulletsvector.begin() + i); //Удаление пули
-				p2.setHealth(p2.getHealth() - bullet.getDamage()); // Нанесение урока
+				p2.setDamage(bullet.getDamage()); // Нанесение урока
 			}
 
 		}
@@ -147,7 +147,8 @@ public:
 			if (bulletsvector2p[i].getBulletRect().intersects(p1.getGlobalBounds())) //Проверяем касание с игроком
 			{
 				bulletsvector2p.erase(bulletsvector2p.begin() + i); //Удаление пули
-				p1.setHealth(p1.getHealth() - bulletdmg); // Нанесение урока
+				p1.setDamage(bulletdmg); // Нанесение урока
+
 			}
 
 		}
