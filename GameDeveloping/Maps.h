@@ -6,21 +6,12 @@
 
 struct Object
 {
-	int GetPropertyInt(std::string name);//номер свойства объекта в нашем списке
-	float GetPropertyFloat(std::string name);
-	std::string GetPropertyString(std::string name);
-
 	std::string name;//объ€вили переменную name типа string
-	std::string type;//а здесь переменную type типа string
 	sf::Rect<float> rect;//тип Rect с нецелыми значени€ми
-	std::map<std::string, std::string> properties;//создаЄм ассоциатиный массив. ключ - строковый тип, значение - строковый
-
-	sf::Sprite sprite;//объ€вили спрайт
 };
 
 struct Layer//слои
 {
-	int opacity;//непрозрачность сло€
 	std::vector<sf::Sprite> tiles;//закидываем в вектор тайлы
 };
 
@@ -32,7 +23,6 @@ public:
 	std::vector<Object> GetObjects(std::string name);//выдаем объект в наш уровень
 	std::vector<Object> GetAllObjects();//выдаем все объекты в наш уровень
 	void Draw(sf::RenderWindow &window);//рисуем в окно
-	sf::Vector2i GetTileSize();//получаем размер тайла
 
 private:
 	int width, height, tileWidth, tileHeight;//в tmx файле width height в начале,затем размер тайла
@@ -45,22 +35,6 @@ private:
 
 ///////////////////////////////////////
 
-
-int Object::GetPropertyInt(std::string name)//возвращаем номер свойства в нашем списке
-{
-	return atoi(properties[name].c_str());
-}
-
-float Object::GetPropertyFloat(std::string name)
-{
-	return strtod(properties[name].c_str(), NULL);
-}
-
-std::string Object::GetPropertyString(std::string name)//получить им€ в виде строки.вроде пон€тно
-{
-	return properties[name];
-}
-
 bool Maps::LoadFromFile(std::string filename)//двоеточи€-обращение к методам класса вне класса 
 {
 	layers.clear();
@@ -68,19 +42,10 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи€-обращение к методам кла
 
 	tinyxml2::XMLDocument MapsFile(filename.c_str());//загружаем файл в TiXmlDocument
 	MapsFile.LoadFile(filename.c_str());
-	// загружаем XML-карту
-	//if (!MapsFile.LoadFile(filename.c_str()))//если не удалось загрузить карту
-	//{
-	//	std::cout << "Loading Maps \"" << filename << "\" failed." << std::endl;//выдаем ошибку
-	//	return false;
-	//}
 
-	// работаем с контейнером map
 	tinyxml2::XMLElement *map;
 	map = MapsFile.FirstChildElement("map");
 
-	// пример карты: <map version="1.0" orientation="orthogonal"
-	// width="10" height="10" tilewidth="34" tileheight="34">
 	width = atoi(map->Attribute("width"));//извлекаем из нашей карты ее свойства
 	height = atoi(map->Attribute("height"));//те свойства, которые задавали при работе в 
 	tileWidth = atoi(map->Attribute("tilewidth"));//тайлмап редакторе
@@ -98,15 +63,7 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи€-обращение к методам кла
 
 	// пытаемс€ загрузить тайлсет
 	sf::Image img;
-
-	if (!img.loadFromFile(imagepath))
-	{
-		std::cout << "Failed to load tile sheet." << std::endl;//если не удалось загрузить тайлсет-выводим ошибку в консоль
-		return false;
-	}
-
-
-	img.createMaskFromColor(sf::Color(255, 255, 255));//дл€ маски цвета.сейчас нет маски
+	img.loadFromFile(imagepath);
 	tilesetImage.loadFromImage(img);
 	tilesetImage.setSmooth(false);//сглаживание
 
@@ -136,37 +93,12 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи€-обращение к методам кла
 	while (layerElement)
 	{
 		Layer layer;
-		//std::string q = layerElement->Attribute("");
-		std::cout << layerElement << " ";
-		// если присутствует opacity, то задаем прозрачность сло€, иначе он полностью непрозрачен
-		if (layerElement->Attribute("opacity") != NULL)
-		{
-			float opacity = strtod(layerElement->Attribute("opacity"), NULL);
-			layer.opacity = 255 * opacity;
-		}
-		else
-		{
-			layer.opacity = 255;
-		}
 
-		// †контейнер <data> 
 		tinyxml2::XMLElement *layerDataElement;
 		layerDataElement = layerElement->FirstChildElement("data");
 
-		if (layerDataElement == NULL)
-		{
-			std::cout << "Bad map. No layer information found." << std::endl;
-		}
-
-		// †контейнер <tile> - описание тайлов каждого сло€
 		tinyxml2::XMLElement *tileElement;
 		tileElement = layerDataElement->FirstChildElement("tile");
-
-		if (tileElement == NULL)
-		{
-			std::cout << "Bad map. No tile information found." << std::endl;
-			return false;
-		}
 
 		int x = 0;
 		int y = 0;
@@ -176,7 +108,6 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи€-обращение к методам кла
 			int tileGID = atoi(tileElement->Attribute("gid"));
 			int subRectToUse = tileGID - firstTileID;
 
-			// ”станавливаем TextureRect каждого тайла
 			if (subRectToUse >= 0)
 			{
 				sf::Sprite sprite;
@@ -184,8 +115,6 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи€-обращение к методам кла
 				
 				sprite.setTextureRect(subRects[subRectToUse]);
 				sprite.setPosition(x * (tileWidth), y * (tileHeight));
-				sprite.setColor(sf::Color(255, 255, 255, layer.opacity));
-				//sprite.setScale(5.f, 5.f);
 				layer.tiles.push_back(sprite);//закидываем в слой спрайты тайлов
 			}
 
@@ -208,100 +137,64 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи€-обращение к методам кла
 
 	// работа с объектами
 	tinyxml2::XMLElement *objectGroupElement;
-
 	// если есть слои объектов
-	if (map->FirstChildElement("objectgroup") != NULL)
+	objectGroupElement = map->FirstChildElement("objectgroup");
+	while (objectGroupElement)
 	{
-		objectGroupElement = map->FirstChildElement("objectgroup");
-		while (objectGroupElement)
+		// †контейнер <object>
+		tinyxml2::XMLElement *objectElement;
+		objectElement = objectGroupElement->FirstChildElement("object");
+
+		while (objectElement)
 		{
-			// †контейнер <object>
-			tinyxml2::XMLElement *objectElement;
-			objectElement = objectGroupElement->FirstChildElement("object");
-
-			while (objectElement)
+			// получаем все данные - тип, им€, позици€, и тд
+			std::string objectType;
+			if (objectElement->Attribute("type") != NULL)
 			{
-				// получаем все данные - тип, им€, позици€, и тд
-				std::string objectType;
-				if (objectElement->Attribute("type") != NULL)
-				{
-					objectType = objectElement->Attribute("type");
-				}
-				std::string objectName;
-				if (objectElement->Attribute("name") != NULL)
-				{
-					objectName = objectElement->Attribute("name");
-				}
-				int x = atoi(objectElement->Attribute("x"));
-				int y = atoi(objectElement->Attribute("y"));
-
-				int width, height;
-
-				sf::Sprite sprite;
-				sprite.setTexture(tilesetImage);
-				sprite.setTextureRect(sf::Rect<int>(0, 0, 0, 0));
-				sprite.setPosition(x, y);
-
-				if (objectElement->Attribute("width") != NULL)
-				{
-					width = atoi(objectElement->Attribute("width"));
-					height = atoi(objectElement->Attribute("height"));
-				}
-				else
-				{
-					width = subRects[atoi(objectElement->Attribute("gid")) - firstTileID].width;
-					height = subRects[atoi(objectElement->Attribute("gid")) - firstTileID].height;
-					sprite.setTextureRect(subRects[atoi(objectElement->Attribute("gid")) - firstTileID]);
-				}
-
-				// экземпл€р объекта
-				Object object;
-				object.name = objectName;
-				object.type = objectType;
-				object.sprite = sprite;
-
-				sf::Rect <float> objectRect;
-				objectRect.top = y;
-				objectRect.left = x;
-				objectRect.height = height;
-				objectRect.width = width;
-				object.rect = objectRect;
-
-				// "переменные" объекта
-				tinyxml2::XMLElement *properties;
-				properties = objectElement->FirstChildElement("properties");
-				if (properties != NULL)
-				{
-					tinyxml2::XMLElement *prop;
-					prop = properties->FirstChildElement("property");
-					if (prop != NULL)
-					{
-						while (prop)
-						{
-							std::string propertyName = prop->Attribute("name");
-							std::string propertyValue = prop->Attribute("value");
-
-							object.properties[propertyName] = propertyValue;
-
-							prop = prop->NextSiblingElement("property");
-						}
-					}
-				}
-
-
-				objects.push_back(object);
-
-				objectElement = objectElement->NextSiblingElement("object");
+				objectType = objectElement->Attribute("type");
 			}
-			objectGroupElement = objectGroupElement->NextSiblingElement("objectgroup");
-		}
-	}
-	else
-	{
-		std::cout << "No object layers found..." << std::endl;
-	}
+			std::string objectName;
+			if (objectElement->Attribute("name") != NULL)
+			{
+				objectName = objectElement->Attribute("name");
+			}
+			int x = atoi(objectElement->Attribute("x"));
+			int y = atoi(objectElement->Attribute("y"));
 
-	return true;
+			int width, height;
+
+			sf::Sprite sprite;
+			sprite.setTexture(tilesetImage);
+			sprite.setTextureRect(sf::Rect<int>(0, 0, 0, 0));
+			sprite.setPosition(x, y);
+
+			if (objectElement->Attribute("width") != NULL)
+			{
+				width = atoi(objectElement->Attribute("width"));
+				height = atoi(objectElement->Attribute("height"));
+			}
+			else
+			{
+				width = subRects[atoi(objectElement->Attribute("gid")) - firstTileID].width;
+				height = subRects[atoi(objectElement->Attribute("gid")) - firstTileID].height;
+				sprite.setTextureRect(subRects[atoi(objectElement->Attribute("gid")) - firstTileID]);
+			}
+
+			// экземпл€р объекта
+			Object object;
+			object.name = objectName;
+
+			sf::Rect <float> objectRect;
+			objectRect.top = y;
+			objectRect.left = x;
+			objectRect.height = height;
+			objectRect.width = width;
+			object.rect = objectRect;
+			objects.push_back(object);
+			objectElement = objectElement->NextSiblingElement("object");
+		}
+		objectGroupElement = objectGroupElement->NextSiblingElement("objectgroup");
+	}
 }
 
 Object Maps::GetObject(std::string name)
@@ -328,12 +221,6 @@ std::vector<Object> Maps::GetAllObjects()
 {
 	return objects;
 };
-
-
-sf::Vector2i Maps::GetTileSize()
-{
-	return sf::Vector2i(tileWidth, tileHeight);
-}
 
 void Maps::Draw(sf::RenderWindow &window)
 {

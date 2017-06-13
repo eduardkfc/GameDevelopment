@@ -7,8 +7,7 @@ private:
 	int myHealth;
 	float time;
 	//-Переменные второго игрока
-	float p2posX, p2posY, p2Rotation, mousePos2pX, mousePos2pY; //Переменные второго игрока
-	Vector2f mousePos2p; //Переменная для хранения координат указателя мыши второго игрока
+	float p2posX, p2posY, p2Rotation; //Переменные второго игрока
 	int enemyHealth;
 	int bulletdmg;
 	bool myshot, enemyshot;
@@ -32,7 +31,6 @@ private:
 public:
 	GameLoop()
 	{
-		hud.init();
 		font.loadFromFile("font.ttf");
 		
 		p1win.setFont(font);
@@ -64,9 +62,8 @@ public:
 		time = time / 80; //Задаем общую скорость игры
 		
 		//--Способности и управление
-		p1rotation = p1.getRotation();
 		p1.skills(bullet);
-		p1.moving(time, obj, pressedBut, bulletsvector, bullet, map, window, MousePos, myshot, p1rotation);
+		p1.moving(time, obj, pressedBut, bulletsvector, bullet, MousePos, myshot);
 		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y); //Камера вида
 
 		packetoutput.clear();

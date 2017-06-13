@@ -44,11 +44,11 @@ bool startGame()
 		MousePos = window.mapPixelToCoords(Mouse::getPosition(window));
 		if (gamestate == 0) { return false; } //Выход из игры
 		else if (gamestate == 1) { menu.render(window, gamestate,pressedBut); } //Главное меню
-		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed, socket, pressedBut, myip, enemyip, MapsID, map, obj,p1); } //Выбор хоста
-		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket,listener, myip, enemyip,MapsID,map,obj,p1,hostChoosed); } // Ожидание клиента
-		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, myip, enemyip,MapsID,map,p1,obj,hostChoosed); } // Ожидание хоста
+		else if (gamestate == 2) { choosinghost.render(window, gamestate, hostChoosed,pressedBut); } //Выбор хоста
+		else if (gamestate == 3) { waitplayers.render(window, gamestate, pressedBut, socket,listener, myip,MapsID,map,obj,p1,hostChoosed); } // Ожидание клиента
+		else if (gamestate == 4) { waitserver.render(window, gamestate, socket, pressedBut, enemyip,MapsID,map,p1,obj,hostChoosed); } // Ожидание хоста
 		else if (gamestate == 6) { helpwindow.render(window, gamestate, pressedBut); } // Окно помощи
-		else if (gamestate == 7) { choosemap.render(window, gamestate, listener, pressedBut, MapsID, map, obj); } //Выбор карты для хоста
+		else if (gamestate == 7) { choosemap.render(window, gamestate, listener, pressedBut, MapsID); } //Выбор карты для хоста
 		else if (gamestate == 8) { connect.render(window, gamestate, pressedBut, enemyip,stringip,socket,hostChoosed); }
 		else if (gamestate == 5) { gameloop.render(window, p1, p2, pressedBut, hostChoosed, gamestate, socket, map, obj, MousePos); }
 		else if (gamestate == 9) { return true; } // Рестарт игры

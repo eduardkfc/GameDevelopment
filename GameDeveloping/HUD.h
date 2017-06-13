@@ -21,7 +21,7 @@ private:
 	Sprite ddIcon, ssIcon,ddCooldown,ssCooldown;
 	Text workDD, workSS;
 public:
-	void init()
+	HUD()
 	{
 		ddIco.loadFromFile("images/doubledamage.jpg");
 		ssIco.loadFromFile("images/superspeed.jpg");
@@ -29,34 +29,33 @@ public:
 		ssCD.loadFromFile("images/speedcd.jpg");
 		font.loadFromFile("font.ttf");
 		c = Color::Green;
-		max = 100;
-		pos.x = 500;
-		pos.y = 500;
-		maxW = 100;
-		p1size.y = 15;
-		p1size.x = 100;
-		p2size.y = 15;
-		p2size.x = 100;
+		max = 100; maxW = 100;
+		pos.x = 500; pos.y = 500;
+		p1size.y = 15; p1size.x = 100;
+		p2size.y = 15; p2size.x = 100;
 		myrect.setPosition(pos.x, pos.y);
-		Enemyrect.setPosition(pos.x, pos.y);
 		myrect.setFillColor(c);
-		Enemyrect.setFillColor(c);
-		Healthtext.setCharacterSize(15);
-		EnemyHealthtext.setCharacterSize(15);
 		myrectBack.setPosition(pos.x, pos.y);
-		EnemyrectBack.setPosition(pos.x, pos.y);
 		myrectBack.setSize(p1size);
-		EnemyrectBack.setSize(p2size);
 		myrectBack.setOutlineThickness(2);
-		EnemyrectBack.setOutlineThickness(2);
+		Healthtext.setCharacterSize(15);
+		Healthtext.setFont(font);
 		myrectBack.setOutlineColor(Color::Black);
+
+		Enemyrect.setPosition(pos.x, pos.y);
+		Enemyrect.setFillColor(c);
+		EnemyHealthtext.setCharacterSize(15);
+		EnemyrectBack.setPosition(pos.x, pos.y);
+		EnemyrectBack.setSize(p2size);
+		EnemyrectBack.setOutlineThickness(2);
 		EnemyrectBack.setOutlineColor(Color::Black);
+		EnemyHealthtext.setFont(font);
+
 		ddIcon.setTexture(ddIco);
 		ssIcon.setTexture(ssIco);
 		ddCooldown.setTexture(ddCD);
 		ssCooldown.setTexture(ssCD);
-		Healthtext.setFont(font);
-		EnemyHealthtext.setFont(font);
+		
 		workDD.setFont(font);
 		workSS.setFont(font);
 		workDD.setOutlineThickness(1);

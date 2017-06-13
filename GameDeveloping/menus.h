@@ -163,9 +163,7 @@ public:
 	{
 		mainscreen.loadFromFile("mainscreen.jpg");
 		menubg.setTexture(mainscreen);
-		hostText.setPosition(540, 250);
-		clientText.setPosition(540, 450);
-		backText.setPosition(1000, 580);
+
 		font.loadFromFile("font.ttf");
 
 		text.setFont(font);
@@ -197,18 +195,16 @@ public:
 		backText.setOutlineThickness(2);
 
 	}
-	void render(RenderWindow &window, int &gamestate, int &hostChoosed, TcpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip, int &MapsID, Maps &map, vector <Object> &obj,Player &p1)
+	void render(RenderWindow &window, int &gamestate, int &hostChoosed,  bool &pressedBut)
 	{
 		menuNum = 0;
 		window.clear();
 		hostText.setFillColor(Color::White);
 		clientText.setFillColor(Color::White);
 		backText.setFillColor(Color::White);
-
 		if (hostText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { hostText.setFillColor(Color::Blue); menuNum = 1; }
 		if (clientText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { clientText.setFillColor(Color::Blue); menuNum = 2; }
 		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 3; }
-
 		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
 		{
 			pressedBut = true;
@@ -269,7 +265,7 @@ public:
 		backText.setOrigin(backText.getLocalBounds().width / 2, backText.getLocalBounds().height / 2);
 		backText.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate, TcpListener &listener, bool &pressedBut, int &MapsID, Maps &map, vector <Object> &obj)
+	void render(RenderWindow &window, int &gamestate, TcpListener &listener, bool &pressedBut, int &MapsID)
 	{
 		menuNum = 0;
 		window.clear();
@@ -418,9 +414,11 @@ public:
 	WaitingForPlayers()
 	{
 		mainscreen.loadFromFile("mainscreen.jpg"); //Загрузка главного меню
-		font.loadFromFile("font.ttf");
-		text.setFont(font);
 		menubg.setTexture(mainscreen);
+		font.loadFromFile("font.ttf");
+
+		text.setFont(font);
+		
 		mainText.setFont(font);
 		mainText.setString("REFLEX STRIKE");
 		mainText.setCharacterSize(100);
@@ -444,7 +442,7 @@ public:
 
 		text.setPosition(20, 680);
 	}
-	void render(RenderWindow &window, int &gamestate, bool &pressedBut, TcpSocket &socket,TcpListener &listener, IpAddress &myip,IpAddress &enemyip,int &MapsID,Maps &map,vector <Object> &obj,Player &p1,int &hostChoosed)
+	void render(RenderWindow &window, int &gamestate, bool &pressedBut, TcpSocket &socket,TcpListener &listener, IpAddress &myip,int &MapsID,Maps &map,vector <Object> &obj,Player &p1,int &hostChoosed)
 	{
 		window.clear();
 		text.setString("Your IP Address: " + myip.toString());
@@ -464,8 +462,6 @@ public:
 		if (Socket::Status::Done == listener.accept(socket))
 		{
 			socket.send(packetoutput);
-			//socket.receive(packetinput);
-			//packetinput >> inputcode;
 			if (MapsID == 1) 
 			{ 
 				map.LoadFromFile("road.xml"); 
@@ -497,7 +493,7 @@ private:
 	Texture mainscreen;
 	Sprite menubg;
 	int menuNum = 0;
-	Packet packetinput,packetoutput;
+	Packet packetinput;
 	Text mainText, backText, waitText;
 	Font font;
 public:
@@ -529,7 +525,7 @@ public:
 		waitText.setOrigin(waitText.getLocalBounds().width / 2, waitText.getLocalBounds().height / 2);
 		waitText.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, int &gamestate,TcpSocket &socket, bool &pressedBut, IpAddress &myip, IpAddress &enemyip,int &MapsID,Maps &map,Player &p1,vector <Object> &obj,int &hostChoosed)
+	void render(RenderWindow &window, int &gamestate,TcpSocket &socket, bool &pressedBut, IpAddress &enemyip,int &MapsID,Maps &map,Player &p1,vector <Object> &obj,int &hostChoosed)
 	{
 		window.clear();
 		backText.setFillColor(Color::White);

@@ -4,10 +4,8 @@ class Bullet
 {
 private:
 	float x, y, w, h, speed, bulletrot, damage;
-	Vector2f direction;
-	String File;
-	Image image;
 	Texture texture;
+	
 public:
 	Sprite sprite;
 	Bullet()
@@ -17,8 +15,9 @@ public:
 		w = 15;
 		h = 5;
 		texture.loadFromFile("bullet.png");
-		sprite.setTexture(texture);
 		texture.setSmooth(true);
+		sprite.setTexture(texture);
+		
 		
 	}
 	void update(float &time)
