@@ -1,28 +1,36 @@
-#pragma once
+п»ї#pragma once
 #include"Header.h"
 
 class Player
 {
 private:
 	float x, y, w, h, speed;
-	int  dx, dy;
-	int health = 100;
-	float СurrentFrame = 0; // Хранение текущей анимации персонажа
-	float rotation; //Переменная поворачивающая нашего шероя
-	float deX = 0; //Переменная служит для поворота героя вокруг своей оси
-	float deY = 0; //Переменная служит для поворота героя вокруг своей оси
+	int dx, dy;
+	int health;
+	float CurrentFrame; // РҐСЂР°РЅРµРЅРёРµ С‚РµРєСѓС‰РµР№ Р°РЅРёРјР°С†РёРё РїРµСЂСЃРѕРЅР°Р¶Р°
+	float rotation; //РџРµСЂРµРјРµРЅРЅР°СЏ РїРѕРІРѕСЂР°С‡РёРІР°СЋС‰Р°СЏ РЅР°С€РµРіРѕ С€РµСЂРѕСЏ
+	float deX; //РџРµСЂРµРјРµРЅРЅР°СЏ СЃР»СѓР¶РёС‚ РґР»СЏ РїРѕРІРѕСЂРѕС‚Р° РіРµСЂРѕСЏ РІРѕРєСЂСѓРі СЃРІРѕРµР№ РѕСЃРё
+	float deY; //РџРµСЂРµРјРµРЅРЅР°СЏ СЃР»СѓР¶РёС‚ РґР»СЏ РїРѕРІРѕСЂРѕС‚Р° РіРµСЂРѕСЏ РІРѕРєСЂСѓРі СЃРІРѕРµР№ РѕСЃРё
 	bool collision;
 	Texture texture;
 	Clock DDtimer;
 	Clock Speedtimer;
 	int ddtime, speedtime;
-	bool activeDD = false, ddcooldown = false;
-	bool activeSpeed = false, speedcooldown = false;
+	bool activeDD, ddcooldown;
+	bool activeSpeed, speedcooldown;
 	
 public:
 	Sprite sprite;
 	Player(Vector2f positions)
 	{ 
+		activeDD = false;
+		ddcooldown = false;
+		activeSpeed = false;
+		speedcooldown = false;
+		CurrentFrame = 0;
+		health = 100;
+		deX = 0;
+		deY = 0;
 		speed = 40;
 		sprite.setOrigin(35, 63);
 		texture.loadFromFile("soldier1.png");
@@ -34,19 +42,19 @@ public:
 	void moving(float &time, vector <Object> &obj, bool &pressedBut, vector <Bullet> &bulletsvector, Bullet &bullet,Vector2f &MousePos,bool &myshot)
 	{
 		//--------------------------------------------------------------------------------------------------------------
-		deX = MousePos.x - sprite.getPosition().x; //- p.x;вектор , колинеарный прямой, которая пересекает спрайт и курсор
-		deY = MousePos.y - sprite.getPosition().y; //- p.y;он же, координата y
-		rotation = (atan2(deY, deX)) * 180 / 3.14159265; //получаем угол в радианах и переводим его в градусы
-		sprite.setRotation(rotation + 85);//поворачиваем спрайт на эти градусы
+		deX = MousePos.x - sprite.getPosition().x; //- p.x;РІРµРєС‚РѕСЂ , РєРѕР»РёРЅРµР°СЂРЅС‹Р№ РїСЂСЏРјРѕР№, РєРѕС‚РѕСЂР°СЏ РїРµСЂРµСЃРµРєР°РµС‚ СЃРїСЂР°Р№С‚ Рё РєСѓСЂСЃРѕСЂ
+		deY = MousePos.y - sprite.getPosition().y; //- p.y;РѕРЅ Р¶Рµ, РєРѕРѕСЂРґРёРЅР°С‚Р° y
+		rotation = (atan2(deY, deX)) * 180 / 3.14159265; //РїРѕР»СѓС‡Р°РµРј СѓРіРѕР» РІ СЂР°РґРёР°РЅР°С… Рё РїРµСЂРµРІРѕРґРёРј РµРіРѕ РІ РіСЂР°РґСѓСЃС‹
+		sprite.setRotation(rotation + 85);//РїРѕРІРѕСЂР°С‡РёРІР°РµРј СЃРїСЂР°Р№С‚ РЅР° СЌС‚Рё РіСЂР°РґСѓСЃС‹
 		//--------------------------------------------------------------------------------------------------------------
-		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false) //Проверка единичного нажатия на клавишу мыши
+		if (Mouse::isButtonPressed(Mouse::Left) && pressedBut == false) //РџСЂРѕРІРµСЂРєР° РµРґРёРЅРёС‡РЅРѕРіРѕ РЅР°Р¶Р°С‚РёСЏ РЅР° РєР»Р°РІРёС€Сѓ РјС‹С€Рё
 		{
 			pressedBut = true;
 			myshot = true;
 			bulletsvector.push_back(bullet);
 			bulletsvector[bulletsvector.size() - 1].create(x, y, sprite.getRotation());
 		}
-		if (Mouse::isButtonPressed(Mouse::Button::Left)) { pressedBut = true; } // Проверка единичного нажатия на клавишу
+		if (Mouse::isButtonPressed(Mouse::Left)) { pressedBut = true; } // РџСЂРѕРІРµСЂРєР° РµРґРёРЅРёС‡РЅРѕРіРѕ РЅР°Р¶Р°С‚РёСЏ РЅР° РєР»Р°РІРёС€Сѓ
 		else pressedBut = false;
 
 		dx = 0; dy = 0;
@@ -75,18 +83,18 @@ public:
 	void setSpriteRect(int curframe) { sprite.setTextureRect(IntRect(62 * curframe, 8, 62, 91)); }
 	void animation(float time)
 	{
-		СurrentFrame += 0.8*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
-		if (СurrentFrame > 6) СurrentFrame -= 6; // если пришли к третьему кадру - откидываемся назад.
-		setSpriteRect(int(СurrentFrame)); //Смена кадра анимации
+		CurrentFrame += 0.8*time; //СЃР»СѓР¶РёС‚ РґР»СЏ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ РїРѕ "РєР°РґСЂР°Рј". РїРµСЂРµРјРµРЅРЅР°СЏ РґРѕС…РѕРґРёС‚ РґРѕ С‚СЂРµС… СЃСѓРјРјРёСЂСѓСЏ РїСЂРѕРёР·РІРµРґРµРЅРёРµ РІСЂРµРјРµРЅРё Рё СЃРєРѕСЂРѕСЃС‚Рё. РёР·РјРµРЅРёРІ 0.005 РјРѕР¶РЅРѕ РёР·РјРµРЅРёС‚СЊ СЃРєРѕСЂРѕСЃС‚СЊ Р°РЅРёРјР°С†РёРё
+		if (CurrentFrame > 6) CurrentFrame -= 6; // РµСЃР»Рё РїСЂРёС€Р»Рё Рє С‚СЂРµС‚СЊРµРјСѓ РєР°РґСЂСѓ - РѕС‚РєРёРґС‹РІР°РµРјСЃСЏ РЅР°Р·Р°Рґ.
+		setSpriteRect(int(CurrentFrame)); //РЎРјРµРЅР° РєР°РґСЂР° Р°РЅРёРјР°С†РёРё
 	}
 	void checkcollisions(int Dx, int Dy, float &time,vector <Object> &obj)
 	{
-		for (int i = 0; i < obj.size(); i++)//проходимся по объектам
+		for (int i = 0; i < obj.size(); i++)//РїСЂРѕС…РѕРґРёРјСЃСЏ РїРѕ РѕР±СЉРµРєС‚Р°Рј
 		{
-			if (getRect().intersects(obj[i].rect))//проверяем пересечение игрока с объектом
+			if (getRect().intersects(obj[i].rect))//РїСЂРѕРІРµСЂСЏРµРј РїРµСЂРµСЃРµС‡РµРЅРёРµ РёРіСЂРѕРєР° СЃ РѕР±СЉРµРєС‚РѕРј
 			{
 				collision = false;
-				if (obj[i].name == "solid")//если встретили препятствие
+				if (obj[i].name == "solid")//РµСЃР»Рё РІСЃС‚СЂРµС‚РёР»Рё РїСЂРµРїСЏС‚СЃС‚РІРёРµ
 					collision = true;
 				if (collision == true)
 				{

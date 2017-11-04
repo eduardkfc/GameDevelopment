@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Header.h"
 class Bullet
 {
@@ -17,8 +17,6 @@ public:
 		texture.loadFromFile("bullet.png");
 		texture.setSmooth(true);
 		sprite.setTexture(texture);
-		
-		
 	}
 	void update(float &time)
 	{

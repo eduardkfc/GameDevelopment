@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -6,7 +6,10 @@
 using namespace sf;
 using namespace std;
 #include <iostream>
+//#include <windows.h>
 #include <vector>
+#include <string>
+#include <sstream>
 #include <cmath>
 #include "Maps.h"
 #include "bullet.h"
@@ -15,3 +18,6 @@ using namespace std;
 #include "menus.h"
 #include "HUD.h"
 #include "GameProcess.h"
+
+using namespace std;
+using namespace sf;

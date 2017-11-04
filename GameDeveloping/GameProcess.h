@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "Header.h"
 
 class GameLoop
@@ -6,32 +6,33 @@ class GameLoop
 private:
 	int myHealth;
 	float time;
-	//-Переменные второго игрока
-	float p2posX, p2posY, p2Rotation; //Переменные второго игрока
+	//-РџРµСЂРµРјРµРЅРЅС‹Рµ РІС‚РѕСЂРѕРіРѕ РёРіСЂРѕРєР°
+	float p2posX, p2posY, p2Rotation; //РџРµСЂРµРјРµРЅРЅС‹Рµ РІС‚РѕСЂРѕРіРѕ РёРіСЂРѕРєР°
 	int enemyHealth;
 	int bulletdmg;
 	bool myshot, enemyshot;
 
-	Clock clock; //Класс зафиксированного времени игры
-	HUD hud; //Класс интерфейса 
-
+	Clock clock; //РљР»Р°СЃСЃ Р·Р°С„РёРєСЃРёСЂРѕРІР°РЅРЅРѕРіРѕ РІСЂРµРјРµРЅРё РёРіСЂС‹
+	HUD hud; //РљР»Р°СЃСЃ РёРЅС‚РµСЂС„РµР№СЃР° 
+	Event e;
 	Packet packetinput;
 	Packet packetoutput;
-	bool queue = true;
-	bool settedqueue = false;
+	bool queue;
+	bool settedqueue;
 
 	Text p1win, p2win, restartButton;
 	Font font;
 
 	Bullet bullet;
-	vector <Bullet> bulletsvector; //Вектор пуль первого игрока
+	vector <Bullet> bulletsvector; //Р’РµРєС‚РѕСЂ РїСѓР»СЊ РїРµСЂРІРѕРіРѕ РёРіСЂРѕРєР°
 	vector <Bullet> bulletsvector2p;
 	int menuNum;
 public:
 	GameLoop()
 	{
 		font.loadFromFile("font.ttf");
-		
+		queue = true;
+		settedqueue = false;
 		p1win.setFont(font);
 		p1win.setString("Player 1 WIN!");
 		p1win.setCharacterSize(70);
@@ -50,124 +51,130 @@ public:
 		restartButton.setOrigin(restartButton.getLocalBounds().width / 2, restartButton.getLocalBounds().height / 2);
 		restartButton.setOutlineThickness(2);
 	}
-	void render(RenderWindow &window, Player &p1, Player &p2, bool &pressedBut, int &hostChoosed, int &gamestate, TcpSocket &socket, Maps &map, vector <Object> &obj, Vector2f &MousePos)
+	void render(RenderWindow &window, Player &p1, Player &p2, bool &pressedBut, int &hostChoosed, int &gamestate, TcpSocket &socket, Maps &map, vector <Object> &obj, Vector2f &MousePos,Event &events)
 	{
 		if (hostChoosed == 1 && settedqueue == false) { queue = false; settedqueue = true; }
 		else if (hostChoosed == 0 && settedqueue == false) { queue = true; settedqueue = true; }
 
-		window.clear(); //Обновление экрана
-		time = clock.getElapsedTime().asMilliseconds(); //Измерение времени в микросекундах
-		clock.restart(); //Перезагружаем время
-		time = time / 80; //Задаем общую скорость игры
+		window.clear(); //РћР±РЅРѕРІР»РµРЅРёРµ СЌРєСЂР°РЅР°
+		time = clock.getElapsedTime().asMilliseconds(); //РР·РјРµСЂРµРЅРёРµ РІСЂРµРјРµРЅРё РІ РјРёРєСЂРѕСЃРµРєСѓРЅРґР°С…
+		clock.restart(); //РџРµСЂРµР·Р°РіСЂСѓР¶Р°РµРј РІСЂРµРјСЏ
+		time = time / 80; //Р—Р°РґР°РµРј РѕР±С‰СѓСЋ СЃРєРѕСЂРѕСЃС‚СЊ РёРіСЂС‹
 		
-		//--Способности и управление
+		//--РЎРїРѕСЃРѕР±РЅРѕСЃС‚Рё Рё СѓРїСЂР°РІР»РµРЅРёРµ
 		p1.skills(bullet);
 		p1.moving(time, obj, pressedBut, bulletsvector, bullet, MousePos, myshot);
-		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y); //Камера вида
+		getPosForPlayer(p1.getSpritePos().x, p1.getSpritePos().y); //РљР°РјРµСЂР° РІРёРґР°
 
 		packetoutput.clear();
 		packetinput.clear();
 		
-		//Отправляем пакеты противнику
+		//РћС‚РїСЂР°РІР»СЏРµРј РїР°РєРµС‚С‹ РїСЂРѕС‚РёРІРЅРёРєСѓ
 		if (queue == false || myshot == true)
 		{
-			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.sprite.getRotation() << p1.getHealth() << p2.getHealth() << bullet.getDamage() << myshot; //Запаковка пакета
-			socket.send(packetoutput); //Отправка пакета
-			queue = true; // Дает очередь второму игроку
+			packetoutput << p1.getSpritePos().x << p1.getSpritePos().y << p1.sprite.getRotation() << p1.getHealth() << p2.getHealth() << bullet.getDamage() << myshot; //Р—Р°РїР°РєРѕРІРєР° РїР°РєРµС‚Р°
+			socket.send(packetoutput); //РћС‚РїСЂР°РІРєР° РїР°РєРµС‚Р°
+			queue = true; // Р”Р°РµС‚ РѕС‡РµСЂРµРґСЊ РІС‚РѕСЂРѕРјСѓ РёРіСЂРѕРєСѓ
 		}
-		if (!socket.receive(packetinput)) //Прием пакетов от противника если они приходят
+		if (!socket.receive(packetinput)) //РџСЂРёРµРј РїР°РєРµС‚РѕРІ РѕС‚ РїСЂРѕС‚РёРІРЅРёРєР° РµСЃР»Рё РѕРЅРё РїСЂРёС…РѕРґСЏС‚
 		{
-			packetinput >> p2posX >> p2posY >> p2Rotation >> enemyHealth >> myHealth >> bulletdmg >> enemyshot; // Распаковка
-			if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posY)) { p2.animation(time); } // Анимация второго игрока
-			if (p1.getHealth() != myHealth) { p1.setHealth(myHealth); } //Синхронизация здоровья
-			p2.setPosition(p2posX, p2posY); //Обновление позиции
-			p2.sprite.setRotation(p2Rotation); // Обновление 
-			if (enemyshot == true) //Проверка на выстрел противника
+			packetinput >> p2posX >> p2posY >> p2Rotation >> enemyHealth >> myHealth >> bulletdmg >> enemyshot; // Р Р°СЃРїР°РєРѕРІРєР°
+			if ((p2.getSpritePos().x != p2posX) || (p2.getSpritePos().y != p2posY)) { p2.animation(time); } // РђРЅРёРјР°С†РёСЏ РІС‚РѕСЂРѕРіРѕ РёРіСЂРѕРєР°
+			if (p1.getHealth() != myHealth) { p1.setHealth(myHealth); } //РЎРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ Р·РґРѕСЂРѕРІСЊСЏ
+			p2.setPosition(p2posX, p2posY); //РћР±РЅРѕРІР»РµРЅРёРµ РїРѕР·РёС†РёРё
+			p2.sprite.setRotation(p2Rotation); // РћР±РЅРѕРІР»РµРЅРёРµ 
+			if (enemyshot == true) //РџСЂРѕРІРµСЂРєР° РЅР° РІС‹СЃС‚СЂРµР» РїСЂРѕС‚РёРІРЅРёРєР°
 			{
-				bulletsvector2p.push_back(bullet); // Добавление пули в вектор
-				bulletsvector2p[bulletsvector2p.size() - 1].create(p2.getSpritePos().x, p2.getSpritePos().y, p2Rotation); //Выстрел
+				bulletsvector2p.push_back(bullet); // Р”РѕР±Р°РІР»РµРЅРёРµ РїСѓР»Рё РІ РІРµРєС‚РѕСЂ
+				bulletsvector2p[bulletsvector2p.size() - 1].create(p2.getSpritePos().x, p2.getSpritePos().y, p2Rotation); //Р’С‹СЃС‚СЂРµР»
 			}
-			queue = false; //Дает очередь первому игроку
+			queue = false; //Р”Р°РµС‚ РѕС‡РµСЂРµРґСЊ РїРµСЂРІРѕРјСѓ РёРіСЂРѕРєСѓ
 		}
 	
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) { gamestate = 9; } //Рестарт игры по кнопке
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) { gamestate = 9; } //Р РµСЃС‚Р°СЂС‚ РёРіСЂС‹ РїРѕ РєРЅРѕРїРєРµ
 
 		enemyshot = false;
 		myshot = false;
-
-		window.setView(view); //Обновление камеры вида
-		map.Draw(window); //Вывод и обновление карты
-		window.draw(p1.sprite); //Вывод и обновление первого игрока
-		window.draw(p2.sprite); //Вывод и обновление второго игрока
+		window.setView(view); //РћР±РЅРѕРІР»РµРЅРёРµ РєР°РјРµСЂС‹ РІРёРґР°
+		map.Draw(window); //Р’С‹РІРѕРґ Рё РѕР±РЅРѕРІР»РµРЅРёРµ РєР°СЂС‚С‹
+		window.draw(p1.sprite); //Р’С‹РІРѕРґ Рё РѕР±РЅРѕРІР»РµРЅРёРµ РїРµСЂРІРѕРіРѕ РёРіСЂРѕРєР°
+		window.draw(p2.sprite); //Р’С‹РІРѕРґ Рё РѕР±РЅРѕРІР»РµРЅРёРµ РІС‚РѕСЂРѕРіРѕ РёРіСЂРѕРєР°
 		hud.draw(window, p1, p2);
 		
-	//-----------------------Взаимодействие с объектами и отображение пуль первого игрока-----------------------
-		for (int j = 0; j < obj.size(); j++)//проходимся по объектам карты
-			for (int i = 0; i < bulletsvector.size(); i++) //проходимся по вектору пуль
+	//-----------------------Р’Р·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ СЃ РѕР±СЉРµРєС‚Р°РјРё Рё РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РїСѓР»СЊ РїРµСЂРІРѕРіРѕ РёРіСЂРѕРєР°-----------------------
+		for (int j = 0; j < obj.size(); j++)//РїСЂРѕС…РѕРґРёРјСЃСЏ РїРѕ РѕР±СЉРµРєС‚Р°Рј РєР°СЂС‚С‹
+			for (int i = 0; i < bulletsvector.size(); i++) //РїСЂРѕС…РѕРґРёРјСЃСЏ РїРѕ РІРµРєС‚РѕСЂСѓ РїСѓР»СЊ
 			{
-				if (bulletsvector[i].getBulletRect().intersects(obj[j].rect)) //Проверяем касание с объектами карты
+				if (bulletsvector[i].getBulletRect().intersects(obj[j].rect)) //РџСЂРѕРІРµСЂСЏРµРј РєР°СЃР°РЅРёРµ СЃ РѕР±СЉРµРєС‚Р°РјРё РєР°СЂС‚С‹
 				{
-					if (obj[j].name == "solid")//если встретили препятствие
+					if (obj[j].name == "solid")//РµСЃР»Рё РІСЃС‚СЂРµС‚РёР»Рё РїСЂРµРїСЏС‚СЃС‚РІРёРµ
 					{
-						bulletsvector.erase(bulletsvector.begin() + i); //Удаление пули
+						bulletsvector.erase(bulletsvector.begin() + i); //РЈРґР°Р»РµРЅРёРµ РїСѓР»Рё
 					}
 				}
 			}
-		// Проверка попадания пули в игрока
+		// РџСЂРѕРІРµСЂРєР° РїРѕРїР°РґР°РЅРёСЏ РїСѓР»Рё РІ РёРіСЂРѕРєР°
 		for (int i = 0; i < bulletsvector.size(); i++) 
 		{
-			bulletsvector[i].update(time); // Обновление пули
-			if (bulletsvector[i].getBulletRect().intersects(p2.getGlobalBounds())) //Проверяем касание с игроком
+			bulletsvector[i].update(time); // РћР±РЅРѕРІР»РµРЅРёРµ РїСѓР»Рё
+			if (bulletsvector[i].getBulletRect().intersects(p2.getGlobalBounds())) //РџСЂРѕРІРµСЂСЏРµРј РєР°СЃР°РЅРёРµ СЃ РёРіСЂРѕРєРѕРј
 			{
-				bulletsvector.erase(bulletsvector.begin() + i); //Удаление пули
-				p2.setDamage(bullet.getDamage()); // Нанесение урока
+				bulletsvector.erase(bulletsvector.begin() + i); //РЈРґР°Р»РµРЅРёРµ РїСѓР»Рё
+				p2.setDamage(bullet.getDamage()); // РќР°РЅРµСЃРµРЅРёРµ СѓСЂРѕРєР°
 			}
 
 		}
-		// Вывод и обновление пуль
+		// Р’С‹РІРѕРґ Рё РѕР±РЅРѕРІР»РµРЅРёРµ РїСѓР»СЊ
 		for (int i = 0; i < bulletsvector.size(); i++) 
 			window.draw(bulletsvector[i].sprite);
-	//----------------------Взаимодействие с объектами и отображение пуль второго игрока------------------------
-	//проходимся по объектам
-		for (int j = 0; j < obj.size(); j++)//проходимся по объектам карты
-			for (int i = 0; i < bulletsvector2p.size(); i++)//проходимся по вектору пуль
+	//----------------------Р’Р·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ СЃ РѕР±СЉРµРєС‚Р°РјРё Рё РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РїСѓР»СЊ РІС‚РѕСЂРѕРіРѕ РёРіСЂРѕРєР°------------------------
+	//РїСЂРѕС…РѕРґРёРјСЃСЏ РїРѕ РѕР±СЉРµРєС‚Р°Рј
+		for (int j = 0; j < obj.size(); j++)//РїСЂРѕС…РѕРґРёРјСЃСЏ РїРѕ РѕР±СЉРµРєС‚Р°Рј РєР°СЂС‚С‹
+			for (int i = 0; i < bulletsvector2p.size(); i++)//РїСЂРѕС…РѕРґРёРјСЃСЏ РїРѕ РІРµРєС‚РѕСЂСѓ РїСѓР»СЊ
 			{
-				if (bulletsvector2p[i].getBulletRect().intersects(obj[j].rect))//проверяем пересечение игрока с объектом
+				if (bulletsvector2p[i].getBulletRect().intersects(obj[j].rect))//РїСЂРѕРІРµСЂСЏРµРј РїРµСЂРµСЃРµС‡РµРЅРёРµ РёРіСЂРѕРєР° СЃ РѕР±СЉРµРєС‚РѕРј
 				{
-					if (obj[j].name == "solid")//если встретили препятствие
+					if (obj[j].name == "solid")//РµСЃР»Рё РІСЃС‚СЂРµС‚РёР»Рё РїСЂРµРїСЏС‚СЃС‚РІРёРµ
 					{
-						bulletsvector2p.erase(bulletsvector2p.begin() + i); //Удаление пули
+						bulletsvector2p.erase(bulletsvector2p.begin() + i); //РЈРґР°Р»РµРЅРёРµ РїСѓР»Рё
 					}
 				}
 			}
 
 		for (int i = 0; i < bulletsvector2p.size(); i++)
 		{
-			bulletsvector2p[i].update(time); // Обновление пули
-			if (bulletsvector2p[i].getBulletRect().intersects(p1.getGlobalBounds())) //Проверяем касание с игроком
+			bulletsvector2p[i].update(time); // РћР±РЅРѕРІР»РµРЅРёРµ РїСѓР»Рё
+			if (bulletsvector2p[i].getBulletRect().intersects(p1.getGlobalBounds())) //РџСЂРѕРІРµСЂСЏРµРј РєР°СЃР°РЅРёРµ СЃ РёРіСЂРѕРєРѕРј
 			{
-				bulletsvector2p.erase(bulletsvector2p.begin() + i); //Удаление пули
-				p1.setDamage(bulletdmg); // Нанесение урока
+				bulletsvector2p.erase(bulletsvector2p.begin() + i); //РЈРґР°Р»РµРЅРёРµ РїСѓР»Рё
+				p1.setDamage(bulletdmg); // РќР°РЅРµСЃРµРЅРёРµ СѓСЂРѕРєР°
 
 			}
 
 		}
-		// Вывод и обновление пуль
-		for (int i = 0; i < bulletsvector2p.size(); i++) // Вывод и обновление пуль
+		// Р’С‹РІРѕРґ Рё РѕР±РЅРѕРІР»РµРЅРёРµ РїСѓР»СЊ
+		for (int i = 0; i < bulletsvector2p.size(); i++) // Р’С‹РІРѕРґ Рё РѕР±РЅРѕРІР»РµРЅРёРµ РїСѓР»СЊ
 			window.draw(bulletsvector2p[i].sprite);
 
-		//Проверка для окончания игры		
+		//РџСЂРѕРІРµСЂРєР° РґР»СЏ РѕРєРѕРЅС‡Р°РЅРёСЏ РёРіСЂС‹		
 		if (p1.getHealth() <= 0)
 		{
 			while (true)
 			{
+				if (window.pollEvent(events))
+				{
+					if (events.type == Event::Closed) //РµСЃР»Рё РѕРєРЅРѕ Р·Р°РєСЂС‹С‚Рѕ
+						gamestate = 0;
+					if (events.type == Event::MouseButtonPressed) //РµСЃР»Рё РЅР°Р¶Р°С‚Рѕ РЅР° СЃРІРµСЂРЅСѓС‚РѕРµ РѕРєРЅРѕ
+						window.requestFocus(); //Р·Р°РїСЂРѕСЃ С„РѕРєСѓСЃР°
+				}
 				window.clear();
 				p2win.setPosition(p1.getSpritePos().x,p1.getSpritePos().y-200);
 				restartButton.setPosition(p1.getSpritePos().x, p1.getSpritePos().y);
 				restartButton.setFillColor(Color::White);
 				menuNum = 0;
 				if (restartButton.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { restartButton.setFillColor(Color::Blue); menuNum = 1; }
-				if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+				if (Mouse::isButtonPressed(Mouse::Left) && pressedBut == false)
 				{
 					pressedBut = true;
 					if (menuNum == 1) { gamestate = 9; break; }
@@ -181,13 +188,20 @@ public:
 		{
 			while (true)
 			{
+				if (window.pollEvent(events))
+				{
+					if (events.type == Event::Closed) //РµСЃР»Рё РѕРєРЅРѕ Р·Р°РєСЂС‹С‚Рѕ
+						gamestate = 0;
+					if (events.type == Event::MouseButtonPressed) //РµСЃР»Рё РЅР°Р¶Р°С‚Рѕ РЅР° СЃРІРµСЂРЅСѓС‚РѕРµ РѕРєРЅРѕ
+						window.requestFocus(); //Р·Р°РїСЂРѕСЃ С„РѕРєСѓСЃР°
+				}
 				window.clear();
 				p1win.setPosition(p1.getSpritePos().x, p1.getSpritePos().y - 200);
 				restartButton.setPosition(p1.getSpritePos().x, p1.getSpritePos().y);
 				restartButton.setFillColor(Color::White);
 				menuNum = 0;
 				if (restartButton.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { restartButton.setFillColor(Color::Blue); menuNum = 1; }
-				if (Mouse::isButtonPressed(Mouse::Button::Left)) //&& pressedBut == false)
+				if (Mouse::isButtonPressed(Mouse::Left)) //&& pressedBut == false)
 				{
 					//pressedBut = true;
 					if (menuNum == 1) { gamestate = 9; break; }
@@ -198,6 +212,6 @@ public:
 			}
 		}
 
-		window.display(); //Инициализация дисплея
+		window.display(); //РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РґРёСЃРїР»РµСЏ
 	}
 };

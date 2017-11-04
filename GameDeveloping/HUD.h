@@ -1,5 +1,6 @@
-#pragma once
-#include "Header.h"
+﻿#pragma once
+#include "Header.h" //Подключаем header
+
 class HUD
 {
 private:
@@ -23,10 +24,10 @@ private:
 public:
 	HUD()
 	{
-		ddIco.loadFromFile("images/doubledamage.jpg");
-		ssIco.loadFromFile("images/superspeed.jpg");
-		ddCD.loadFromFile("images/damagecd.jpg");
-		ssCD.loadFromFile("images/speedcd.jpg");
+		ddIco.loadFromFile("doubledamage.jpg");
+		ssIco.loadFromFile("superspeed.jpg");
+		ddCD.loadFromFile("damagecd.jpg");
+		ssCD.loadFromFile("speedcd.jpg");
 		font.loadFromFile("font.ttf");
 		c = Color::Green;
 		max = 100; maxW = 100;

@@ -1,17 +1,18 @@
-#pragma once
+﻿#pragma once
 #include "Header.h"
 
 class MainMenu
 {
 private:
-	Texture mainscreen;
-	Sprite menubg;
-	int menuNum;
-	Text text, startText, helpText, exitText;
-	Font font;
+	Texture mainscreen; //фоновое фото
+	Sprite menubg; //спрайт фонового фото
+	int menuNum; //хранит текущий пункт меню
+	Text text, startText, helpText, exitText; //объекты класса текста
+	Font font; //шрифт
 public:
 	MainMenu()
 	{
+		// Загружаем изображение шрифт и настраиваем весь текст на экране
 		mainscreen.loadFromFile("mainscreen.jpg");
 		font.loadFromFile("font.ttf");
 		text.setFont(font);
@@ -45,21 +46,23 @@ public:
 	}
 	void render(RenderWindow &window,int &gamestate,bool &pressedBut)
 	{
-		menuNum = 0;
-		window.clear();
-		startText.setFillColor(Color::White);
+		menuNum = 0; //обнуление
+		window.clear(); //очищение экрана
+		startText.setFillColor(Color::White); //заполнение в белый цвет
 		helpText.setFillColor(Color::White);
 		exitText.setFillColor(Color::White);
+		//переход между игровыми состояниями
 		if (startText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { startText.setFillColor(Color::Blue); menuNum = 1; }
 		if (helpText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { helpText.setFillColor(Color::Blue); menuNum = 2; }
 		if (exitText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { exitText.setFillColor(Color::Blue); menuNum = 3; }
-		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+		if (Mouse::isButtonPressed(Mouse::Left) && pressedBut == false)
 		{
 			pressedBut = true;
 			if (menuNum == 1) gamestate = 2;
 			if (menuNum == 2) gamestate = 6; 
 			if (menuNum == 3) gamestate = 0;
 		}
+		//Вывод элементов меню
 		window.draw(menubg);
 		window.draw(startText);
 		window.draw(helpText);
@@ -72,17 +75,18 @@ public:
 class Help
 {
 private:
-	Texture mainscreen, SSicon, DDicon;
-	Sprite menubg, SSico, DDico;
-	bool menuNum;
-	Text text, backText, ddText, ssText, mainHelpText;
-	Font font;
+	Texture mainscreen, SSicon, DDicon; //текстуры изображений
+	Sprite menubg, SSico, DDico; //спрайты текстур
+	bool menuNum; //текущий пункт меню
+	Text text, backText, ddText, ssText, mainHelpText; //объекты класса текста
+	Font font; //шрифт
 public:
 	Help()
 	{
+		// Загружаем изображения шрифт и настраиваем весь текст на экране
 		mainscreen.loadFromFile("mainscreen.jpg");
-		SSicon.loadFromFile("images/superspeed.jpg");
-		DDicon.loadFromFile("images/doubledamage.jpg");
+		SSicon.loadFromFile("superspeed.jpg");
+		DDicon.loadFromFile("doubledamage.jpg");
 		menubg.setTexture(mainscreen);
 		SSico.setTexture(SSicon);
 		DDico.setTexture(DDicon);
@@ -128,16 +132,17 @@ public:
 	}
 	void render(RenderWindow &window, int &gamestate, bool &pressedBut)
 	{
-		menuNum = false;
-		window.clear();
-		backText.setFillColor(Color::White);
-
+		menuNum = false; // обнуление
+		window.clear(); //очищение экрана
+		backText.setFillColor(Color::White); //окрашивание кнопки в белый
+		//переход между игровыми состояниями
 		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = true; }
-		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+		if (Mouse::isButtonPressed(Mouse::Left) && pressedBut == false)
 		{
 			pressedBut = true;
 			if (menuNum == true) gamestate = 1;
 		}
+		//Вывод элементов меню
 		window.draw(menubg);
 		window.draw(DDico);
 		window.draw(SSico);
@@ -153,17 +158,18 @@ public:
 class ChooseHost
 {
 private:
-	Texture mainscreen;
-	Sprite menubg;
-	int menuNum = 0;
-	Text text, hostText, clientText, backText;
-	Font font;
+	Texture mainscreen; //текстура фонового изображения
+	Sprite menubg; // спрайт текстуры
+	int menuNum; //текущий пункт меню
+	Text text, hostText, clientText, backText; //объекты класса текста
+	Font font; //шрифт
 public:
 	ChooseHost()
 	{
+		// Загружаем изображение шрифт и настраиваем весь текст на экране
 		mainscreen.loadFromFile("mainscreen.jpg");
 		menubg.setTexture(mainscreen);
-
+		menuNum = 0;
 		font.loadFromFile("font.ttf");
 
 		text.setFont(font);
@@ -197,22 +203,23 @@ public:
 	}
 	void render(RenderWindow &window, int &gamestate, int &hostChoosed,  bool &pressedBut)
 	{
-		menuNum = 0;
-		window.clear();
-		hostText.setFillColor(Color::White);
+		menuNum = 0; //обнуление переменной
+		window.clear(); // очищение экрана
+		hostText.setFillColor(Color::White); //окрашивание в белый
 		clientText.setFillColor(Color::White);
 		backText.setFillColor(Color::White);
+		//переход между игровыми состояниями
 		if (hostText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { hostText.setFillColor(Color::Blue); menuNum = 1; }
 		if (clientText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { clientText.setFillColor(Color::Blue); menuNum = 2; }
 		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 3; }
-		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+		if (Mouse::isButtonPressed(Mouse::Left) && pressedBut == false)
 		{
 			pressedBut = true;
 			if (menuNum == 1) { gamestate = 7; hostChoosed = 1; }
 			if (menuNum == 2) { gamestate = 8; hostChoosed = 0; }
 			if (menuNum == 3) { gamestate = 1; }
 		}
-		
+		//Вывод элементов меню
 		window.draw(menubg);
 		window.draw(hostText);
 		window.draw(clientText);
@@ -225,14 +232,15 @@ public:
 class ChooseMap
 {
 private:
-	Texture mainscreen;
-	Sprite menubg;
-	Text mainText, backText, textMapRoads, textMapVillage;
-	int menuNum;
-	Font font;
+	Texture mainscreen; //текстура фонового изображения
+	Sprite menubg; //спрайт текстуры
+	Text mainText, backText, textMapRoads, textMapVillage; //объекты класса текста
+	int menuNum; //текущий пункт меню
+	Font font; // шрифт
 public:
 	ChooseMap()
 	{
+		// Загружаем изображение шрифт и настраиваем весь текст на экране
 		mainscreen.loadFromFile("mainscreen.jpg");
 		menubg.setTexture(mainscreen);
 
@@ -267,23 +275,25 @@ public:
 	}
 	void render(RenderWindow &window, int &gamestate, TcpListener &listener, bool &pressedBut, int &MapsID)
 	{
-		menuNum = 0;
-		window.clear();
-		textMapRoads.setFillColor(Color::White);
+		menuNum = 0; //обнуление переменной
+		window.clear(); //очищение экрана
+		textMapRoads.setFillColor(Color::White); //окрашивание кнопки в белый
 		textMapVillage.setFillColor(Color::White);
 		backText.setFillColor(Color::White);
+		//переход между игровыми состояниями
 		if (textMapRoads.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { textMapRoads.setFillColor(Color::Blue); menuNum = 1; }
 		if (textMapVillage.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { textMapVillage.setFillColor(Color::Blue); menuNum = 2; }
 		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 3; }
-		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+		if (Mouse::isButtonPressed(Mouse::Left) && pressedBut == false)
 		{
 			pressedBut = true;
+			//прослушивание порта при выборе карты
 			if (menuNum == 1) { listener.listen(55001); gamestate = 3; MapsID = 1; }
 			if (menuNum == 2) { listener.listen(55001); gamestate = 3; MapsID = 2; }
 			if (menuNum == 3) { gamestate = 1; }
 			
 		}
-
+		//Вывод элементов меню
 		window.draw(menubg);
 		window.draw(mainText);
 		window.draw(textMapRoads);
@@ -295,15 +305,16 @@ public:
 class ConnectToIp
 {
 private:
-	Texture mainscreen;
-	Sprite menubg;
-	Text mainText, backText,textIP, textConnect,wordIP;
-	int menuNum;
-	Font font;
-	bool pressedbut;
+	Texture mainscreen; //текстура фонового изображения
+	Sprite menubg; //спрайт текстуры
+	Text mainText, backText,textIP, textConnect,wordIP; //объекты класса текста
+	int menuNum; //текущий пункт меню
+	Font font; // шрифт
+	bool pressedbut; //для единичного нажатия на клавиши клавиатуры
 public:
 	ConnectToIp()
 	{
+		// Загружаем изображение шрифт и настраиваем весь текст на экране
 		mainscreen.loadFromFile("mainscreen.jpg");
 		menubg.setTexture(mainscreen);
 
@@ -344,25 +355,26 @@ public:
 	}
 	void render(RenderWindow &window, int &gamestate, bool &pressedBut,IpAddress &enemyip,string &stringip, TcpSocket &socket,int &hostChoosed)
 	{
-		menuNum = 0;
-		window.clear();
-		textIP.setString(stringip);
-		textConnect.setFillColor(Color::White);
+		menuNum = 0; //обнуление переменной
+		window.clear(); //очищение экрана
+		textIP.setString(stringip); //задаем объекту класса текста string - строку
+		textConnect.setFillColor(Color::White); //окрашивание в белый
 		backText.setFillColor(Color::White);
+		//переход между игровыми состояниями
 		if (textConnect.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { textConnect.setFillColor(Color::Blue); menuNum = 1; }
 		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 2; }
-		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+		if (Mouse::isButtonPressed(Mouse::Left) && pressedBut == false)
 		{
 			pressedBut = true;
 			if (menuNum == 1) 
 			{ 
-				enemyip = stringip; 
-				socket.connect(enemyip, 55001);
-				gamestate = 4;
+				enemyip = stringip; //строка с айпи адресом дается классу IpAddress
+				socket.connect(enemyip, 55001); // подключение к хосту по айпи
+				gamestate = 4; //переход к ожиданию
 			}
 			if (menuNum == 2) { gamestate = 2; }
 		}
-		
+		//единичный ввод каждого символа для айпи адреса
 		if (pressedbut == false)
 		{
 			if (Keyboard::isKeyPressed(Keyboard::Num0) && pressedbut == false) { pressedbut = true; stringip += "0"; }
@@ -378,8 +390,12 @@ public:
 			else if (Keyboard::isKeyPressed(Keyboard::Period) && pressedbut == false) { pressedbut = true; stringip += "."; }
 			else if (Keyboard::isKeyPressed(Keyboard::BackSpace) && pressedbut == false)
 			{
+				//если массив больше нуля, то удаляем последний символ
 				if (stringip.length() > 0)
-					stringip.pop_back(); pressedbut = true;
+				{
+					stringip.erase(stringip.size()-1);
+					pressedbut = true;
+				}
 			}
 		}
 		if (!Keyboard::isKeyPressed(Keyboard::Num0) && !Keyboard::isKeyPressed(Keyboard::Num1) &&
@@ -391,6 +407,7 @@ public:
 		{
 			pressedbut = false;
 		}
+		//Вывод элементов меню
 		window.draw(menubg);
 		window.draw(mainText);
 		window.draw(textConnect);
@@ -404,19 +421,20 @@ public:
 class WaitingForPlayers
 {
 private:
-	Texture mainscreen;
-	Sprite menubg;
-	Text text,mainText,backText,waitText;
-	Font font;
-	int menuNum = 0;
-	Packet packetoutput;
+	Texture mainscreen; //текстура для фонового изображения
+	Sprite menubg; //спрайт текстуры
+	Text text,mainText,backText,waitText; //объекты класса текста
+	Font font; //шрифт
+	int menuNum; //текущий пункт меню
+	Packet packetoutput; //исходящий пакет для клиента
 public:
 	WaitingForPlayers()
 	{
-		mainscreen.loadFromFile("mainscreen.jpg"); //�������� �������� ����
+		// Загружаем изображение шрифт и настраиваем весь текст на экране
+		mainscreen.loadFromFile("mainscreen.jpg"); //Загрузка главного меню
 		menubg.setTexture(mainscreen);
 		font.loadFromFile("font.ttf");
-
+		menuNum = 0;
 		text.setFont(font);
 		
 		mainText.setFont(font);
@@ -444,24 +462,26 @@ public:
 	}
 	void render(RenderWindow &window, int &gamestate, bool &pressedBut, TcpSocket &socket,TcpListener &listener, IpAddress &myip,int &MapsID,Maps &map,vector <Object> &obj,Player &p1,int &hostChoosed)
 	{
-		window.clear();
-		text.setString("Your IP Address: " + myip.toString());
-		backText.setFillColor(Color::White);
+		window.clear(); //очищение экрана
+		text.setString("Your IP Address: " + myip.toString()); //вывод айпи адреса на экран хоста
+		backText.setFillColor(Color::White); //окрашивание в белый
 
-		menuNum = 0;
+		menuNum = 0; //обнуление переменной
+		//переход между игровыми состояниями
 		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 1; }
-		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+		if (Mouse::isButtonPressed(Mouse::Left) && pressedBut == false)
 		{
 			pressedBut = true;
 			if (menuNum == 1) { listener.close(); gamestate = 2;  }
 		}
-		packetoutput.clear();
+		packetoutput.clear(); //очищаем пакет перед отправкой
 		
-		packetoutput << MapsID;
-		
-		if (Socket::Status::Done == listener.accept(socket))
+		packetoutput << MapsID; //заполняем кодом карты
+		//ждем подключения клиента
+		if (Socket::Done == listener.accept(socket))
 		{
-			socket.send(packetoutput);
+			socket.send(packetoutput); //отправляем клиенту
+			//карта Roads
 			if (MapsID == 1) 
 			{ 
 				map.LoadFromFile("road.xml"); 
@@ -469,6 +489,7 @@ public:
 				p1.startPosition(hostChoosed, MapsID);
 				gamestate = 5;
 			}
+			//карта Village
 			else if (MapsID == 2) 
 			{ 
 				map.LoadFromFile("village.xml"); 
@@ -478,6 +499,7 @@ public:
 			}
 			
 		}
+		//Вывод элементов меню
 		window.draw(menubg);
 		window.draw(waitText);
 		window.draw(backText);
@@ -490,20 +512,20 @@ public:
 class WaitingForServer
 {
 private:
-	Texture mainscreen;
-	Sprite menubg;
-	int menuNum = 0;
-	Packet packetinput;
-	Text mainText, backText, waitText;
-	Font font;
+	Texture mainscreen; //текстура фонового изображения
+	Sprite menubg; //спрайт текстуры
+	int menuNum; //текущий пункт меню
+	Packet packetinput; //входящий пакет от хоста
+	Text mainText, backText, waitText; //объекты класса текста
+	Font font; //шрифт
 public:
 	WaitingForServer()
 	{
-
+		// Загружаем изображение шрифт и настраиваем весь текст на экране
 		mainscreen.loadFromFile("mainscreen.jpg");
 		menubg.setTexture(mainscreen);
 		font.loadFromFile("font.ttf");
-
+		menuNum = 0;
 		mainText.setFont(font);
 		mainText.setString("REFLEX STRIKE");
 		mainText.setCharacterSize(100);
@@ -527,39 +549,42 @@ public:
 	}
 	void render(RenderWindow &window, int &gamestate,TcpSocket &socket, bool &pressedBut, IpAddress &enemyip,int &MapsID,Maps &map,Player &p1,vector <Object> &obj,int &hostChoosed)
 	{
-		window.clear();
-		backText.setFillColor(Color::White);
-		menuNum = 0;
+		window.clear(); //очищение экрана
+		backText.setFillColor(Color::White); //окрашивание в белый
+		menuNum = 0; //обнуление переменной
+		//переход между игровыми состояниями
 		if (backText.getGlobalBounds().contains(Vector2f(window.mapPixelToCoords(Mouse::getPosition(window))))) { backText.setFillColor(Color::Blue); menuNum = 1; }
-		if (Mouse::isButtonPressed(Mouse::Button::Left) && pressedBut == false)
+		if (Mouse::isButtonPressed(Mouse::Left) && pressedBut == false)
 		{
 			pressedBut = true;
 			if (menuNum == 1) { socket.disconnect(); gamestate = 2; MapsID = 0; }
 		}
 
-		packetinput.clear();
-
-		if (Socket::Status::Done == socket.connect(enemyip, 55001))
+		packetinput.clear(); //очищение пакеты перед приемом
+		//ожидание подключения хоста
+		if (Socket::Done == socket.connect(enemyip, 55001))
 		{
+			//прием пакета
 			if (!socket.receive(packetinput))
 			{
-				packetinput >> MapsID;
+				packetinput >> MapsID; //распаковка
 				if (MapsID == 1)
 				{
-					gamestate = 5;
+					gamestate = 5; //начало игры
 					map.LoadFromFile("road.xml");
 					obj = map.GetObjects("solid");
 					p1.startPosition(hostChoosed, MapsID);
 				}
 				else if (MapsID == 2)
 				{
-					gamestate = 5;
+					gamestate = 5; //начало игры
 					map.LoadFromFile("village.xml");
 					obj = map.GetObjects("solid");
 					p1.startPosition(hostChoosed, MapsID);
 				}
 			}
 		}
+		//Вывод элементов меню
 		window.draw(menubg);
 		window.draw(mainText);
 		window.draw(waitText);

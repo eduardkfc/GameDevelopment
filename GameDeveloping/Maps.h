@@ -1,4 +1,4 @@
-#ifndef Maps_H
+п»ї#ifndef Maps_H
 #define Maps_H
 
 #include "Header.h"
@@ -6,73 +6,73 @@
 
 struct Object
 {
-	std::string name;//объявили переменную name типа string
-	sf::Rect<float> rect;//тип Rect с нецелыми значениями
+	std::string name;//РѕР±СЉВ¤РІРёР»Рё РїРµСЂРµРјРµРЅРЅСѓСЋ name С‚РёРїР° string
+	sf::Rect<float> rect;//С‚РёРї Rect СЃ РЅРµС†РµР»С‹РјРё Р·РЅР°С‡РµРЅРёВ¤РјРё
 };
 
-struct Layer//слои
+struct Layer//СЃР»РѕРё
 {
-	std::vector<sf::Sprite> tiles;//закидываем в вектор тайлы
+	std::vector<sf::Sprite> tiles;//Р·Р°РєРёРґС‹РІР°РµРј РІ РІРµРєС‚РѕСЂ С‚Р°Р№Р»С‹
 };
 
-class Maps//главный класс - уровень
+class Maps//РіР»Р°РІРЅС‹Р№ РєР»Р°СЃСЃ - СѓСЂРѕРІРµРЅСЊ
 {
 public:
-	bool LoadFromFile(std::string filename);//возвращает false если не получилось загрузить
+	bool LoadFromFile(std::string filename);//РІРѕР·РІСЂР°С‰Р°РµС‚ false РµСЃР»Рё РЅРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ
 	Object GetObject(std::string name);
-	std::vector<Object> GetObjects(std::string name);//выдаем объект в наш уровень
-	std::vector<Object> GetAllObjects();//выдаем все объекты в наш уровень
-	void Draw(sf::RenderWindow &window);//рисуем в окно
+	std::vector<Object> GetObjects(std::string name);//РІС‹РґР°РµРј РѕР±СЉРµРєС‚ РІ РЅР°С€ СѓСЂРѕРІРµРЅСЊ
+	std::vector<Object> GetAllObjects();//РІС‹РґР°РµРј РІСЃРµ РѕР±СЉРµРєС‚С‹ РІ РЅР°С€ СѓСЂРѕРІРµРЅСЊ
+	void Draw(sf::RenderWindow &window);//СЂРёСЃСѓРµРј РІ РѕРєРЅРѕ
 
 private:
-	int width, height, tileWidth, tileHeight;//в tmx файле width height в начале,затем размер тайла
-	int firstTileID;//получаем айди первого тайла
-	sf::Rect<float> drawingBounds;//размер части карты которую рисуем
-	sf::Texture tilesetImage;//текстура карты
-	std::vector<Object> objects;//массив типа Объекты, который мы создали
+	int width, height, tileWidth, tileHeight;//РІ tmx С„Р°Р№Р»Рµ width height РІ РЅР°С‡Р°Р»Рµ,Р·Р°С‚РµРј СЂР°Р·РјРµСЂ С‚Р°Р№Р»Р°
+	int firstTileID;//РїРѕР»СѓС‡Р°РµРј Р°Р№РґРё РїРµСЂРІРѕРіРѕ С‚Р°Р№Р»Р°
+	sf::Rect<float> drawingBounds;//СЂР°Р·РјРµСЂ С‡Р°СЃС‚Рё РєР°СЂС‚С‹ РєРѕС‚РѕСЂСѓСЋ СЂРёСЃСѓРµРј
+	sf::Texture tilesetImage;//С‚РµРєСЃС‚СѓСЂР° РєР°СЂС‚С‹
+	std::vector<Object> objects;//РјР°СЃСЃРёРІ С‚РёРїР° СњР±СЉРµРєС‚С‹, РєРѕС‚РѕСЂС‹Р№ РјС‹ СЃРѕР·РґР°Р»Рё
 	std::vector<Layer> layers;
 };
 
 ///////////////////////////////////////
 
-bool Maps::LoadFromFile(std::string filename)//двоеточия-обращение к методам класса вне класса 
+bool Maps::LoadFromFile(std::string filename)//РґРІРѕРµС‚РѕС‡РёВ¤-РѕР±СЂР°С‰РµРЅРёРµ Рє РјРµС‚РѕРґР°Рј РєР»Р°СЃСЃР° РІРЅРµ РєР»Р°СЃСЃР° 
 {
 	layers.clear();
 	objects.clear();
 
-	tinyxml2::XMLDocument MapsFile(filename.c_str());//загружаем файл в TiXmlDocument
+	tinyxml2::XMLDocument MapsFile(filename.c_str());//Р·Р°РіСЂСѓР¶Р°РµРј С„Р°Р№Р» РІ TiXmlDocument
 	MapsFile.LoadFile(filename.c_str());
 
 	tinyxml2::XMLElement *map;
 	map = MapsFile.FirstChildElement("map");
 
-	width = atoi(map->Attribute("width"));//извлекаем из нашей карты ее свойства
-	height = atoi(map->Attribute("height"));//те свойства, которые задавали при работе в 
-	tileWidth = atoi(map->Attribute("tilewidth"));//тайлмап редакторе
+	width = atoi(map->Attribute("width"));//РёР·РІР»РµРєР°РµРј РёР· РЅР°С€РµР№ РєР°СЂС‚С‹ РµРµ СЃРІРѕР№СЃС‚РІР°
+	height = atoi(map->Attribute("height"));//С‚Рµ СЃРІРѕР№СЃС‚РІР°, РєРѕС‚РѕСЂС‹Рµ Р·Р°РґР°РІР°Р»Рё РїСЂРё СЂР°Р±РѕС‚Рµ РІ 
+	tileWidth = atoi(map->Attribute("tilewidth"));//С‚Р°Р№Р»РјР°Рї СЂРµРґР°РєС‚РѕСЂРµ
 	tileHeight = atoi(map->Attribute("tileheight"));
 
-	// Берем описание тайлсета и идентификатор первого тайла
+	// Р…РµСЂРµРј РѕРїРёСЃР°РЅРёРµ С‚Р°Р№Р»СЃРµС‚Р° Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїРµСЂРІРѕРіРѕ С‚Р°Р№Р»Р°
 	tinyxml2::XMLElement *tilesetElement;
 	tilesetElement = map->FirstChildElement("tileset");
 	firstTileID = atoi(tilesetElement->Attribute("firstgid"));
 
-	// source - путь до картинки в контейнере image
+	// source - РїСѓС‚СЊ РґРѕ РєР°СЂС‚РёРЅРєРё РІ РєРѕРЅС‚РµР№РЅРµСЂРµ image
 	tinyxml2::XMLElement *image;
 	image = tilesetElement->FirstChildElement("image");
 	std::string imagepath = image->Attribute("source");
 
-	// пытаемся загрузить тайлсет
+	// РїС‹С‚Р°РµРјСЃВ¤ Р·Р°РіСЂСѓР·РёС‚СЊ С‚Р°Р№Р»СЃРµС‚
 	sf::Image img;
 	img.loadFromFile(imagepath);
 	tilesetImage.loadFromImage(img);
-	tilesetImage.setSmooth(false);//сглаживание
+	tilesetImage.setSmooth(false);//СЃРіР»Р°Р¶РёРІР°РЅРёРµ
 
-	// получаем количество столбцов и строк тайлсета
+	// РїРѕР»СѓС‡Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚РѕР»Р±С†РѕРІ Рё СЃС‚СЂРѕРє С‚Р°Р№Р»СЃРµС‚Р°
 	int columns = tilesetImage.getSize().x / (tileWidth);
 	int rows = tilesetImage.getSize().y / (tileHeight);
 
-	// вектор из прямоугольников изображений (TextureRect)
-	std::vector<sf::Rect<int>> subRects;
+	// РІРµРєС‚РѕСЂ РёР· РїСЂВ¤РјРѕСѓРіРѕР»СЊРЅРёРєРѕРІ РёР·РѕР±СЂР°Р¶РµРЅРёР№ (TextureRect)
+	std::vector<sf::Rect<int> > subRects;
 
 	for (int y = 0; y < rows; y++)
 	for (int x = 0; x < columns; x++)
@@ -87,7 +87,7 @@ bool Maps::LoadFromFile(std::string filename)//двоеточия-обращение к методам кла
 		subRects.push_back(rect);
 	}
 
-	// работа со слоями
+	// СЂР°Р±РѕС‚Р° СЃРѕ СЃР»РѕВ¤РјРё
 	tinyxml2::XMLElement *layerElement;
 	layerElement = map->FirstChildElement("layer");
 	while (layerElement)
@@ -115,7 +115,7 @@ bool Maps::LoadFromFile(std::string filename)//двоеточия-обращение к методам кла
 				
 				sprite.setTextureRect(subRects[subRectToUse]);
 				sprite.setPosition(x * (tileWidth), y * (tileHeight));
-				layer.tiles.push_back(sprite);//закидываем в слой спрайты тайлов
+				layer.tiles.push_back(sprite);//Р·Р°РєРёРґС‹РІР°РµРј РІ СЃР»РѕР№ СЃРїСЂР°Р№С‚С‹ С‚Р°Р№Р»РѕРІ
 			}
 
 			tileElement = tileElement->NextSiblingElement("tile");
@@ -135,19 +135,19 @@ bool Maps::LoadFromFile(std::string filename)//двоеточия-обращение к методам кла
 		layerElement = layerElement->NextSiblingElement("layer");
 	}
 
-	// работа с объектами
+	// СЂР°Р±РѕС‚Р° СЃ РѕР±СЉРµРєС‚Р°РјРё
 	tinyxml2::XMLElement *objectGroupElement;
-	// если есть слои объектов
+	// РµСЃР»Рё РµСЃС‚СЊ СЃР»РѕРё РѕР±СЉРµРєС‚РѕРІ
 	objectGroupElement = map->FirstChildElement("objectgroup");
 	while (objectGroupElement)
 	{
-		//  контейнер <object>
+		// вЂ РєРѕРЅС‚РµР№РЅРµСЂ <object>
 		tinyxml2::XMLElement *objectElement;
 		objectElement = objectGroupElement->FirstChildElement("object");
 
 		while (objectElement)
 		{
-			// получаем все данные - тип, имя, позиция, и тд
+			// РїРѕР»СѓС‡Р°РµРј РІСЃРµ РґР°РЅРЅС‹Рµ - С‚РёРї, РёРјВ¤, РїРѕР·РёС†РёВ¤, Рё С‚Рґ
 			std::string objectType;
 			if (objectElement->Attribute("type") != NULL)
 			{
@@ -180,7 +180,7 @@ bool Maps::LoadFromFile(std::string filename)//двоеточия-обращение к методам кла
 				sprite.setTextureRect(subRects[atoi(objectElement->Attribute("gid")) - firstTileID]);
 			}
 
-			// экземпляр объекта
+			// СЌРєР·РµРјРїР»В¤СЂ РѕР±СЉРµРєС‚Р°
 			Object object;
 			object.name = objectName;
 
@@ -199,7 +199,7 @@ bool Maps::LoadFromFile(std::string filename)//двоеточия-обращение к методам кла
 
 Object Maps::GetObject(std::string name)
 {
-	// только первый объект с заданным именем
+	// С‚РѕР»СЊРєРѕ РїРµСЂРІС‹Р№ РѕР±СЉРµРєС‚ СЃ Р·Р°РґР°РЅРЅС‹Рј РёРјРµРЅРµРј
 	for (int i = 0; i < objects.size(); i++)
 	if (objects[i].name == name)
 		return objects[i];
@@ -207,7 +207,7 @@ Object Maps::GetObject(std::string name)
 
 std::vector<Object> Maps::GetObjects(std::string name)
 {
-	// все объекты с заданным именем
+	// РІСЃРµ РѕР±СЉРµРєС‚С‹ СЃ Р·Р°РґР°РЅРЅС‹Рј РёРјРµРЅРµРј
 	std::vector<Object> vec;
 	for (int i = 0; i < objects.size(); i++)
 	if (objects[i].name == name)
@@ -224,7 +224,7 @@ std::vector<Object> Maps::GetAllObjects()
 
 void Maps::Draw(sf::RenderWindow &window)
 {
-	// рисуем все тайлы (объекты не рисуем!)
+	// СЂРёСЃСѓРµРј РІСЃРµ С‚Р°Р№Р»С‹ (РѕР±СЉРµРєС‚С‹ РЅРµ СЂРёСЃСѓРµРј!)
 	for (int layer = 0; layer < layers.size(); layer++)
 	for (int tile = 0; tile < layers[layer].tiles.size(); tile++)
 		window.draw(layers[layer].tiles[tile]);
