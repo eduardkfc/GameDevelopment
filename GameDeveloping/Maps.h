@@ -71,7 +71,7 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи¤-обращен
 	int columns = tilesetImage.getSize().x / (tileWidth);
 	int rows = tilesetImage.getSize().y / (tileHeight);
 
-	// вектор из пр¤моугольников изображений (TextureRect)
+	// вектор из прямоугольников изображений (TextureRect)
 	std::vector<sf::Rect<int> > subRects;
 
 	for (int y = 0; y < rows; y++)
@@ -87,7 +87,7 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи¤-обращен
 		subRects.push_back(rect);
 	}
 
-	// работа со сло¤ми
+	// работа со слоями
 	tinyxml2::XMLElement *layerElement;
 	layerElement = map->FirstChildElement("layer");
 	while (layerElement)
@@ -180,7 +180,7 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи¤-обращен
 				sprite.setTextureRect(subRects[atoi(objectElement->Attribute("gid")) - firstTileID]);
 			}
 
-			// экземпл¤р объекта
+			// экземпляр объекта
 			Object object;
 			object.name = objectName;
 
