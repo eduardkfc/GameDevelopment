@@ -195,6 +195,7 @@ bool Maps::LoadFromFile(std::string filename)//двоеточи¤-обращен
 		}
 		objectGroupElement = objectGroupElement->NextSiblingElement("objectgroup");
 	}
+	return true;
 }
 
 Object Maps::GetObject(std::string name)
@@ -203,6 +204,7 @@ Object Maps::GetObject(std::string name)
 	for (int i = 0; i < objects.size(); i++)
 	if (objects[i].name == name)
 		return objects[i];
+	return objects[(size_t)(-1)];
 }
 
 std::vector<Object> Maps::GetObjects(std::string name)
