@@ -20,6 +20,6 @@ public:
     virtual float   getY() const override;
     virtual void  moveTo(float x, float y) override;
 private:
-    sf::Sprite sprite; 
+    sf::Sprite sprite;
     float mPosX, mPosY;
 };
